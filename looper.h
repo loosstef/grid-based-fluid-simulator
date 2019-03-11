@@ -5,8 +5,8 @@
 #include "field.h"
 #include <QPixmap>
 
-const int FIELD_WIDTH = 50;
-const int FIELD_HEIGHT = 50;
+const int FIELD_WIDTH = 400;
+const int FIELD_HEIGHT = 400;
 
 
 class Looper : public QThread
