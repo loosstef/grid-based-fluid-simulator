@@ -18,8 +18,8 @@ signals:
     void mouseLeftButtonClicked(int x, int y);
     void mouseLeftButtonMoved(int x, int y);
     void mouseLeftButtonReleased();
-    void mouseRightButtonClicked(int x, int y);
-    void mouseRightButtonMoved(int x, int y);
+    void mouseRightButtonClicked(int x, int y, int viewX, int viewY);
+    void mouseRightButtonMoved(int x, int y, int viewX, int viewY);
     void mouseRightButtonReleased();
 public slots:
     void updateView(QImage* image);

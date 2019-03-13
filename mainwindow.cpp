@@ -5,6 +5,7 @@
 #include "simulationviewer.h"
 #include "simulationfield.h"
 #include "painttool.h"
+#include "simulationviewerconnector.h"
 
 const int FIELD_WIDTH = 100;
 const int FIELD_HEIGHT = 100;
@@ -46,12 +47,19 @@ void MainWindow::init()
     //connect(looper, &Looper::FieldUpdated, ui->simulationVisualisator, &SimulationViewer::updateView);
     looper->start();
 
+    SimulationViewerConnector* simViewConnector = new SimulationViewerConnector(simField, ui->simulationVisualisator);
+
     // connect model and GUI
-    //ui->simulationVisualisator->setSimulationSize(VIEWER_WIDTH, VIEWER_HEIGHT);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, this, &MainWindow::clicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonMoved, this, &MainWindow::clicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, paintTool, &PaintTool::drawPoint);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonMoved, paintTool, &PaintTool::drawPoint);
+
+    connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, this, &MainWindow::rightClicked);
+    connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, this, &MainWindow::rightClicked);
+
+    connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, simViewConnector, &SimulationViewerConnector::rightMouseClick);
+    connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, simViewConnector, &SimulationViewerConnector::rightMouseMove);
 }
 
 void MainWindow::updateSimulationVisualisation(QImage* image)
@@ -71,4 +79,10 @@ void MainWindow::clicked(int x, int y)
 {
     QString clickedPosText = QString("Left: (").append(QString::number(x)).append(", ").append(QString::number(y)).append(")");
     ui->clickedPosViewer->setText(clickedPosText);
+}
+
+void MainWindow::rightClicked(int x, int simY, int viewX, int viewY)
+{
+    QString clickedPosText = QString("Right: (").append(QString::number(x).append(", ").append(QString::number(simY)).append(")"));
+    ui->rightClickedPosViewer->setText(clickedPosText);
 }

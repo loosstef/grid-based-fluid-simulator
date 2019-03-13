@@ -40,7 +40,7 @@ void SimulationViewer::mousePressEvent(QMouseEvent *ev)
         mouseLeftBtnDown = true;
     }
     if(rightClicked) {
-        emit mouseRightButtonClicked(simulationCoordinate.x, simulationCoordinate.y);
+        emit mouseRightButtonClicked(simulationCoordinate.x, simulationCoordinate.y, ev->x(), ev->y());
         mouseRightBtnDown = true;
     }
 }
@@ -54,7 +54,7 @@ void SimulationViewer::mouseMoveEvent(QMouseEvent *ev)
         emit mouseLeftButtonMoved(simulationCoordinate.x, simulationCoordinate.y);
     }
     if(rightClicked) {
-        emit mouseRightButtonMoved(simulationCoordinate.x, simulationCoordinate.y);
+        emit mouseRightButtonMoved(simulationCoordinate.x, simulationCoordinate.y, ev->x(), ev->y());
     }
 }
 

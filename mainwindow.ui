@@ -29,7 +29,7 @@
      <height>0</height>
     </size>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
     <item>
      <widget class="QLabel" name="topInfo">
       <property name="autoFillBackground">
@@ -50,6 +50,13 @@
      <widget class="QLabel" name="clickedPosViewer">
       <property name="text">
        <string>Left: (0, 0)</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="rightClickedPosViewer">
+      <property name="text">
+       <string>Right: (0, 0)</string>
       </property>
      </widget>
     </item>
