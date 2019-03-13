@@ -2,26 +2,23 @@
 #define LOOPER_H
 #include <QThread>
 #include "simulationfield.h"
+#include "simulationviewer.h"
 #include "field.h"
 #include <QPixmap>
-
-const int FIELD_WIDTH = 400;
-const int FIELD_HEIGHT = 400;
+#include <QImage>
+#include "painttool.h"
 
 
 class Looper : public QThread
 {
     Q_OBJECT
-    void run() override {
-        SimulationField simField(FIELD_WIDTH, FIELD_HEIGHT);
-        while(true) {
-            simField.simulateNextStep(100);
-            QPixmap* renderedImage = simField.render();
-            emit FieldUpdated(renderedImage);
-        }
-    }
+    void run() override;
+public:
+    Looper(SimulationField* simField, QObject* parent = nullptr);
 signals:
-    void FieldUpdated(QPixmap* pixmap);
+    void FieldUpdated(QImage* image);
+private:
+    SimulationField* mSimField;
 };
 
 #endif // LOOPER_H

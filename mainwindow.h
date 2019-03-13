@@ -2,8 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "QPixmap"
+#include <QImage>
+#include <QPixmap>
 #include <QDateTime>
+#include "painttool.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,11 +20,12 @@ public:
     ~MainWindow();
 
 private:
+    void init();
     Ui::MainWindow *ui;
     int counter = 0;
     qint64 timer = QDateTime::currentMSecsSinceEpoch();
 public slots:
-    void updateSimulationVisualisation(QPixmap* pixmap);
+    void updateSimulationVisualisation(QImage* image);
     void clicked(int x, int y);
 };
 

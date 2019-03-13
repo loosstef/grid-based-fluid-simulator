@@ -29,7 +29,9 @@ SOURCES += \
         grid.cpp \
     field.cpp \
     simulationfield.cpp \
-    simulationviewer.cpp
+    simulationviewer.cpp \
+    painttool.cpp \
+    looper.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -37,7 +39,9 @@ HEADERS += \
         field.h \
         looper.h \
     simulationfield.h \
-    simulationviewer.h
+    simulationviewer.h \
+    painttool.h \
+    coordinate.h
 
 FORMS += \
         mainwindow.ui

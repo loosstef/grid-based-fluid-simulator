@@ -7,14 +7,19 @@
 class Field
 {
 public:
-    Field(int width, int height);
-    QPixmap *render();
+    Field(int simWidth, int simHeight);
+    void render(QImage* image);
+    Grid* getDensityGrid() {return &density;}
+    int getWidth() {return this->simWidth;}
+    int getHeight() {return this->simHeight;}
 protected:
-    int width;
-    int height;
+    int simWidth;
+    int simHeight;
     Grid density;
     Grid horizontalVelocity;
     Grid verticalVelocity;
+private:
+    float valueToColorIntensity(float value);
 };
 
 #endif // FIELD_H

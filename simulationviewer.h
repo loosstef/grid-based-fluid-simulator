@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QMouseEvent>
+#include "coordinate.h"
 
 class QWidget;
 
@@ -14,19 +15,26 @@ public:
     SimulationViewer(QWidget* parent);
     void setSize(int x, int y);
 signals:
-    void mouseLeftButtonDown(int x, int y);
-    void mouseRightButtonDown(int x, int y);
+    void mouseLeftButtonClicked(int x, int y);
+    void mouseLeftButtonMoved(int x, int y);
+    void mouseLeftButtonReleased();
+    void mouseRightButtonClicked(int x, int y);
+    void mouseRightButtonMoved(int x, int y);
+    void mouseRightButtonReleased();
 public slots:
-    void updateView(QPixmap* pixmap);
+    void updateView(QImage* image);
 protected:
     void mousePressEvent(QMouseEvent *ev);
     void mouseMoveEvent(QMouseEvent *ev);
+    void mouseReleaseEvent(QMouseEvent *ev);
 private:
     int viewWidth = 400;
     int viewHeight = 400;
     int simulationWidth = 1;
     int simulationHeight = 1;
-    void mouseEvent(QMouseEvent *ev);
+    bool mouseLeftBtnDown = false;
+    bool mouseRightBtnDown = false;
+    Coordinate calculatePositionInSimulation(int viewX, int viewY);
 };
 
 #endif // SIMULATIONVIEWER_H

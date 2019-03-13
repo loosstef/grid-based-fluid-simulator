@@ -7,6 +7,9 @@
 Grid::Grid(int width, int height): width(width), height(height)
 {
     this->values = new float[width*height];
+    for(int i = 0; i < width*height; ++i) {
+        this->values[i] = 0;
+    }
 }
 
 /**
@@ -27,26 +30,14 @@ float Grid::get(int x, int y)
  * @param x x-coordinate
  * @param y y-coordinate
  * @param value the value
+ * @return true if the coordinate was valid
  */
-void Grid::set(int x, int y, float value)
+bool Grid::set(int x, int y, float value)
 {
-    this->values[x + y*this->width] = value;
-}
-
-/**
- * Generate an image based on this grid
- * @brief Grid::render
- * @return
- */
-QImage *Grid::render()
-{
-    QImage* image = new QImage(this->width, this->height, QImage::Format_RGB32);
-    for(int x = 0; x < this->width; ++x) {
-        for(int y = 0; y < this->height; ++y) {
-            float colorIntensity = this->values[x+y*this->height];
-            QColor color = QColor(colorIntensity, colorIntensity, colorIntensity);
-            image->setPixelColor(x, y, color);
-        }
+    if(x >= 0 && y >= 0 && x < this->width && y < this->height) {
+        this->values[x + y*this->width] = value;
+        return true;
+    } else {
+        return false;
     }
-    return image;
 }

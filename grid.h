@@ -8,8 +8,7 @@ class Grid
 public:
     Grid(int width, int height);
     float get(int x, int y);
-    void set(int x, int y, float value);
-    QImage* render();
+    bool set(int x, int y, float value);
 private:
     int width;
     int height;
