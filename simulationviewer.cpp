@@ -11,18 +11,18 @@ SimulationViewer::SimulationViewer(QWidget *parent) :
 
 }
 
-void SimulationViewer::setSize(int x, int y)
+void SimulationViewer::setSize(int simWidth, int simHeight, int viewWidth, int viewHeight)
 {
-    this->viewWidth = x;
-    this->viewHeight = y;
+    this->mSimulationWidth = simWidth;
+    this->mSimulationHeight = simHeight;
+    this->mViewWidth = viewWidth;
+    this->mViewHeight = viewHeight;
 }
 
 void SimulationViewer::updateView(QImage* image)
 {
     QPixmap pixmap = QPixmap::fromImage(*image);
-    this->simulationWidth = pixmap.width();
-    this->simulationHeight = pixmap.height();
-    this->setPixmap(pixmap.scaled(this->viewWidth, this->viewHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    this->setPixmap(pixmap);
 }
 
 void SimulationViewer::mousePressEvent(QMouseEvent *ev)
@@ -35,7 +35,7 @@ void SimulationViewer::mousePressEvent(QMouseEvent *ev)
         mouseLeftBtnDown = true;
     }
     if(rightClicked) {
-        emit mouseRightButtonClicked(ev->x(), ev->y());
+        emit mouseRightButtonClicked(simulationCoordinate.x, simulationCoordinate.y);
         mouseRightBtnDown = true;
     }
 }
@@ -78,7 +78,7 @@ void SimulationViewer::mouseReleaseEvent(QMouseEvent *ev)
 Coordinate SimulationViewer::calculatePositionInSimulation(int viewX, int viewY)
 {
     Coordinate simCoordinate;
-    simCoordinate.x = (int)(((float)viewX/this->viewWidth) * this->simulationWidth);
-    simCoordinate.y = (int)((float)viewY/this->viewHeight * this->simulationHeight);
+    simCoordinate.x = (int)(((float)viewX/this->mViewWidth) * this->mSimulationWidth);
+    simCoordinate.y = (int)((float)viewY/this->mViewHeight * this->mSimulationHeight);
     return simCoordinate;
 }

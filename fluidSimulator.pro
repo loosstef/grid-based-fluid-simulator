@@ -31,7 +31,8 @@ SOURCES += \
     simulationfield.cpp \
     simulationviewer.cpp \
     painttool.cpp \
-    looper.cpp
+    looper.cpp \
+    renderengine.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +42,8 @@ HEADERS += \
     simulationfield.h \
     simulationviewer.h \
     painttool.h \
-    coordinate.h
+    coordinate.h \
+    renderengine.h
 
 FORMS += \
         mainwindow.ui

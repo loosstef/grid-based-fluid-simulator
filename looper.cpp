@@ -1,5 +1,8 @@
 #include "looper.h"
 #include <QDateTime>
+#include "renderengine.h"
+
+const int MAX_FPS_COUNT = 500;
 
 
 /**
@@ -8,8 +11,8 @@
  * @param simField the simulation-field in wich the simulation will happen
  * @param parent
  */
-Looper::Looper(SimulationField *simField, QObject *parent) :
-    mSimField(simField), QThread(parent)
+Looper::Looper(SimulationField *simField, int width, int height, QObject *parent) :
+    mSimField(simField), QThread(parent), mWidth(width), mHeight(height)
 {
 
 }
@@ -17,17 +20,17 @@ Looper::Looper(SimulationField *simField, QObject *parent) :
 void Looper::run() {
     // init data
     qint64 timeOfLastUpdate = QDateTime::currentMSecsSinceEpoch();
-    QImage imageBuffer = QImage(this->mSimField->getWidth(), this->mSimField->getHeight(), QImage::Format_RGB32);
+    RenderEngine renderEngine = RenderEngine(mWidth, mHeight);
 
     // start loop
     while(true) {
         this->mSimField->simulateNextStep(100);
-        this->mSimField->render(&imageBuffer);
+        QImage* renderedImage = renderEngine.render(this->mSimField);
         qint64 timeSinceLastUpdate = QDateTime::currentMSecsSinceEpoch() - timeOfLastUpdate;
-        if(timeSinceLastUpdate < 10) {
-            this->usleep(1000 * (10 - timeSinceLastUpdate));
+        if(timeSinceLastUpdate < (1000/MAX_FPS_COUNT)) {
+            this->usleep(1000 * ((1000/MAX_FPS_COUNT) - timeSinceLastUpdate));
         }
-        emit FieldUpdated(&imageBuffer);
+        emit FieldUpdated(renderedImage);
         timeOfLastUpdate = QDateTime::currentMSecsSinceEpoch();
     }
 }

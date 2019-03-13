@@ -13,7 +13,7 @@ class SimulationViewer : public QLabel
     Q_OBJECT
 public:
     SimulationViewer(QWidget* parent);
-    void setSize(int x, int y);
+    void setSize(int simWidth, int simHeight, int viewWidth, int viewHeight);
 signals:
     void mouseLeftButtonClicked(int x, int y);
     void mouseLeftButtonMoved(int x, int y);
@@ -28,10 +28,10 @@ protected:
     void mouseMoveEvent(QMouseEvent *ev);
     void mouseReleaseEvent(QMouseEvent *ev);
 private:
-    int viewWidth = 400;
-    int viewHeight = 400;
-    int simulationWidth = 1;
-    int simulationHeight = 1;
+    int mSimulationWidth = 1;
+    int mSimulationHeight = 1;
+    int mViewWidth = 1;
+    int mViewHeight = 1;
     bool mouseLeftBtnDown = false;
     bool mouseRightBtnDown = false;
     Coordinate calculatePositionInSimulation(int viewX, int viewY);

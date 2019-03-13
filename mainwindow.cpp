@@ -6,10 +6,10 @@
 #include "simulationfield.h"
 #include "painttool.h"
 
-const int FIELD_WIDTH = 2;
-const int FIELD_HEIGHT = 2;
-const int VIEWER_WIDTH = 400;
-const int VIEWER_HEIGHT = 400;
+const int FIELD_WIDTH = 50;
+const int FIELD_HEIGHT = 50;
+const int VIEWER_WIDTH = 600;
+const int VIEWER_HEIGHT = 600;
 const int INIT_BRUSH_SIZE = 1;
 const int INIT_BRUSH_HARDNESS = 1;
 
@@ -34,18 +34,20 @@ void MainWindow::init()
 {
     // init model-objects
     SimulationField* simField = new SimulationField(FIELD_WIDTH, FIELD_HEIGHT);
-    PaintTool* paintTool = new PaintTool(simField->getDensityGrid());
+    PaintTool* paintTool = new PaintTool(simField->getSmokeDensityGrid());
     paintTool->setHardness(INIT_BRUSH_HARDNESS);
     paintTool->setSize(INIT_BRUSH_SIZE);
 
+    ui->simulationVisualisator->setSize(FIELD_WIDTH, FIELD_HEIGHT, VIEWER_WIDTH, VIEWER_HEIGHT);
+
     // init the looper
-    Looper* looper = new Looper(simField);
+    Looper* looper = new Looper(simField, VIEWER_WIDTH, VIEWER_HEIGHT);
     connect(looper, &Looper::FieldUpdated, this, &MainWindow::updateSimulationVisualisation);
     connect(looper, &Looper::FieldUpdated, ui->simulationVisualisator, &SimulationViewer::updateView);
     looper->start();
 
     // connect model and GUI
-    ui->simulationVisualisator->setSize(VIEWER_WIDTH, VIEWER_HEIGHT);
+    //ui->simulationVisualisator->setSimulationSize(VIEWER_WIDTH, VIEWER_HEIGHT);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, this, &MainWindow::clicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonMoved, this, &MainWindow::clicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, paintTool, &PaintTool::drawPoint);

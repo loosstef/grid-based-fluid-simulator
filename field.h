@@ -8,18 +8,19 @@ class Field
 {
 public:
     Field(int simWidth, int simHeight);
-    void render(QImage* image);
-    Grid* getDensityGrid() {return &density;}
+    Grid* getDensityGrid() {return &mDensity;}
+    Grid* getSmokeDensityGrid() {return &mSmokeDensity;}
+    Grid* getHorizontalVelocity() {return &mHorizontalVelocity;}
+    Grid* getVerticalVelocity() {return &mVerticalVelocity;}
     int getWidth() {return this->simWidth;}
     int getHeight() {return this->simHeight;}
 protected:
     int simWidth;
     int simHeight;
-    Grid density;
-    Grid horizontalVelocity;
-    Grid verticalVelocity;
-private:
-    float valueToColorIntensity(float value);
+    Grid mDensity;
+    Grid mSmokeDensity;
+    Grid mHorizontalVelocity;
+    Grid mVerticalVelocity;
 };
 
 #endif // FIELD_H
