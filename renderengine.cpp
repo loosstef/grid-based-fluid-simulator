@@ -3,7 +3,7 @@
 #include <QPainter>
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
-const int VEL_VECTOR_SPARSENESS = 5;
+const int VEL_VECTOR_SPARSENESS = 2;
 const int VEL_SCALE = 1;
 
 RenderEngine::RenderEngine(int width, int height, bool showVelocity) :

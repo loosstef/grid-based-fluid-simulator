@@ -32,7 +32,8 @@ SOURCES += \
     simulationviewer.cpp \
     painttool.cpp \
     looper.cpp \
-    renderengine.cpp
+    renderengine.cpp \
+    velocitymanipulator.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,7 +44,8 @@ HEADERS += \
     simulationviewer.h \
     painttool.h \
     coordinate.h \
-    renderengine.h
+    renderengine.h \
+    velocitymanipulator.h
 
 FORMS += \
         mainwindow.ui

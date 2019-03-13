@@ -49,7 +49,7 @@
     <item>
      <widget class="QLabel" name="clickedPosViewer">
       <property name="text">
-       <string>last clicked: (0, 0)</string>
+       <string>Left: (0, 0)</string>
       </property>
      </widget>
     </item>

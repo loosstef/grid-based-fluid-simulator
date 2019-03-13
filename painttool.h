@@ -13,7 +13,6 @@ public:
     void setSize(int size) {this->mSize = size;}
     void setHardness(float hardness) {this->mHardness = hardness;}
     void setGrid(Grid* grid) {this->mGrid = grid;}
-    //void drawLine(Grid* grid, int x1, int y1, int x2, int y2) {}
 public slots:
     void drawPoint(int x, int y);
 private:

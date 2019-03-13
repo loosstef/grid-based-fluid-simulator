@@ -69,5 +69,6 @@ void MainWindow::updateSimulationVisualisation(QImage* image)
 
 void MainWindow::clicked(int x, int y)
 {
-    ui->clickedPosViewer->setText(QString("Last clicked: (").append(QString::number(x)).append(QString(", ")).append(QString::number(y)).append(QString(')')));
+    QString clickedPosText = QString("Left: (").append(QString::number(x)).append(", ").append(QString::number(y)).append(")");
+    ui->clickedPosViewer->setText(clickedPosText);
 }
