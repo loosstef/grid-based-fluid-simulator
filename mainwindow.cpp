@@ -43,7 +43,7 @@ void MainWindow::init()
     // init the looper
     Looper* looper = new Looper(simField, VIEWER_WIDTH, VIEWER_HEIGHT);
     connect(looper, &Looper::FieldUpdated, this, &MainWindow::updateSimulationVisualisation);
-    connect(looper, &Looper::FieldUpdated, ui->simulationVisualisator, &SimulationViewer::updateView);
+    //connect(looper, &Looper::FieldUpdated, ui->simulationVisualisator, &SimulationViewer::updateView);
     looper->start();
 
     // connect model and GUI
@@ -56,6 +56,8 @@ void MainWindow::init()
 
 void MainWindow::updateSimulationVisualisation(QImage* image)
 {
+    ui->simulationVisualisator->updateView(image);
+    delete image;
     ++this->counter;
     qint64 diffTime = QDateTime::currentMSecsSinceEpoch() - this->timer;
     if(diffTime > 500) {

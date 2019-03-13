@@ -7,6 +7,7 @@ class Grid
 {
 public:
     Grid(int width, int height, float initValue = 0);
+    ~Grid();
     float get(int x, int y);
     bool set(int x, int y, float value);
     bool add(int x, int y, float value);

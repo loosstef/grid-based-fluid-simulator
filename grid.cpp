@@ -13,6 +13,11 @@ Grid::Grid(int width, int height, float initValue):
     }
 }
 
+Grid::~Grid()
+{
+    delete this->values;
+}
+
 /**
  * Get the value of this grid on a certain location
  * @brief Grid::get

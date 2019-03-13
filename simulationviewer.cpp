@@ -19,6 +19,11 @@ void SimulationViewer::setSize(int simWidth, int simHeight, int viewWidth, int v
     this->mViewHeight = viewHeight;
 }
 
+/**
+ * @brief SimulationViewer::updateView
+ * @param image
+ * @post image is deleted
+ */
 void SimulationViewer::updateView(QImage* image)
 {
     QPixmap pixmap = QPixmap::fromImage(*image);

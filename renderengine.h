@@ -10,6 +10,7 @@ public:
     RenderEngine(int width, int height, bool showVelocity = false);
     QImage* render(Field* field);
 private:
+    void renderSmoke(QImage* image, Field* field);
     float valueToColorIntensity(float value);
     int mWidth;
     int mHeight;

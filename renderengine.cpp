@@ -16,8 +16,18 @@ RenderEngine::RenderEngine(int width, int height, bool showVelocity) :
 QImage* RenderEngine::render(Field *field)
 {
     QImage* image = new QImage(field->getWidth(), field->getHeight(), QImage::Format_RGB32);
-    Grid* smokeDensityGrid = field->getSmokeDensityGrid();
     // calculate the unscaled image
+    renderSmoke(image, field);
+    // scale the image
+    QImage scaledImage = image->scaled(this->mWidth, this->mHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    QImage* scaledImageHeap = new QImage(scaledImage);
+    delete image;
+    return scaledImageHeap;
+}
+
+void RenderEngine::renderSmoke(QImage *image, Field* field)
+{
+    Grid* smokeDensityGrid = field->getSmokeDensityGrid();
     for(int x = 0; x < field->getWidth(); ++x) {
         for(int y = 0; y < field->getHeight(); ++y) {
             float colorIntensity = this->valueToColorIntensity(smokeDensityGrid->get(x, y));
@@ -29,11 +39,6 @@ QImage* RenderEngine::render(Field *field)
             }
         }
     }
-    // scale the image
-    QImage scaledImage = image->scaled(this->mWidth, this->mHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    QImage* scaledImageHeap = new QImage(scaledImage);
-    delete image;
-    return scaledImageHeap;
 }
 
 /**
