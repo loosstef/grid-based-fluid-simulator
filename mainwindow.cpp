@@ -6,8 +6,8 @@
 #include "simulationfield.h"
 #include "painttool.h"
 
-const int FIELD_WIDTH = 50;
-const int FIELD_HEIGHT = 50;
+const int FIELD_WIDTH = 100;
+const int FIELD_HEIGHT = 100;
 const int VIEWER_WIDTH = 600;
 const int VIEWER_HEIGHT = 600;
 const int INIT_BRUSH_SIZE = 1;

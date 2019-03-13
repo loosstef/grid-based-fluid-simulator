@@ -20,7 +20,7 @@ Looper::Looper(SimulationField *simField, int width, int height, QObject *parent
 void Looper::run() {
     // init data
     qint64 timeOfLastUpdate = QDateTime::currentMSecsSinceEpoch();
-    RenderEngine renderEngine = RenderEngine(mWidth, mHeight);
+    RenderEngine renderEngine = RenderEngine(mWidth, mHeight, true);
 
     // start loop
     while(true) {
