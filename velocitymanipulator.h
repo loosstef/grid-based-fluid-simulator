@@ -10,7 +10,7 @@ public:
     VelocityManipulator(Field* field);
     void setPower(float power);
     void setManipulationArea(int size);
-    void move(int posX, int posY, int velX, int velY);
+    void move(int posX, int posY, float velX, float velY);
 private:
     Field* mField;
     PaintTool mHorizontalManipulator;

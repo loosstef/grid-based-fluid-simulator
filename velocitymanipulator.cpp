@@ -39,7 +39,7 @@ void VelocityManipulator::setManipulationArea(int size)
  * @param velX x-coordinate of the movement vector
  * @param velY y-coordinate of the movement vector
  */
-void VelocityManipulator::move(int posX, int posY, int velX, int velY)
+void VelocityManipulator::move(int posX, int posY, float velX, float velY)
 {
     this->mHorizontalManipulator.setHardness(velX*this->mPower);
     this->mVerticalManipulator.setHardness(velY*this->mPower);

@@ -3,7 +3,7 @@
 #include <QDateTime>
 
 const float INIT_POWER = 2;
-const int INIT_MANIPULATION_AREA = 10;
+const int INIT_MANIPULATION_AREA = 4;
 
 SimulationViewerConnector::SimulationViewerConnector(Field* field, SimulationViewer* simViewer) :
     mSimViewer(simViewer),
@@ -29,8 +29,8 @@ void SimulationViewerConnector::rightMouseClick(int simX, int simY, int viewX, i
 void SimulationViewerConnector::rightMouseMove(int simX, int simY, int viewX, int viewY)
 {
     qint64 deltaTime = QDateTime::currentMSecsSinceEpoch() - this->mTimer;
-    int horizontalSpeed = (viewX - this->mLastViewX) / deltaTime;
-    int verticalSpeed = (viewY - this->mLastViewY) / deltaTime;
+    float horizontalSpeed = (float)(viewX - this->mLastViewX) / (float)deltaTime;
+    float verticalSpeed = (float)(viewY - this->mLastViewY) / (float)deltaTime;
     this->mVelocityManipulator.move(this->mLastSimX, this->mLastSimY, horizontalSpeed, verticalSpeed);
     // Reset all variables for the next iteration
     this->mLastSimX = simX;
