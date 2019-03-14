@@ -9,10 +9,8 @@ SimulationViewerConnector::SimulationViewerConnector(Field* field, SimulationVie
     mSimViewer(simViewer),
     mVelocityManipulator(field)
 {
-    /*
     connect(simViewer, &SimulationViewer::mouseRightButtonClicked, this, &SimulationViewerConnector::rightMouseClick);
     connect(simViewer, &SimulationViewer::mouseRightButtonMoved, this, &SimulationViewerConnector::rightMouseMove);
-    */
     mVelocityManipulator.setPower(INIT_POWER);
     mVelocityManipulator.setManipulationArea(INIT_MANIPULATION_AREA);
 }

@@ -57,9 +57,6 @@ void MainWindow::init()
 
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, this, &MainWindow::rightClicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, this, &MainWindow::rightClicked);
-
-    connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, simViewConnector, &SimulationViewerConnector::rightMouseClick);
-    connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, simViewConnector, &SimulationViewerConnector::rightMouseMove);
 }
 
 void MainWindow::updateSimulationVisualisation(QImage* image)
