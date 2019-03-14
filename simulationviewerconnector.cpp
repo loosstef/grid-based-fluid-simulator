@@ -2,6 +2,9 @@
 
 #include <QDateTime>
 
+const float INIT_POWER = 2;
+const int INIT_MANIPULATION_AREA = 10;
+
 SimulationViewerConnector::SimulationViewerConnector(Field* field, SimulationViewer* simViewer) :
     mSimViewer(simViewer),
     mVelocityManipulator(field)
@@ -10,6 +13,8 @@ SimulationViewerConnector::SimulationViewerConnector(Field* field, SimulationVie
     connect(simViewer, &SimulationViewer::mouseRightButtonClicked, this, &SimulationViewerConnector::rightMouseClick);
     connect(simViewer, &SimulationViewer::mouseRightButtonMoved, this, &SimulationViewerConnector::rightMouseMove);
     */
+    mVelocityManipulator.setPower(INIT_POWER);
+    mVelocityManipulator.setManipulationArea(INIT_MANIPULATION_AREA);
 }
 
 void SimulationViewerConnector::rightMouseClick(int simX, int simY, int viewX, int viewY)
