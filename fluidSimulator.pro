@@ -44,10 +44,10 @@ HEADERS += \
     simulationfield.h \
     simulationviewer.h \
     painttool.h \
-    coordinate.h \
     renderengine.h \
     velocitymanipulator.h \
-    simulationviewerconnector.h
+    simulationviewerconnector.h \
+    vector2D.h
 
 FORMS += \
         mainwindow.ui

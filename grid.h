@@ -7,8 +7,12 @@ class Grid
 {
 public:
     Grid(int width, int height, float initValue = 0);
+    Grid(Grid* grid);
     ~Grid();
+    int getWidth() {return this->width;}
+    int getHeight() {return this->height;}
     float get(int x, int y);
+    float get(int i) {return this->values[i];}
     bool set(int x, int y, float value);
     bool add(int x, int y, float value);
 private:

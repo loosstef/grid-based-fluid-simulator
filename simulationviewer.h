@@ -4,7 +4,7 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QMouseEvent>
-#include "coordinate.h"
+#include "vector2D.h"
 
 class QWidget;
 
@@ -34,7 +34,7 @@ private:
     int mViewHeight = 1;
     bool mouseLeftBtnDown = false;
     bool mouseRightBtnDown = false;
-    Coordinate calculatePositionInSimulation(int viewX, int viewY);
+    Vector2D calculatePositionInSimulation(int viewX, int viewY);
 };
 
 #endif // SIMULATIONVIEWER_H

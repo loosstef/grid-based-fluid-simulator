@@ -1,6 +1,8 @@
 #include "grid.h"
 #include <cstdlib>
 
+#include <math.h>
+
 /**
  * Constructor
  */
@@ -11,6 +13,16 @@ Grid::Grid(int width, int height, float initValue):
     for(int i = 0; i < width*height; ++i) {
         this->values[i] = initValue;
     }
+}
+
+Grid::Grid(Grid *grid)
+{
+    this->values = new float[grid->getWidth()*grid->getHeight()];
+    for(int i = 0; i < grid->getWidth()*grid->getHeight(); ++i) {
+        this->values[i] = grid->get(i);
+    }
+    this->width = grid->getWidth();
+    this->height = grid->getHeight();
 }
 
 Grid::~Grid()
@@ -40,6 +52,7 @@ float Grid::get(int x, int y)
  */
 bool Grid::set(int x, int y, float value)
 {
+    // real code
     if(x >= 0 && y >= 0 && x < this->width && y < this->height) {
         this->values[x + y*this->width] = value;
         return true;

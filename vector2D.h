@@ -2,7 +2,7 @@
 #define COORDINATE_H
 
 
-class Coordinate
+class Vector2D
 {
 public:
     int x;

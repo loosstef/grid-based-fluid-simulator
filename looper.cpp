@@ -20,10 +20,13 @@ Looper::Looper(SimulationField *simField, int width, int height, QObject *parent
 void Looper::run() {
     // init data
     RenderEngine renderEngine = RenderEngine(mWidth, mHeight, true);
+    qint64 timer = QDateTime::currentMSecsSinceEpoch();
 
     // start loop
     while(true) {
-        this->mSimField->simulateNextStep(100);
+        qint64 deltaTime = QDateTime::currentMSecsSinceEpoch() - timer;
+        this->mSimField->simulateNextStep(deltaTime);
+        timer = QDateTime::currentMSecsSinceEpoch();
         QImage* renderedImage = renderEngine.render(this->mSimField);
         emit FieldUpdated(renderedImage);
     }

@@ -34,7 +34,7 @@ void SimulationViewer::mousePressEvent(QMouseEvent *ev)
 {
     bool leftClicked = (ev->buttons() & Qt::LeftButton) != 0;
     bool rightClicked = (ev->buttons() & Qt::RightButton) != 0;
-    Coordinate simulationCoordinate = this->calculatePositionInSimulation(ev->x(), ev->y());
+    Vector2D simulationCoordinate = this->calculatePositionInSimulation(ev->x(), ev->y());
     if(leftClicked) {
         emit mouseLeftButtonClicked(simulationCoordinate.x, simulationCoordinate.y);
         mouseLeftBtnDown = true;
@@ -49,7 +49,7 @@ void SimulationViewer::mouseMoveEvent(QMouseEvent *ev)
 {
     bool leftClicked = (ev->buttons() & Qt::LeftButton) != 0;
     bool rightClicked = (ev->buttons() & Qt::RightButton) != 0;
-    Coordinate simulationCoordinate = this->calculatePositionInSimulation(ev->x(), ev->y());
+    Vector2D simulationCoordinate = this->calculatePositionInSimulation(ev->x(), ev->y());
     if(leftClicked) {
         emit mouseLeftButtonMoved(simulationCoordinate.x, simulationCoordinate.y);
     }
@@ -80,9 +80,9 @@ void SimulationViewer::mouseReleaseEvent(QMouseEvent *ev)
  * @param viewY y-coordinate in view
  * @return the coordinate in the simulation
  */
-Coordinate SimulationViewer::calculatePositionInSimulation(int viewX, int viewY)
+Vector2D SimulationViewer::calculatePositionInSimulation(int viewX, int viewY)
 {
-    Coordinate simCoordinate;
+    Vector2D simCoordinate;
     simCoordinate.x = (int)(((float)viewX/this->mViewWidth) * this->mSimulationWidth);
     simCoordinate.y = (int)((float)viewY/this->mViewHeight * this->mSimulationHeight);
     return simCoordinate;

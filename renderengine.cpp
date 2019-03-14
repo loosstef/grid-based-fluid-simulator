@@ -1,9 +1,10 @@
 #include "renderengine.h"
 #include <QtMath>
 #include <QPainter>
+#include <math.h>
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
-const int VEL_VECTOR_SPARSENESS = 2;
+const int VEL_VECTOR_SPARSENESS = 4;
 const int VEL_SCALE = 1;
 
 RenderEngine::RenderEngine(int width, int height, bool showVelocity) :
@@ -60,7 +61,8 @@ void RenderEngine::renderSmoke(QImage *image, Field* field)
             if(color.isValid()) {
                 image->setPixelColor(x, y, color);
             } else {
-                throw std::exception();
+                image->setPixelColor(x, y, QColor(0, 255, 0));
+                //throw std::exception();
             }
         }
     }
@@ -102,6 +104,9 @@ void RenderEngine::renderVelocity(QImage *image, Field *field)
  */
 float RenderEngine::valueToColorIntensity(float value)
 {
+    if(value < 0) {
+        value = 0;
+    }
     float colorIntensity = qSqrt(value)*75;
     if(colorIntensity < 0) {
         colorIntensity = 0;
