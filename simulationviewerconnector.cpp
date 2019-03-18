@@ -2,7 +2,7 @@
 
 #include <QDateTime>
 
-const float INIT_POWER = 2;
+const float INIT_POWER = 6;
 const int INIT_MANIPULATION_AREA = 2;
 
 SimulationViewerConnector::SimulationViewerConnector(Field* field, SimulationViewer* simViewer) :
