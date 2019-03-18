@@ -4,8 +4,8 @@
 #include <math.h>
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
-const int VEL_VECTOR_SPARSENESS = 4;
-const int VEL_SCALE = 1;
+const int VEL_VECTOR_SPARSENESS = 2;
+const int VEL_SCALE = 10;
 
 RenderEngine::RenderEngine(int width, int height, bool showVelocity) :
     mWidth(width), mHeight(height), mShowVelocity(showVelocity)
@@ -84,8 +84,8 @@ void RenderEngine::renderVelocity(QImage *image, Field *field)
 
     for(int x = 0; x < field->getWidth(); x += VEL_VECTOR_SPARSENESS) {
         for (int y = 0; y < field->getHeight(); y += VEL_VECTOR_SPARSENESS) {
-            int baseX = x*((int)(image->width()/field->getWidth()));
-            int baseY = y*((int)(image->height()/field->getHeight()));
+            int baseX = (int)x*((float)image->width()/(float)field->getWidth());
+            int baseY = (int)y*((float)image->height()/(float)field->getHeight());
             int endX = baseX+horVel->get(x, y)*VEL_SCALE;
             int endY = baseY+verVel->get(x, y)*VEL_SCALE;
             painter->drawLine(baseX, baseY, endX, endY);
