@@ -7,6 +7,7 @@
 #include <QPixmap>
 #include <QImage>
 #include "painttool.h"
+#include "renderengine.h"
 
 
 class Looper : public QThread
@@ -14,13 +15,12 @@ class Looper : public QThread
     Q_OBJECT
     void run() override;
 public:
-    Looper(SimulationField* simField, int width, int height, QObject* parent = nullptr);
+    Looper(SimulationField* simField, RenderEngine* renderEngine, QObject* parent = nullptr);
 signals:
     void FieldUpdated(QImage* image);
 private:
     SimulationField* mSimField;
-    int mWidth;
-    int mHeight;
+    RenderEngine* mRenderEngine;
 };
 
 #endif // LOOPER_H

@@ -11,15 +11,14 @@ const int MAX_FPS_COUNT = 500;
  * @param simField the simulation-field in wich the simulation will happen
  * @param parent
  */
-Looper::Looper(SimulationField *simField, int width, int height, QObject *parent) :
-    mSimField(simField), QThread(parent), mWidth(width), mHeight(height)
+Looper::Looper(SimulationField* simField, RenderEngine* renderEngine, QObject* parent) :
+    mSimField(simField), mRenderEngine(renderEngine), QThread(parent)
 {
 
 }
 
 void Looper::run() {
     // init data
-    RenderEngine renderEngine = RenderEngine(mWidth, mHeight, true);
     qint64 timer = QDateTime::currentMSecsSinceEpoch();
 
     // start loop
@@ -27,7 +26,7 @@ void Looper::run() {
         qint64 deltaTime = QDateTime::currentMSecsSinceEpoch() - timer;
         this->mSimField->simulateNextStep(deltaTime);
         timer = QDateTime::currentMSecsSinceEpoch();
-        QImage* renderedImage = renderEngine.render(this->mSimField);
+        QImage* renderedImage = this->mRenderEngine->render(this->mSimField);
         emit FieldUpdated(renderedImage);
     }
 }

@@ -6,6 +6,8 @@
 #include "simulationfield.h"
 #include "painttool.h"
 #include "simulationfieldcontroller.h"
+#include "renderengine.h"
+#include "renderenginecontroller.h"
 
 const int FIELD_WIDTH = 100;
 const int FIELD_HEIGHT = 100;
@@ -53,8 +55,12 @@ void MainWindow::init()
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, this, &MainWindow::rightClicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, this, &MainWindow::rightClicked);
 
+    RenderEngine* renderEngine = new RenderEngine(VIEWER_WIDTH, VIEWER_HEIGHT, false);
+    RenderEngineController* RenderEngineController = renderEngine->getController();
+    RenderEngineController->connectView(ui->velocityToggle);
+
     // init and start the looper
-    Looper* looper = new Looper(simField, VIEWER_WIDTH, VIEWER_HEIGHT);
+    Looper* looper = new Looper(simField, renderEngine);
     connect(looper, &Looper::FieldUpdated, this, &MainWindow::updateSimulationVisualisation);
     looper->start();
 }

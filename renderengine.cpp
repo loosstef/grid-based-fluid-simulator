@@ -36,13 +36,19 @@ QImage* RenderEngine::render(Field *field)
     return scaledImageHeap;
 }
 
-void RenderEngine::toggleShowVelocity()
+RenderEngineController *RenderEngine::getController()
 {
-    if(this->mShowVelocity) {
-        this->mShowVelocity = false;
-    } else {
-        this->mShowVelocity = true;
-    }
+    return new RenderEngineController(this);
+}
+
+/**
+ * Toggle the visibility of the velocity-vectors
+ * @brief RenderEngine::toggleShowVelocity
+ * @param visible true if you want the vectors to be visible
+ */
+void RenderEngine::toggleShowVelocity(bool visible)
+{
+    this->mShowVelocity = visible;
 }
 
 /**

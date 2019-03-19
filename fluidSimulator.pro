@@ -34,7 +34,8 @@ SOURCES += \
     looper.cpp \
     renderengine.cpp \
     velocitymanipulator.cpp \
-    simulationfieldcontroller.cpp
+    simulationfieldcontroller.cpp \
+    renderenginecontroller.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,7 +48,8 @@ HEADERS += \
     renderengine.h \
     velocitymanipulator.h \
     vector2D.h \
-    simulationfieldcontroller.h
+    simulationfieldcontroller.h \
+    renderenginecontroller.h
 
 FORMS += \
         mainwindow.ui
