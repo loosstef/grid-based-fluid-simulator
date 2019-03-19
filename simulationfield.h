@@ -13,6 +13,7 @@ public:
     SimulationFieldController *getController();
 private:
     bool simulateForwardAdvection(int deltaTime);
+    void simulateReverseAdvection(int deltaTime);
     float calculateDistance(float x1, float y1, float x2, float y2);
     int calcGradientPoints(int xCoords[4], int yCoords[4], float percentages[4], float x, float y);
     int calcGradientPointsHorVerSplit(int xCoords[], int yCoords[], float percentages[], float x, float y);

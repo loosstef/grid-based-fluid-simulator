@@ -2,8 +2,9 @@
 
 #include <cstdlib>
 #include <QtMath>
+#include <math.h>
 
-const float SLOWNESS = 100;
+const float SLOWNESS = 200;
 const int METHOD_OF_DIVISION = 1;
 
 SimulationField::SimulationField(int width, int height) :
@@ -27,7 +28,19 @@ bool SimulationField::simulateNextStep(int deltaTime)
     this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
     this->mLastVerticalVelocity = new Grid(this->mVerticalVelocity);
 
-    simulateForwardAdvection(deltaTime);
+    this->simulateForwardAdvection(deltaTime);
+
+    delete this->mLastDensity;
+    delete this->mLastSmokeDensity;
+    delete this->mLastHorizontalVelocity;
+    delete this->mLastVerticalVelocity;
+
+    this->mLastDensity = new Grid(this->mDensity);
+    this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
+    this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
+    this->mLastVerticalVelocity = new Grid(this->mVerticalVelocity);
+
+    this->simulateReverseAdvection(deltaTime);
 
     delete mLastDensity;
     delete mLastSmokeDensity;
@@ -63,6 +76,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             float sourceHorVel = this->mLastHorizontalVelocity->get(x, y);
             float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
             Q_ASSERT(sourceDensity >= 0);
+            Q_ASSERT(sourceSmokeDensity >= 0);
             int targetX[4];
             int targetY[4];
             float targetPercentage[4];
@@ -99,6 +113,95 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 if(this->mSmokeDensity->get(x, y) < 0) {
                     mSmokeDensity->set(x, y, 0);
                 }
+            }
+        }
+    }
+}
+
+/**
+ * Do a part of the simulation
+ * the reverse advection
+ * @brief SimulationField::simulateReverseAdvection
+ * @param deltaTime
+ */
+void SimulationField::simulateReverseAdvection(int deltaTime)
+{
+    int nSources[this->simWidth * this->simHeight];
+    int sourceX[this->simWidth * this->simHeight][4];
+    int sourceY[this->simWidth * this->simHeight][4];
+    float sourcePercentage[this->simWidth * this->simHeight][4];
+    float totalAskedPercentages[this->simWidth * this->simHeight];
+
+    for(int i = 0; i < this->simWidth * this->simHeight; ++i) {
+        totalAskedPercentages[i] = 0;
+    }
+
+    // init all arrays
+    for(int x = 0; x < this->simWidth; ++x) {
+        for(int y = 0; y < this->simHeight; ++y) {
+            // init data
+            float sourceHorVel = this->mLastHorizontalVelocity->get(x, y);
+            float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
+            nSources[x+y*this->simWidth] = this->calcGradientPoints(
+                sourceX[x+y*this->simWidth],
+                sourceY[x+y*this->simWidth],
+                sourcePercentage[x+y*this->simWidth],
+                x-(sourceHorVel*deltaTime/SLOWNESS),
+                y-(sourceVerVel*deltaTime/SLOWNESS)
+            );
+            for(int i = 0; i < nSources[x+y*this->simWidth]; ++i) {
+                int xCoord = sourceX[x+y*this->simWidth][i];
+                int yCoord = sourceY[x+y*this->simWidth][i];
+                float percentageAsked = sourcePercentage[x+y*this->simWidth][i];
+                totalAskedPercentages[xCoord+yCoord*this->simWidth] += percentageAsked;
+            }
+        }
+    }
+
+    //move everything
+    for(int x = 0; x < this->simWidth; ++x) {
+        for(int y = 0; y < this->simHeight; ++y) {
+            for(int i = 0; i < nSources[x+y*this->simWidth]; ++i) {
+                int sX = sourceX[x+y*this->simWidth][i];
+                int sY = sourceY[x+y*this->simWidth][i];
+                float totalSourcePercentage = totalAskedPercentages[sX+sY*this->simWidth];
+                float askedPercentage = sourcePercentage[x+y*this->simWidth][i];
+                if(totalSourcePercentage > 1) {
+                    askedPercentage /= totalSourcePercentage;
+                }
+                float densityValue = this->mLastDensity->get(sX, sY) * askedPercentage;
+                float smokeDensityValue = this->mLastSmokeDensity->get(sX, sY) * askedPercentage;
+                float horVelValue = this->mLastHorizontalVelocity->get(sX, sY) * askedPercentage;
+                float verVelValue = this->mLastVerticalVelocity->get(sX, sY) * askedPercentage;
+                // TODO: remove debug code
+                if(isinf(smokeDensityValue)) {
+                    printf("Debug error");
+                }
+                // TODO: remove debug code
+                if(smokeDensityValue < 0) {
+                    printf("Debug error");
+                }
+                this->mDensity->add(sX, sY, -densityValue);
+                this->mDensity->add(x, y, densityValue);
+                this->mSmokeDensity->add(sX, sY, -smokeDensityValue);
+                this->mSmokeDensity->add(x, y, smokeDensityValue);
+                // TODO: remove debug code
+                if(isinf(this->mSmokeDensity->get(x, y))) {
+                    printf("Debug error");
+                }
+                // TODO: remove debug code
+                if(this->mSmokeDensity->get(sX, sY) < -0.001) {
+                    printf("Debug error");
+                }
+                // FIXME: there should be a better solution
+                if(this->mSmokeDensity->get(sX, sY) < 0) {
+                    this->mSmokeDensity->set(sX, sY, 0);
+                }
+                // TODO: add code to advect the velocity in reverse
+                /*this->mHorizontalVelocity->add(sX, sY, -horVelValue);
+                this->mHorizontalVelocity->add(x, y, horVelValue);
+                this->mVerticalVelocity->add(sX, sY, -verVelValue);
+                this->mVerticalVelocity->add(x, y, verVelValue);*/
             }
         }
     }
