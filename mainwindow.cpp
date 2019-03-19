@@ -9,8 +9,8 @@
 #include "renderengine.h"
 #include "renderenginecontroller.h"
 
-const int FIELD_WIDTH = 100;
-const int FIELD_HEIGHT = 100;
+const int FIELD_WIDTH = 20;
+const int FIELD_HEIGHT = 20;
 const int VIEWER_WIDTH = 800;
 const int VIEWER_HEIGHT = 800;
 const int INIT_BRUSH_SIZE = 4;

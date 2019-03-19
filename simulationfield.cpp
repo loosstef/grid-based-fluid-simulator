@@ -4,7 +4,7 @@
 #include <QtMath>
 
 const float SLOWNESS = 100;
-const int METHOD_OF_DIVISION = 2;
+const int METHOD_OF_DIVISION = 1;
 
 SimulationField::SimulationField(int width, int height) :
     Field(width, height)
@@ -19,7 +19,6 @@ SimulationField::SimulationField(int width, int height) :
  * @param deltaTime
  * @return true if everything went well
  */
-// TODO: fill in this function
 bool SimulationField::simulateNextStep(int deltaTime)
 {
     // init all new-grids
@@ -63,10 +62,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             float sourceSmokeDensity = this->mLastSmokeDensity->get(x, y);
             float sourceHorVel = this->mLastHorizontalVelocity->get(x, y);
             float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
-            // TODO: remove debug code
-            if(sourceDensity < 0) {
-                printf("Error");
-            }
+            Q_ASSERT(sourceDensity >= 0);
             int targetX[4];
             int targetY[4];
             float targetPercentage[4];
@@ -81,18 +77,11 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             }
             for(int i = 0; i < nTargets; ++i) {
                 float densityValue = sourceDensity * targetPercentage[i];
-                // TODO: remove debug code
-                if(densityValue < 0) {
-                    printf("Debug error");
-                }
+                Q_ASSERT(densityValue >= 0);
                 float smokeDensityValue = sourceSmokeDensity * targetPercentage[i];
                 float VelXValue = sourceHorVel * targetPercentage[i];
                 float VelYValue = sourceVerVel * targetPercentage[i];
                 this->mDensity->add(x, y, -densityValue);
-                // TODO: remove debug code
-                if(this->mDensity->get(x, y) < 0) {
-                    printf("Debug Error");
-                }
                 this->mDensity->add(targetX[i], targetY[i], densityValue);
                 this->mSmokeDensity->add(x, y, -smokeDensityValue);
                 this->mSmokeDensity->add(targetX[i], targetY[i], smokeDensityValue);
@@ -100,6 +89,16 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 this->mHorizontalVelocity->add(targetX[i], targetY[i], VelXValue);
                 this->mVerticalVelocity->add(x, y, -VelYValue);
                 this->mVerticalVelocity->add(targetX[i], targetY[i], VelYValue);
+
+                // FIXME: there should be a better solution than this
+                Q_ASSERT(this->mDensity->get(x, y) >= -0.0001);
+                Q_ASSERT(this->mSmokeDensity->get(x, y) >= -0.0001);
+                if(this->mDensity->get(x, y) < 0) {
+                    mDensity->set(x, y, 0);
+                }
+                if(this->mSmokeDensity->get(x, y) < 0) {
+                    mSmokeDensity->set(x, y, 0);
+                }
             }
         }
     }
@@ -145,6 +144,12 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
     } else {
         return 0;
     }
+
+    float sum = 0;
+    for(int i = 0; i < nPoints; ++i) {
+        sum += percentages[i];
+    }
+    Q_ASSERT(sum <= 1);
 
     return nPoints;
 }
@@ -226,30 +231,6 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
         }
     }
 
-    // FIXME: this shouldn't be necessary
-    // TODO: delete debug code
-    float sum = 0;
-    for(int i = 0; i < index; ++i) {
-        sum += percentages[i];
-        if(percentages[i] < 0) {
-            printf("Debug error");
-        }
-    }
-    if(sum >= 1) {
-        for(int i = 0; i < index; ++i) {
-            percentages[i] = (float)percentages[i] / (float)1.001;
-        }
-    }
-    if(sum > 1) {
-        printf("Error");
-    }
-    if(index == 0) {
-        printf("Debug warning");
-    }
-    if(index == 2) {
-        //printf("Debug stop");
-    }
-
     return index;
 }
 
@@ -311,19 +292,6 @@ int SimulationField::calcGradientPointsDivideByDistance(int xCoords[], int yCoor
         if (percentages[i] != percentages[i]) {
             printf("Error");
         }
-    }
-
-    //TODO: remove debug code
-    if(nSurroundingPoints == 0) {
-        printf("Debug Error");
-    }
-    //TODO: remove debug code
-    float sumOfPercentages = 0;
-    for(int i = 0; i < nSurroundingPoints; ++i) {
-        sumOfPercentages += percentages[i];
-    }
-    if(qAbs(sumOfPercentages - 1) > 0.01) {
-        printf("Debug Error");
     }
 
     return nSurroundingPoints;
