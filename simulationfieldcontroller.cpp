@@ -5,17 +5,17 @@
 const float INIT_POWER = 6;
 const int INIT_MANIPULATION_AREA = 2;
 
-SimulationViewerConnector::SimulationViewerConnector(Field* field, SimulationViewer* simViewer) :
+SimulationFieldController::SimulationFieldController(Field* field, SimulationViewer* simViewer) :
     mSimViewer(simViewer),
     mVelocityManipulator(field)
 {
-    connect(simViewer, &SimulationViewer::mouseRightButtonClicked, this, &SimulationViewerConnector::rightMouseClick);
-    connect(simViewer, &SimulationViewer::mouseRightButtonMoved, this, &SimulationViewerConnector::rightMouseMove);
+    connect(simViewer, &SimulationViewer::mouseRightButtonClicked, this, &SimulationFieldController::rightMouseClick);
+    connect(simViewer, &SimulationViewer::mouseRightButtonMoved, this, &SimulationFieldController::rightMouseMove);
     mVelocityManipulator.setPower(INIT_POWER);
     mVelocityManipulator.setManipulationArea(INIT_MANIPULATION_AREA);
 }
 
-void SimulationViewerConnector::rightMouseClick(int simX, int simY, int viewX, int viewY)
+void SimulationFieldController::rightMouseClick(int simX, int simY, int viewX, int viewY)
 {
     this->mLastSimX = simX;
     this->mLastSimY = simY;
@@ -24,7 +24,7 @@ void SimulationViewerConnector::rightMouseClick(int simX, int simY, int viewX, i
     this->mTimer = QDateTime::currentMSecsSinceEpoch();
 }
 
-void SimulationViewerConnector::rightMouseMove(int simX, int simY, int viewX, int viewY)
+void SimulationFieldController::rightMouseMove(int simX, int simY, int viewX, int viewY)
 {
     qint64 deltaTime = QDateTime::currentMSecsSinceEpoch() - this->mTimer;
     float horizontalSpeed = (float)(viewX - this->mLastViewX) / (float)deltaTime;

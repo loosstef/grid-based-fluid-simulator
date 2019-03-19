@@ -47,7 +47,7 @@ void MainWindow::init()
     //connect(looper, &Looper::FieldUpdated, ui->simulationVisualisator, &SimulationViewer::updateView);
     looper->start();
 
-    SimulationViewerConnector* simViewConnector = new SimulationViewerConnector(simField, ui->simulationVisualisator);
+    SimulationFieldController* simViewConnector = new SimulationFieldController(simField, ui->simulationVisualisator);
 
     // connect model and GUI
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, this, &MainWindow::clicked);

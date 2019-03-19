@@ -1,16 +1,16 @@
-#ifndef SIMULATIONVIEWERCONNECTOR_H
-#define SIMULATIONVIEWERCONNECTOR_H
+#ifndef SIMULATIONFIELDCONTROLLER_H
+#define SIMULATIONFIELDCONTROLLER_H
 
 #include <QObject>
 #include "field.h"
 #include "velocitymanipulator.h"
 #include "simulationviewer.h"
 
-class SimulationViewerConnector : public QObject
+class SimulationFieldController : public QObject
 {
     Q_OBJECT
 public:
-    SimulationViewerConnector(Field* field, SimulationViewer* simViewer);
+    SimulationFieldController(Field* field, SimulationViewer* simViewer);
 private:
     VelocityManipulator mVelocityManipulator;
     SimulationViewer* mSimViewer;
@@ -24,4 +24,4 @@ public slots:
     void rightMouseMove(int simX, int simY, int viewX, int viewY);
 };
 
-#endif // SIMULATIONVIEWERCONNECTOR_H
+#endif // SIMULATIONFIELDCONTROLLER_H

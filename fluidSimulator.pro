@@ -34,7 +34,7 @@ SOURCES += \
     looper.cpp \
     renderengine.cpp \
     velocitymanipulator.cpp \
-    simulationviewerconnector.cpp
+    simulationfieldcontroller.cpp
 
 HEADERS += \
         mainwindow.h \
