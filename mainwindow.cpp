@@ -5,7 +5,7 @@
 #include "simulationviewer.h"
 #include "simulationfield.h"
 #include "painttool.h"
-#include "simulationviewerconnector.h"
+#include "simulationfieldcontroller.h"
 
 const int FIELD_WIDTH = 100;
 const int FIELD_HEIGHT = 100;

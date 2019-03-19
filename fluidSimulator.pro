@@ -46,8 +46,8 @@ HEADERS += \
     painttool.h \
     renderengine.h \
     velocitymanipulator.h \
-    simulationviewerconnector.h \
-    vector2D.h
+    vector2D.h \
+    simulationfieldcontroller.h
 
 FORMS += \
         mainwindow.ui

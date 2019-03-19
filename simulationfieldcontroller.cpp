@@ -1,4 +1,4 @@
-#include "simulationviewerconnector.h"
+#include "simulationfieldcontroller.h"
 
 #include <QDateTime>
 
