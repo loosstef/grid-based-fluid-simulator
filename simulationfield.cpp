@@ -4,6 +4,7 @@
 #include <QtMath>
 
 const float SLOWNESS = 100;
+const int METHOD_OF_DIVISION = 2;
 
 SimulationField::SimulationField(int width, int height) :
     Field(width, height)
@@ -135,6 +136,21 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
         percentages[i] = 0;
     }
 
+    int nPoints;
+
+    if(METHOD_OF_DIVISION == 1) {
+        nPoints = this->calcGradientPointsHorVerSplit(xCoords, yCoords, percentages, x, y);
+    } else if(METHOD_OF_DIVISION == 2) {
+        nPoints = this->calcGradientPointsDivideByDistance(xCoords, yCoords, percentages, x, y);
+    } else {
+        return 0;
+    }
+
+    return nPoints;
+}
+
+int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[], float percentages[], float x, float y)
+{
     int leftMostCoord = qFloor(x);
     int rightMostCoord = leftMostCoord + 1;
     int upperMostCoord = qFloor(y);
@@ -235,12 +251,14 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
     }
 
     return index;
+}
 
-    /*
+int SimulationField::calcGradientPointsDivideByDistance(int xCoords[], int yCoords[], float percentages[], float x, float y)
+{
     // Calculate the surrounding coordinates
-    int leftMostCoord = (int) x;
+    int leftMostCoord = qFloor(x);
     int rightMostCoord = leftMostCoord + 1;
-    int upperMostCoord = (int) y;
+    int upperMostCoord = qFloor(y);
     int lowerMostCoord = upperMostCoord + 1;
     int index = 0;
     if(upperMostCoord >= 0) {
@@ -285,18 +303,16 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
         float weight = 1 / (qPow(this->calculateDistance(x, y, xCoords[i], yCoords[i]), 1));
         weights[i] = weight;
         totalWeight += weight;
-    }*/
+    }
 
     // Calculate percentages
-    /*
     for(int i = 0; i < nSurroundingPoints; ++i) {
         percentages[i] = weights[i] / totalWeight;
         if (percentages[i] != percentages[i]) {
             printf("Error");
         }
-    }*/
+    }
 
-    /*
     //TODO: remove debug code
     if(nSurroundingPoints == 0) {
         printf("Debug Error");
@@ -310,5 +326,5 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
         printf("Debug Error");
     }
 
-    return nSurroundingPoints;*/
+    return nSurroundingPoints;
 }
