@@ -38,6 +38,16 @@ bool SimulationField::simulateNextStep(int deltaTime)
 }
 
 /**
+ * Returns a new controller to control this simulationField
+ * @brief SimulationField::getController
+ * @return
+ */
+SimulationFieldController *SimulationField::getController()
+{
+    return new SimulationFieldController(this);
+}
+
+/**
  * Do a part of the simulation
  * the forward advection
  * @brief SimulationField::simulateForwardAdvection

@@ -10,10 +10,10 @@ class SimulationFieldController : public QObject
 {
     Q_OBJECT
 public:
-    SimulationFieldController(Field* field, SimulationViewer* simViewer);
+    SimulationFieldController(Field* field);
+    void connectToView(SimulationViewer* simViewer);
 private:
     VelocityManipulator mVelocityManipulator;
-    SimulationViewer* mSimViewer;
     int mLastSimX = 0;
     int mLastSimY = 0;
     int mLastViewX = 0;

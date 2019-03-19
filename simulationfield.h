@@ -2,6 +2,7 @@
 #define SIMULATIONFIELD_H
 
 #include "field.h"
+#include "simulationfieldcontroller.h"
 
 
 class SimulationField : public Field
@@ -9,6 +10,7 @@ class SimulationField : public Field
 public:
     SimulationField(int width, int height);
     bool simulateNextStep(int deltaTime);
+    SimulationFieldController *getController();
 private:
     bool simulateForwardAdvection(int deltaTime);
     float calculateDistance(float x1, float y1, float x2, float y2);

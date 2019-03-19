@@ -41,13 +41,8 @@ void MainWindow::init()
 
     ui->simulationVisualisator->setSize(FIELD_WIDTH, FIELD_HEIGHT, VIEWER_WIDTH, VIEWER_HEIGHT);
 
-    // init the looper
-    Looper* looper = new Looper(simField, VIEWER_WIDTH, VIEWER_HEIGHT);
-    connect(looper, &Looper::FieldUpdated, this, &MainWindow::updateSimulationVisualisation);
-    //connect(looper, &Looper::FieldUpdated, ui->simulationVisualisator, &SimulationViewer::updateView);
-    looper->start();
-
-    SimulationFieldController* simViewConnector = new SimulationFieldController(simField, ui->simulationVisualisator);
+    SimulationFieldController* simViewConnector = simField->getController();
+    simViewConnector->connectToView(ui->simulationVisualisator);
 
     // connect model and GUI
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, this, &MainWindow::clicked);
@@ -57,6 +52,11 @@ void MainWindow::init()
 
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, this, &MainWindow::rightClicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, this, &MainWindow::rightClicked);
+
+    // init and start the looper
+    Looper* looper = new Looper(simField, VIEWER_WIDTH, VIEWER_HEIGHT);
+    connect(looper, &Looper::FieldUpdated, this, &MainWindow::updateSimulationVisualisation);
+    looper->start();
 }
 
 void MainWindow::updateSimulationVisualisation(QImage* image)
