@@ -149,7 +149,12 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
     for(int i = 0; i < nPoints; ++i) {
         sum += percentages[i];
     }
-    Q_ASSERT(sum <= 1);
+    Q_ASSERT(sum <= 1.000001);
+    if(sum > 1) {
+        for(int i = 0; i < nPoints; ++i) {
+            percentages[i] /= 1.000001;
+        }
+    }
 
     return nPoints;
 }
