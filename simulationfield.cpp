@@ -21,7 +21,6 @@ SimulationField::SimulationField(int width, int height) :
 // TODO: fill in this function
 bool SimulationField::simulateNextStep(int deltaTime)
 {
-    // TODO: take deltaTime into account
     // init all new-grids
     this->mLastDensity = new Grid(this->mDensity);
     this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
@@ -211,7 +210,7 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
         }
     }
 
-    // FIXME: this shouldn't be nescesary
+    // FIXME: this shouldn't be necessary
     // TODO: delete debug code
     float sum = 0;
     for(int i = 0; i < index; ++i) {
