@@ -4,8 +4,11 @@
 #include <QtMath>
 #include <math.h>
 
-const float SLOWNESS = 200;
+const float SLOWNESS_FORWARD_ADVECTION = 200;
+const float SLOWNESS_REVERSE_ADVECTION = 400;
 const int METHOD_OF_DIVISION = 1;
+const bool FORWARD_ADVECTION = true;
+const bool REVERSE_ADVECTION = false;
 
 SimulationField::SimulationField(int width, int height) :
     Field(width, height)
@@ -22,30 +25,32 @@ SimulationField::SimulationField(int width, int height) :
  */
 bool SimulationField::simulateNextStep(int deltaTime)
 {
-    // init all new-grids
-    this->mLastDensity = new Grid(this->mDensity);
-    this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
-    this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
-    this->mLastVerticalVelocity = new Grid(this->mVerticalVelocity);
+    if(FORWARD_ADVECTION) {
+        this->mLastDensity = new Grid(this->mDensity);
+        this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
+        this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
+        this->mLastVerticalVelocity = new Grid(this->mVerticalVelocity);
 
-    this->simulateForwardAdvection(deltaTime);
+        this->simulateForwardAdvection(deltaTime);
 
-    delete this->mLastDensity;
-    delete this->mLastSmokeDensity;
-    delete this->mLastHorizontalVelocity;
-    delete this->mLastVerticalVelocity;
+        delete this->mLastDensity;
+        delete this->mLastSmokeDensity;
+        delete this->mLastHorizontalVelocity;
+        delete this->mLastVerticalVelocity;
+    }
+    if(REVERSE_ADVECTION) {
+        this->mLastDensity = new Grid(this->mDensity);
+        this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
+        this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
+        this->mLastVerticalVelocity = new Grid(this->mVerticalVelocity);
 
-    this->mLastDensity = new Grid(this->mDensity);
-    this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
-    this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
-    this->mLastVerticalVelocity = new Grid(this->mVerticalVelocity);
+        this->simulateReverseAdvection(deltaTime);
 
-    this->simulateReverseAdvection(deltaTime);
-
-    delete mLastDensity;
-    delete mLastSmokeDensity;
-    delete mLastHorizontalVelocity;
-    delete mLastVerticalVelocity;
+        delete mLastDensity;
+        delete mLastSmokeDensity;
+        delete mLastHorizontalVelocity;
+        delete mLastVerticalVelocity;
+    }
     return true;
 }
 
@@ -80,7 +85,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             int targetX[4];
             int targetY[4];
             float targetPercentage[4];
-            int nTargets = this->calcGradientPoints(targetX, targetY, targetPercentage, x+(sourceHorVel*deltaTime/SLOWNESS), y+(sourceVerVel*deltaTime/SLOWNESS));
+            int nTargets = this->calcGradientPoints(targetX, targetY, targetPercentage, x+(sourceHorVel*deltaTime/SLOWNESS_FORWARD_ADVECTION), y+(sourceVerVel*deltaTime/SLOWNESS_FORWARD_ADVECTION));
 
             if(nTargets == 0) {
                 this->mDensity->set(x, y, 0);
@@ -146,8 +151,8 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                 sourceX[x+y*this->simWidth],
                 sourceY[x+y*this->simWidth],
                 sourcePercentage[x+y*this->simWidth],
-                x-(sourceHorVel*deltaTime/SLOWNESS),
-                y-(sourceVerVel*deltaTime/SLOWNESS)
+                x-(sourceHorVel*deltaTime/SLOWNESS_REVERSE_ADVECTION),
+                y-(sourceVerVel*deltaTime/SLOWNESS_REVERSE_ADVECTION)
             );
             for(int i = 0; i < nSources[x+y*this->simWidth]; ++i) {
                 int xCoord = sourceX[x+y*this->simWidth][i];
@@ -198,10 +203,10 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                     this->mSmokeDensity->set(sX, sY, 0);
                 }
                 // TODO: add code to advect the velocity in reverse
-                /*this->mHorizontalVelocity->add(sX, sY, -horVelValue);
+                this->mHorizontalVelocity->add(sX, sY, -horVelValue);
                 this->mHorizontalVelocity->add(x, y, horVelValue);
                 this->mVerticalVelocity->add(sX, sY, -verVelValue);
-                this->mVerticalVelocity->add(x, y, verVelValue);*/
+                this->mVerticalVelocity->add(x, y, verVelValue);
             }
         }
     }
