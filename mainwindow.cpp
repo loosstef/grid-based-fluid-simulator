@@ -9,11 +9,11 @@
 #include "renderengine.h"
 #include "renderenginecontroller.h"
 
-const int FIELD_WIDTH = 40;
-const int FIELD_HEIGHT = 40;
+const int FIELD_WIDTH = 100;
+const int FIELD_HEIGHT = 100;
 const int VIEWER_WIDTH = 800;
 const int VIEWER_HEIGHT = 800;
-const int INIT_BRUSH_SIZE = 1;
+const int INIT_BRUSH_SIZE = 6;
 const int INIT_BRUSH_HARDNESS = 1;
 
 MainWindow::MainWindow(QWidget *parent) :

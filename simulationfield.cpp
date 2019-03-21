@@ -4,11 +4,13 @@
 #include <QtMath>
 #include <math.h>
 
-const float SLOWNESS_FORWARD_ADVECTION = 200;
-const float SLOWNESS_REVERSE_ADVECTION = 400;
+const float SLOWNESS_FORWARD_ADVECTION = 500;
+const float SLOWNESS_REVERSE_ADVECTION = 500;
+const float PRESSURE_SLOWNESS = 1000;
 const int METHOD_OF_DIVISION = 1;
 const bool FORWARD_ADVECTION = true;
-const bool REVERSE_ADVECTION = false;
+const bool REVERSE_ADVECTION = true;
+const bool PRESSURE = true;
 
 SimulationField::SimulationField(int width, int height) :
     Field(width, height)
@@ -50,6 +52,9 @@ bool SimulationField::simulateNextStep(int deltaTime)
         delete mLastSmokeDensity;
         delete mLastHorizontalVelocity;
         delete mLastVerticalVelocity;
+    }
+    if(PRESSURE) {
+        this->simulatePressureResult(deltaTime);
     }
     return true;
 }
@@ -178,36 +183,53 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                 float smokeDensityValue = this->mLastSmokeDensity->get(sX, sY) * askedPercentage;
                 float horVelValue = this->mLastHorizontalVelocity->get(sX, sY) * askedPercentage;
                 float verVelValue = this->mLastVerticalVelocity->get(sX, sY) * askedPercentage;
-                // TODO: remove debug code
-                if(isinf(smokeDensityValue)) {
-                    printf("Debug error");
-                }
-                // TODO: remove debug code
-                if(smokeDensityValue < 0) {
-                    printf("Debug error");
-                }
+                Q_ASSERT(!isinf(smokeDensityValue));
+                Q_ASSERT(smokeDensityValue >= 0);
                 this->mDensity->add(sX, sY, -densityValue);
                 this->mDensity->add(x, y, densityValue);
                 this->mSmokeDensity->add(sX, sY, -smokeDensityValue);
                 this->mSmokeDensity->add(x, y, smokeDensityValue);
-                // TODO: remove debug code
-                if(isinf(this->mSmokeDensity->get(x, y))) {
-                    printf("Debug error");
-                }
-                // TODO: remove debug code
-                if(this->mSmokeDensity->get(sX, sY) < -0.001) {
-                    printf("Debug error");
-                }
+                Q_ASSERT(!isinf(this->mSmokeDensity->get(x, y)));
+                Q_ASSERT(this->mSmokeDensity->get(sX, sY) > -0.001);
                 // FIXME: there should be a better solution
                 if(this->mSmokeDensity->get(sX, sY) < 0) {
                     this->mSmokeDensity->set(sX, sY, 0);
                 }
-                // TODO: add code to advect the velocity in reverse
+                // NOTE: not sure if velocity should be pulled or pushed backwards
                 this->mHorizontalVelocity->add(sX, sY, -horVelValue);
                 this->mHorizontalVelocity->add(x, y, horVelValue);
                 this->mVerticalVelocity->add(sX, sY, -verVelValue);
                 this->mVerticalVelocity->add(x, y, verVelValue);
             }
+        }
+    }
+}
+
+/**
+ * Add velocities to the field so points with higher density will move
+ * to points with a lower density.
+ * @brief SimulationField::simulatePressureResult
+ * @param deltaTime
+ */
+void SimulationField::simulatePressureResult(int deltaTime)
+{
+    for(int x = 0; x < this->simWidth; ++x) {
+        for(int y = 0; y < this->simHeight; ++y) {
+            float localDensity = this->mDensity->get(x, y);
+            float forceX = 0;
+            float forceY = 0;
+            if(x + 1 < this->simWidth) {
+                forceX = localDensity - this->mDensity->get(x+1, y);
+            }
+            if(y + 1 < this->simHeight) {
+                forceY = localDensity - this->mDensity->get(x, y+1);
+            }
+            float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
+            float velY = forceY * deltaTime / PRESSURE_SLOWNESS;
+            this->mHorizontalVelocity->add(x, y, velX);
+            this->mHorizontalVelocity->add(x+1, y, velX);
+            this->mVerticalVelocity->add(x, y, velY);
+            this->mVerticalVelocity->add(x, y+1, velY);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 #include <QDateTime>
 
-const float INIT_POWER = 1;
+const float INIT_POWER = 10;
 const int INIT_MANIPULATION_AREA = 1;
 
 SimulationFieldController::SimulationFieldController(Field* field) :

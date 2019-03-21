@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>521</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,27 +29,71 @@
      <height>0</height>
     </size>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
+   <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
       <item>
-       <widget class="QCheckBox" name="velocityToggle">
-        <property name="text">
-         <string>toggle velocity</string>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Visuals</string>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinimumSize</enum>
+         </property>
+         <item alignment="Qt::AlignLeft|Qt::AlignTop">
+          <widget class="QCheckBox" name="velocityToggle">
+           <property name="text">
+            <string>velocity</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>simulation settings</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
+         <item alignment="Qt::AlignTop">
+          <widget class="QCheckBox" name="checkBox">
+           <property name="text">
+            <string>forward advection</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignTop">
+          <widget class="QCheckBox" name="checkBox_2">
+           <property name="text">
+            <string>reverse advection</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignTop">
+          <widget class="QCheckBox" name="checkBox_3">
+           <property name="text">
+            <string>pressure flattening</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
     </item>
     <item>
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
       <property name="spacing">
        <number>6</number>
       </property>
@@ -57,64 +101,68 @@
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <item>
-       <widget class="QLabel" name="topInfo">
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
+        <item>
+         <widget class="QLabel" name="topInfo">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>fps: 0.00</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="clickedPosViewer">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Left: (0, 0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="rightClickedPosViewer">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Right: (0, 0)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="SimulationViewer" name="simulationVisualisator">
         <property name="text">
-         <string>fps: 0.00</string>
+         <string>Image</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
         </property>
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item alignment="Qt::AlignLeft">
-       <widget class="QLabel" name="clickedPosViewer">
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Left: (0, 0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item alignment="Qt::AlignLeft">
-       <widget class="QLabel" name="rightClickedPosViewer">
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Right: (0, 0)</string>
-        </property>
        </widget>
       </item>
      </layout>
-    </item>
-    <item>
-     <widget class="SimulationViewer" name="simulationVisualisator">
-      <property name="text">
-       <string>Image</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>
