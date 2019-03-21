@@ -2,6 +2,7 @@
 #include <QtMath>
 #include <QPainter>
 #include <math.h>
+#include <unistd.h>
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
 const int VEL_VECTOR_SPARSENESS = 1;
@@ -68,7 +69,6 @@ void RenderEngine::renderSmoke(QImage *image, Field* field)
                 image->setPixelColor(x, y, color);
             } else {
                 image->setPixelColor(x, y, QColor(0, 255, 0));
-                //throw std::exception();
             }
         }
     }
@@ -97,7 +97,6 @@ void RenderEngine::renderVelocity(QImage *image, Field *field)
             painter->drawLine(baseX, baseY, endX, endY);
         }
     }
-
     painter->end();
 }
 

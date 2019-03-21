@@ -4,9 +4,9 @@
 #include <QtMath>
 #include <math.h>
 
-const float SLOWNESS_FORWARD_ADVECTION = 500;
-const float SLOWNESS_REVERSE_ADVECTION = 500;
-const float PRESSURE_SLOWNESS = 1000;
+const float SLOWNESS_FORWARD_ADVECTION = 50;
+const float SLOWNESS_REVERSE_ADVECTION = 100;
+const float PRESSURE_SLOWNESS = 5000;
 const int METHOD_OF_DIVISION = 1;
 const bool FORWARD_ADVECTION = true;
 const bool REVERSE_ADVECTION = true;
@@ -56,6 +56,8 @@ bool SimulationField::simulateNextStep(int deltaTime)
     if(PRESSURE) {
         this->simulatePressureResult(deltaTime);
     }
+
+    this->testValidity();
     return true;
 }
 
@@ -93,8 +95,8 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             int nTargets = this->calcGradientPoints(targetX, targetY, targetPercentage, x+(sourceHorVel*deltaTime/SLOWNESS_FORWARD_ADVECTION), y+(sourceVerVel*deltaTime/SLOWNESS_FORWARD_ADVECTION));
 
             if(nTargets == 0) {
-                this->mDensity->set(x, y, 0);
-                this->mSmokeDensity->set(x, y, 0);
+                //this->mDensity->set(x, y, 0);
+                //this->mSmokeDensity->set(x, y, 0);
                 this->mHorizontalVelocity->set(x, y, 0);
                 this->mVerticalVelocity->set(x, y, 0);
                 continue;
@@ -430,4 +432,20 @@ int SimulationField::calcGradientPointsDivideByDistance(int xCoords[], int yCoor
     }
 
     return nSurroundingPoints;
+}
+
+/**
+ * Do a lot of tests on the field to check if everything is still right
+ * @brief SimulationField::testValidity
+ * @return
+ */
+bool SimulationField::testValidity()
+{
+    float sumOfDensities = 0;
+    for(int x = 0; x < this->simWidth; ++x) {
+        for(int y = 0; y < this->simHeight; ++y) {
+            sumOfDensities += this->mDensity->get(x, y);
+        }
+    }
+    Q_ASSERT(qAbs(sumOfDensities - this->simWidth*this->simHeight) < 1);
 }
