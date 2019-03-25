@@ -64,6 +64,7 @@ void MainWindow::init()
     // init and start the looper
     Looper* looper = new Looper(simField, renderEngine);
     connect(looper, &Looper::FieldUpdated, this, &MainWindow::updateSimulationVisualisation);
+    connect(ui->pauseButton, &QPushButton::released, looper, &Looper::toggleRunning);
     looper->start();
 }
 

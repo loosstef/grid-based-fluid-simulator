@@ -3,6 +3,7 @@
 #include <QThread>
 #include <QPixmap>
 #include <QImage>
+#include <QMutex>
 #include "simulationviewer.h"
 #include "field.h"
 #include "painttool.h"
@@ -22,6 +23,10 @@ signals:
 private:
     SimulationField* mSimField;
     RenderEngine* mRenderEngine;
+    bool running = true;
+    QMutex runLock;
+public slots:
+    void toggleRunning();
 };
 
 #endif // LOOPER_H

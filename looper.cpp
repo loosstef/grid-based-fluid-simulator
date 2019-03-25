@@ -18,14 +18,28 @@ Looper::Looper(SimulationField* simField, RenderEngine* renderEngine, QObject* p
 
 }
 
+void Looper::toggleRunning()
+{
+    if(this->running) {
+        this->runLock.lock();
+        this->running = false;
+    } else {
+        this->runLock.unlock();
+        this->running = true;
+    }
+}
+
 void Looper::run() {
     // init data
     qint64 timer = QDateTime::currentMSecsSinceEpoch();
 
     // start loop
     while(true) {
-        qint64 deltaTime = QDateTime::currentMSecsSinceEpoch() - timer;
-        this->mSimField->simulateNextStep(deltaTime);
+        if(this->runLock.tryLock()) {
+            this->runLock.unlock();
+            qint64 deltaTime = QDateTime::currentMSecsSinceEpoch() - timer;
+            this->mSimField->simulateNextStep(deltaTime);
+        }
         timer = QDateTime::currentMSecsSinceEpoch();
         QImage* renderedImage = this->mRenderEngine->render(this->mSimField);
         emit FieldUpdated(renderedImage);
