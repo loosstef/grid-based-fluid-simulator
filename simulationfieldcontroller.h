@@ -5,7 +5,8 @@
 #include "field.h"
 #include "velocitymanipulator.h"
 #include "simulationviewer.h"
-#include "simulationfield.h"
+
+class SimulationField;
 
 class SimulationFieldController : public QObject
 {

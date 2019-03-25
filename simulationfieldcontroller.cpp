@@ -5,8 +5,8 @@
 const float INIT_POWER = 10;
 const int INIT_MANIPULATION_AREA = 1;
 
-SimulationFieldController::SimulationFieldController(Field* field) :
-    mVelocityManipulator(field)
+SimulationFieldController::SimulationFieldController(SimulationField* field) :
+    mVelocityManipulator((Field*)field)
 {
     mVelocityManipulator.setPower(INIT_POWER);
     mVelocityManipulator.setManipulationArea(INIT_MANIPULATION_AREA);
