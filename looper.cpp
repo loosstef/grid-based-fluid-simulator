@@ -1,6 +1,7 @@
 #include "looper.h"
 #include <QDateTime>
 #include "renderengine.h"
+#include "simulationfield.h"
 
 const int MAX_FPS_COUNT = 500;
 

@@ -44,7 +44,8 @@ void MainWindow::init()
     ui->simulationVisualisator->setSize(FIELD_WIDTH, FIELD_HEIGHT, VIEWER_WIDTH, VIEWER_HEIGHT);
 
     SimulationFieldController* simViewConnector = simField->getController();
-    simViewConnector->connectToView(ui->simulationVisualisator);
+    simViewConnector->connectToViewer(ui->simulationVisualisator);
+    simViewConnector->connectToSimSettingsCheckboxes(ui->forwardAdvectionToggle, ui->reverseAdvectionToggle, ui->pressureToggle);
 
     // connect model and GUI
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, this, &MainWindow::clicked);

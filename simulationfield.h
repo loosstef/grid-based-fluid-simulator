@@ -1,14 +1,16 @@
 #ifndef SIMULATIONFIELD_H
 #define SIMULATIONFIELD_H
 
+#include <QObject>
 #include "field.h"
 #include "simulationfieldcontroller.h"
 
 
 class SimulationField : public Field
 {
+    Q_OBJECT
 public:
-    SimulationField(int width, int height);
+    SimulationField(int width, int height, QObject* parent = nullptr);
     bool simulateNextStep(int deltaTime);
     SimulationFieldController *getController();
 private:

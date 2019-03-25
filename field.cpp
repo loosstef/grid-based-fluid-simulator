@@ -4,7 +4,8 @@
 #include <cstdlib>
 #include <QtMath>
 
-Field::Field(int simWidth, int simHeight) :
+Field::Field(int simWidth, int simHeight, QObject* parent) :
+    QObject(parent),
     simWidth(simWidth), simHeight(simHeight)
 {
     this->mDensity = new Grid(simWidth, simHeight, 1);

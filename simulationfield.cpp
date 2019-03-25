@@ -6,11 +6,11 @@
 
 const float SLOWNESS_FORWARD_ADVECTION = 50;
 const float SLOWNESS_REVERSE_ADVECTION = 100;
-const float PRESSURE_SLOWNESS = 100;
+const float PRESSURE_SLOWNESS = 10;
 const int METHOD_OF_DIVISION = 1;
 
-SimulationField::SimulationField(int width, int height) :
-    Field(width, height)
+SimulationField::SimulationField(int width, int height, QObject* parent) :
+    Field(width, height, parent)
 {
 
 }

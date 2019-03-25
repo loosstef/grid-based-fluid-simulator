@@ -3,11 +3,12 @@
 
 #include "grid.h"
 #include <QPixmap>
+#include <QObject>
 
-class Field
+class Field : public QObject
 {
 public:
-    Field(int simWidth, int simHeight);
+    Field(int simWidth, int simHeight, QObject* parent = nullptr);
     ~Field();
     Grid* getDensityGrid() {return mDensity;}
     Grid* getSmokeDensityGrid() {return mSmokeDensity;}
