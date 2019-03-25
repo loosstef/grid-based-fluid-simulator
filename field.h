@@ -4,6 +4,7 @@
 #include "grid.h"
 #include <QPixmap>
 #include <QObject>
+#include <QMutex>
 
 class Field : public QObject
 {
@@ -16,6 +17,7 @@ public:
     Grid* getVerticalVelocity() {return mVerticalVelocity;}
     int getWidth() {return this->simWidth;}
     int getHeight() {return this->simHeight;}
+    void reset();
 protected:
     int simWidth;
     int simHeight;
@@ -23,6 +25,7 @@ protected:
     Grid* mSmokeDensity;
     Grid* mHorizontalVelocity;
     Grid* mVerticalVelocity;
+    QMutex baseLock;
 };
 
 #endif // FIELD_H

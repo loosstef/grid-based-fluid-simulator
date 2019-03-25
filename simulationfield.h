@@ -2,6 +2,7 @@
 #define SIMULATIONFIELD_H
 
 #include <QObject>
+#include <QMutex>
 #include "field.h"
 #include "simulationfieldcontroller.h"
 
@@ -29,6 +30,7 @@ private:
     bool mForwardAdvection = true;
     bool mReverseAdvection = true;
     bool mPressure = true;
+
 public slots:
     void toggleSimulationOfFowardAdvection(bool val) {this->mForwardAdvection = val;}
     void toggleSimulationOfReverseAdvection(bool val) {this->mReverseAdvection = val;}

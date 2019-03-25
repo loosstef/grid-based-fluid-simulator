@@ -10,9 +10,7 @@ Grid::Grid(int width, int height, float initValue):
     width(width), height(height)
 {
     this->values = new float[width*height];
-    for(int i = 0; i < width*height; ++i) {
-        this->values[i] = initValue;
-    }
+    this->reset(initValue);
 }
 
 Grid::Grid(Grid *grid)
@@ -76,5 +74,12 @@ bool Grid::add(int x, int y, float value)
         return true;
     } else {
         return false;
+    }
+}
+
+void Grid::reset(float val)
+{
+    for(int i = 0; i < this->width * this->height; ++i) {
+        this->values[i] = val;
     }
 }

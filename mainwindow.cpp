@@ -46,6 +46,7 @@ void MainWindow::init()
     SimulationFieldController* simViewConnector = simField->getController();
     simViewConnector->connectToViewer(ui->simulationVisualisator);
     simViewConnector->connectToSimSettingsCheckboxes(ui->forwardAdvectionToggle, ui->reverseAdvectionToggle, ui->pressureToggle);
+    simViewConnector->connectToResetButton(ui->resetButton);
 
     // connect model and GUI
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, this, &MainWindow::clicked);

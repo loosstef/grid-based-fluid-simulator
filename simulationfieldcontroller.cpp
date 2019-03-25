@@ -33,6 +33,11 @@ void SimulationFieldController::connectToSimSettingsCheckboxes(QCheckBox *forwar
     connect(pressureToggle, &QCheckBox::toggled, mSimField, &SimulationField::toggleSimulationOfPressure);
 }
 
+void SimulationFieldController::connectToResetButton(QPushButton *resetBtn)
+{
+    connect(resetBtn, &QPushButton::released, mSimField, &SimulationField::reset);
+}
+
 void SimulationFieldController::rightMouseClick(int simX, int simY, int viewX, int viewY)
 {
     this->mLastSimX = simX;
@@ -54,10 +59,4 @@ void SimulationFieldController::rightMouseMove(int simX, int simY, int viewX, in
     this->mLastViewX = viewX;
     this->mLastViewY = viewY;
     this->mTimer = QDateTime::currentMSecsSinceEpoch();
-}
-
-// TODO: remove
-void SimulationFieldController::test(bool val)
-{
-    printf("Test");
 }

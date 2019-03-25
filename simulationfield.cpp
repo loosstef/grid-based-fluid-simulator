@@ -6,7 +6,7 @@
 
 const float SLOWNESS_FORWARD_ADVECTION = 50;
 const float SLOWNESS_REVERSE_ADVECTION = 100;
-const float PRESSURE_SLOWNESS = 10;
+const float PRESSURE_SLOWNESS = 500;
 const int METHOD_OF_DIVISION = 1;
 
 SimulationField::SimulationField(int width, int height, QObject* parent) :
@@ -24,6 +24,7 @@ SimulationField::SimulationField(int width, int height, QObject* parent) :
  */
 bool SimulationField::simulateNextStep(int deltaTime)
 {
+    this->baseLock.lock();
     if(this->mForwardAdvection) {
         this->mLastDensity = new Grid(this->mDensity);
         this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
@@ -55,6 +56,7 @@ bool SimulationField::simulateNextStep(int deltaTime)
     }
 
     this->testValidity();
+    this->baseLock.unlock();
     return true;
 }
 

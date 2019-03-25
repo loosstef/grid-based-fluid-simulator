@@ -21,3 +21,17 @@ Field::~Field()
     delete this->mHorizontalVelocity;
     delete this->mVerticalVelocity;
 }
+
+/**
+ * Reset the whole field, start again from nothing
+ * @brief Field::reset
+ */
+void Field::reset()
+{
+    this->baseLock.lock();
+    this->mDensity->reset(1);
+    this->mSmokeDensity->reset(0);
+    this->mHorizontalVelocity->reset(0);
+    this->mVerticalVelocity->reset(0);
+    this->baseLock.unlock();
+}

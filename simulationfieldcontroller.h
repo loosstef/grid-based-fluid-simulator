@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QCheckBox>
+#include <QPushButton>
 #include "field.h"
 #include "velocitymanipulator.h"
 #include "simulationviewer.h"
@@ -16,6 +17,7 @@ public:
     SimulationFieldController(SimulationField* field, QObject* parent = nullptr);
     void connectToViewer(SimulationViewer* simViewer);
     void connectToSimSettingsCheckboxes(QCheckBox* forwardAdvectionToggle, QCheckBox* reverseAdvectionToggle, QCheckBox* pressureToggle);
+    void connectToResetButton(QPushButton* resetBtn);
 private:
     VelocityManipulator mVelocityManipulator;
     SimulationField* mSimField;
@@ -27,7 +29,6 @@ private:
 public slots:
     void rightMouseClick(int simX, int simY, int viewX, int viewY);
     void rightMouseMove(int simX, int simY, int viewX, int viewY);
-    void test(bool val);
 };
 
 #endif // SIMULATIONFIELDCONTROLLER_H
