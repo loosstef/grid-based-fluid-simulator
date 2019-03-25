@@ -38,6 +38,11 @@ void SimulationFieldController::connectToResetButton(QPushButton *resetBtn)
     connect(resetBtn, &QPushButton::released, mSimField, &SimulationField::reset);
 }
 
+void SimulationFieldController::connectEdgeCaseSelector(QComboBox *edgeCaseSelector)
+{
+    connect(edgeCaseSelector, qOverload<int>(&QComboBox::currentIndexChanged), this, &SimulationFieldController::edgeCaseChanged);
+}
+
 void SimulationFieldController::rightMouseClick(int simX, int simY, int viewX, int viewY)
 {
     this->mLastSimX = simX;
@@ -59,4 +64,10 @@ void SimulationFieldController::rightMouseMove(int simX, int simY, int viewX, in
     this->mLastViewX = viewX;
     this->mLastViewY = viewY;
     this->mTimer = QDateTime::currentMSecsSinceEpoch();
+}
+
+void SimulationFieldController::edgeCaseChanged(int index)
+{
+    EdgeCaseMethod method = (EdgeCaseMethod) index;
+    this->mSimField->changeEdgeCaseMethod(method);
 }

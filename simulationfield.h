@@ -6,6 +6,7 @@
 #include "field.h"
 #include "simulationfieldcontroller.h"
 
+enum EdgeCaseMethod {reflect, wrap, block};
 
 class SimulationField : public Field
 {
@@ -30,11 +31,13 @@ private:
     bool mForwardAdvection = true;
     bool mReverseAdvection = true;
     bool mPressure = true;
+    EdgeCaseMethod mEdgeCaseMethod = reflect;
 
 public slots:
     void toggleSimulationOfFowardAdvection(bool val) {this->mForwardAdvection = val;}
     void toggleSimulationOfReverseAdvection(bool val) {this->mReverseAdvection = val;}
     void toggleSimulationOfPressure(bool val) {this->mPressure = val;}
+    void changeEdgeCaseMethod(EdgeCaseMethod edgeCaseMethod) {this->mEdgeCaseMethod = edgeCaseMethod;}
 };
 
 #endif // SIMULATIONFIELD_H

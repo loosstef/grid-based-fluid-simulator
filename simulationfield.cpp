@@ -292,6 +292,14 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
 
 int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[], float percentages[], float x, float y)
 {
+    if(this->mEdgeCaseMethod == reflect) {
+        if(x > this->simWidth) {
+            x = (2 * this->simWidth) - x;
+        }
+        if(y > this->simHeight) {
+            y = (2 * this->simHeight) - y;
+        }
+    }
     int leftMostCoord = qFloor(x);
     int rightMostCoord = leftMostCoord + 1;
     int upperMostCoord = qFloor(y);
@@ -305,16 +313,18 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
     float percentageCD = 0;
     int index = 0;
 
-    if(lowerMostCoord < 0 || upperMostCoord >= this->simHeight) {
-        return 0;
-    }
-    if(rightMostCoord < 0 || leftMostCoord >= this->simWidth) {
-        return 0;
+    if(this->mEdgeCaseMethod == block) {
+        if(lowerMostCoord < 0 || upperMostCoord >= this->simHeight) {
+            return 0;
+        }
+        if(rightMostCoord < 0 || leftMostCoord >= this->simWidth) {
+            return 0;
+        }
     }
 
-    if(upperMostCoord < 0) {
+    if(upperMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
         percentageCD = 1;
-    } else if (lowerMostCoord >= this->simHeight) {
+    } else if (lowerMostCoord >= this->simHeight && this->mEdgeCaseMethod != wrap) {
         percentageAB = 1;
     } else {
         percentageAB = 1 - (y - upperMostCoord);
@@ -322,46 +332,46 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
     }
 
     if(percentageAB != 0) {
-        if(leftMostCoord < 0) {
+        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
             ++index;
-        } else if (rightMostCoord >= this->simWidth) {
+        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
             ++index;
         } else {
-            xCoords[index] = leftMostCoord;
-            yCoords[index] = upperMostCoord;
+            xCoords[index] = (leftMostCoord + this->simWidth)%this->simWidth;
+            yCoords[index] = (upperMostCoord + this->simHeight)%this->simHeight;
             percentages[index] = percentageAB * (1 - (x - leftMostCoord));
             ++index;
-            xCoords[index] = rightMostCoord;
-            yCoords[index] = upperMostCoord;
+            xCoords[index] = (rightMostCoord + this->simWidth)%this->simWidth;
+            yCoords[index] = (upperMostCoord + this->simHeight)%this->simHeight;
             percentages[index] = percentageAB * (x - leftMostCoord);
             ++index;
         }
     }
 
     if(percentageCD != 0) {
-        if(leftMostCoord < 0) {
+        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
             ++index;
-        } else if (rightMostCoord >= this->simWidth) {
+        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
             ++index;
         } else {
-            xCoords[index] = leftMostCoord;
-            yCoords[index] = lowerMostCoord;
+            xCoords[index] = (leftMostCoord + this->simWidth)%this->simWidth;
+            yCoords[index] = (lowerMostCoord + this->simHeight)%this->simHeight;
             percentages[index] = percentageCD * (1 - (x - leftMostCoord));
             ++index;
-            xCoords[index] = rightMostCoord;
-            yCoords[index] = lowerMostCoord;
+            xCoords[index] = (rightMostCoord + this->simWidth)%this->simWidth;
+            yCoords[index] = (lowerMostCoord + this->simHeight)%this->simHeight;
             percentages[index] = percentageCD * (x - leftMostCoord);
             ++index;
         }

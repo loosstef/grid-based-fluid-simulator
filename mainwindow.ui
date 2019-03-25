@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
+    <width>532</width>
     <height>500</height>
    </rect>
   </property>
@@ -31,7 +31,7 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
       <item>
        <widget class="QGroupBox" name="horizontalGroupBox">
         <property name="title">
@@ -79,7 +79,19 @@
         <property name="title">
          <string>simulation settings</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
+        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,1">
+         <item alignment="Qt::AlignTop">
+          <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <underline>false</underline>
+            </font>
+           </property>
+           <property name="text">
+            <string>Pipeline</string>
+           </property>
+          </widget>
+         </item>
          <item alignment="Qt::AlignTop">
           <widget class="QCheckBox" name="forwardAdvectionToggle">
            <property name="text">
@@ -108,6 +120,44 @@
            <property name="checked">
             <bool>true</bool>
            </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignTop">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignTop">
+          <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <underline>false</underline>
+            </font>
+           </property>
+           <property name="text">
+            <string>edge case</string>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignTop">
+          <widget class="QComboBox" name="edgeCaseSelector">
+           <item>
+            <property name="text">
+             <string>Reflect</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>wrap</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>block</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>
