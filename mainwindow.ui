@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>521</width>
+    <width>522</width>
     <height>500</height>
    </rect>
   </property>
@@ -31,7 +31,30 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
+      <item>
+       <widget class="QGroupBox" name="horizontalGroupBox">
+        <property name="title">
+         <string>time settings</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="resetButton">
+           <property name="text">
+            <string>Reset</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pauseButton">
+           <property name="text">
+            <string>Pause</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
       <item>
        <widget class="QGroupBox" name="groupBox">
         <property name="title">
@@ -58,7 +81,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
          <item alignment="Qt::AlignTop">
-          <widget class="QCheckBox" name="checkBox">
+          <widget class="QCheckBox" name="forwardAdvectionToggle">
            <property name="text">
             <string>forward advection</string>
            </property>
@@ -68,7 +91,7 @@
           </widget>
          </item>
          <item alignment="Qt::AlignTop">
-          <widget class="QCheckBox" name="checkBox_2">
+          <widget class="QCheckBox" name="reverseAdvectionToggle">
            <property name="text">
             <string>reverse advection</string>
            </property>
@@ -78,7 +101,7 @@
           </widget>
          </item>
          <item alignment="Qt::AlignTop">
-          <widget class="QCheckBox" name="checkBox_3">
+          <widget class="QCheckBox" name="pressureToggle">
            <property name="text">
             <string>pressure flattening</string>
            </property>

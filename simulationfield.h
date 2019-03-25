@@ -24,10 +24,13 @@ private:
     Grid* mLastSmokeDensity;
     Grid* mLastHorizontalVelocity;
     Grid* mLastVerticalVelocity;
-
-    bool mSimulateForwardAdvection = true;
+    bool mForwardAdvection = true;
+    bool mReverseAdvection = true;
+    bool mPressure = true;
 public slots:
-    void toggleSimulationOfFowardAdvection(bool val) {this->mSimulateForwardAdvection = val;}
+    void toggleSimulationOfFowardAdvection(bool val) {this->mForwardAdvection = val;}
+    void toggleSimulationOfReverseAdvection(bool val) {this->mReverseAdvection = val;}
+    void toggleSimulationOfPressure(bool val) {this->mPressure = val;}
 };
 
 #endif // SIMULATIONFIELD_H

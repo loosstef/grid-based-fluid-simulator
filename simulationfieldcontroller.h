@@ -5,12 +5,13 @@
 #include "field.h"
 #include "velocitymanipulator.h"
 #include "simulationviewer.h"
+#include "simulationfield.h"
 
 class SimulationFieldController : public QObject
 {
     Q_OBJECT
 public:
-    SimulationFieldController(Field* field);
+    SimulationFieldController(SimulationField* field);
     void connectToView(SimulationViewer* simViewer);
 private:
     VelocityManipulator mVelocityManipulator;

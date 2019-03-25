@@ -6,11 +6,8 @@
 
 const float SLOWNESS_FORWARD_ADVECTION = 50;
 const float SLOWNESS_REVERSE_ADVECTION = 100;
-const float PRESSURE_SLOWNESS = 5000;
+const float PRESSURE_SLOWNESS = 100;
 const int METHOD_OF_DIVISION = 1;
-const bool FORWARD_ADVECTION = true;
-const bool REVERSE_ADVECTION = true;
-const bool PRESSURE = true;
 
 SimulationField::SimulationField(int width, int height) :
     Field(width, height)
@@ -27,7 +24,7 @@ SimulationField::SimulationField(int width, int height) :
  */
 bool SimulationField::simulateNextStep(int deltaTime)
 {
-    if(FORWARD_ADVECTION) {
+    if(this->mForwardAdvection) {
         this->mLastDensity = new Grid(this->mDensity);
         this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
         this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
@@ -40,7 +37,7 @@ bool SimulationField::simulateNextStep(int deltaTime)
         delete this->mLastHorizontalVelocity;
         delete this->mLastVerticalVelocity;
     }
-    if(REVERSE_ADVECTION) {
+    if(this->mReverseAdvection) {
         this->mLastDensity = new Grid(this->mDensity);
         this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
         this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
@@ -53,7 +50,7 @@ bool SimulationField::simulateNextStep(int deltaTime)
         delete mLastHorizontalVelocity;
         delete mLastVerticalVelocity;
     }
-    if(PRESSURE) {
+    if(this->mPressure) {
         this->simulatePressureResult(deltaTime);
     }
 
