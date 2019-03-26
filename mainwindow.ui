@@ -145,11 +145,6 @@
           <widget class="QComboBox" name="edgeCaseSelector">
            <item>
             <property name="text">
-             <string>Reflect</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>wrap</string>
             </property>
            </item>

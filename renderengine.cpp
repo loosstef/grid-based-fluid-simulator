@@ -6,7 +6,7 @@
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
 const int VEL_VECTOR_SPARSENESS = 1;
-const int VEL_SCALE = 1;
+const int VEL_SCALE = 10;
 
 RenderEngine::RenderEngine(int width, int height, bool showVelocity) :
     mWidth(width), mHeight(height), mShowVelocity(showVelocity)

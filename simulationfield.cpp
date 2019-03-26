@@ -4,10 +4,12 @@
 #include <QtMath>
 #include <math.h>
 
-const float SLOWNESS_FORWARD_ADVECTION = 50000;
-const float SLOWNESS_REVERSE_ADVECTION = 100000;
-const float PRESSURE_SLOWNESS = 500000;
+const float SLOWNESS_FORWARD_ADVECTION = 50;
+const float SLOWNESS_REVERSE_ADVECTION = 10;
+const float PRESSURE_SLOWNESS = 5000;
 const int METHOD_OF_DIVISION = 1;
+
+// TODO: add or remove code for reflection
 
 SimulationField::SimulationField(int width, int height, QObject* parent) :
     Field(width, height, parent)
@@ -101,10 +103,6 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
 {
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simHeight; ++y) {
-            // TODO: remove debug code
-            if(x == 8 && y == 1 && this->mHorizontalVelocity->get(x, y) != 0) {
-                printf("debug breakpoint");
-            }
             // init data
             float sourceDensity = this->mLastDensity->get(x, y);
             float sourceSmokeDensity = this->mLastSmokeDensity->get(x, y);
@@ -315,20 +313,6 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
 
 int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[], float percentages[], float x, float y)
 {
-    if(this->mEdgeCaseMethod == reflect) {
-        if(x >= this->simWidth - 1) {
-            x = (2 * this->simWidth) - x - 2;
-        }
-        if(x < 0) {
-            x = -x;
-        }
-        if(y >= this->simHeight - 1) {
-            y = (2 * this->simHeight) - y - 2;
-        }
-        if(y < 0) {
-            y = -y;
-        }
-    }
     int leftMostCoord = qFloor(x);
     int rightMostCoord = leftMostCoord + 1;
     int upperMostCoord = qFloor(y);
@@ -351,9 +335,9 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
         }
     }
 
-    if(upperMostCoord < 0) {
+    if(upperMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
         percentageCD = 1;
-    } else if (lowerMostCoord >= this->simHeight) {
+    } else if (lowerMostCoord >= this->simHeight && this->mEdgeCaseMethod != wrap) {
         percentageAB = 1;
     } else {
         percentageAB = 1 - (y - upperMostCoord);
@@ -361,12 +345,12 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
     }
 
     if(percentageAB != 0) {
-        if(leftMostCoord < 0) {
+        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
             ++index;
-        } else if (rightMostCoord >= this->simWidth) {
+        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
@@ -384,12 +368,12 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
     }
 
     if(percentageCD != 0) {
-        if(leftMostCoord < 0) {
+        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
             ++index;
-        } else if (rightMostCoord >= this->simWidth) {
+        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
