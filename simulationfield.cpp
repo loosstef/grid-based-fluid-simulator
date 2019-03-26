@@ -4,9 +4,9 @@
 #include <QtMath>
 #include <math.h>
 
-const float SLOWNESS_FORWARD_ADVECTION = 50;
-const float SLOWNESS_REVERSE_ADVECTION = 100;
-const float PRESSURE_SLOWNESS = 500;
+const float SLOWNESS_FORWARD_ADVECTION = 50000;
+const float SLOWNESS_REVERSE_ADVECTION = 100000;
+const float PRESSURE_SLOWNESS = 500000;
 const int METHOD_OF_DIVISION = 1;
 
 SimulationField::SimulationField(int width, int height, QObject* parent) :
@@ -55,6 +55,26 @@ bool SimulationField::simulateNextStep(int deltaTime)
         this->simulatePressureResult(deltaTime);
     }
 
+    // remove outward pointing vectors when edge-block-mode is on
+    if(this->mEdgeCaseMethod == block) {
+        for(int x = 0; x < this->simWidth; ++x) {
+            if(this->mVerticalVelocity->get(x, 0) < 0) {
+                this->mVerticalVelocity->set(x, 0, 0);
+            }
+            if(this->mVerticalVelocity->get(x, this->simHeight-1) > 0) {
+                this->mVerticalVelocity->set(x, this->simHeight-1, 0);
+            }
+        }
+        for(int y = 0; y < this->simHeight; ++y) {
+            if(this->mHorizontalVelocity->get(0, y) < 0) {
+                this->mHorizontalVelocity->set(0, y, 0);
+            }
+            if(this->mHorizontalVelocity->get(this->simWidth-1, y) > 0) {
+                this->mHorizontalVelocity->set(this->simWidth-1, y, 0);
+            }
+        }
+    }
+
     this->testValidity();
     this->baseLock.unlock();
     return true;
@@ -81,6 +101,10 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
 {
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simHeight; ++y) {
+            // TODO: remove debug code
+            if(x == 8 && y == 1 && this->mHorizontalVelocity->get(x, y) != 0) {
+                printf("debug breakpoint");
+            }
             // init data
             float sourceDensity = this->mLastDensity->get(x, y);
             float sourceSmokeDensity = this->mLastSmokeDensity->get(x, y);
@@ -94,8 +118,6 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             int nTargets = this->calcGradientPoints(targetX, targetY, targetPercentage, x+(sourceHorVel*deltaTime/SLOWNESS_FORWARD_ADVECTION), y+(sourceVerVel*deltaTime/SLOWNESS_FORWARD_ADVECTION));
 
             if(nTargets == 0) {
-                //this->mDensity->set(x, y, 0);
-                //this->mSmokeDensity->set(x, y, 0);
                 this->mHorizontalVelocity->set(x, y, 0);
                 this->mVerticalVelocity->set(x, y, 0);
                 continue;
@@ -214,6 +236,7 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
  */
 void SimulationField::simulatePressureResult(int deltaTime)
 {
+    // TODO: add wrapping-conditions
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simHeight; ++y) {
             float localDensity = this->mDensity->get(x, y);
@@ -293,11 +316,17 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
 int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[], float percentages[], float x, float y)
 {
     if(this->mEdgeCaseMethod == reflect) {
-        if(x > this->simWidth) {
-            x = (2 * this->simWidth) - x;
+        if(x >= this->simWidth - 1) {
+            x = (2 * this->simWidth) - x - 2;
         }
-        if(y > this->simHeight) {
-            y = (2 * this->simHeight) - y;
+        if(x < 0) {
+            x = -x;
+        }
+        if(y >= this->simHeight - 1) {
+            y = (2 * this->simHeight) - y - 2;
+        }
+        if(y < 0) {
+            y = -y;
         }
     }
     int leftMostCoord = qFloor(x);
@@ -322,9 +351,9 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
         }
     }
 
-    if(upperMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
+    if(upperMostCoord < 0) {
         percentageCD = 1;
-    } else if (lowerMostCoord >= this->simHeight && this->mEdgeCaseMethod != wrap) {
+    } else if (lowerMostCoord >= this->simHeight) {
         percentageAB = 1;
     } else {
         percentageAB = 1 - (y - upperMostCoord);
@@ -332,12 +361,12 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
     }
 
     if(percentageAB != 0) {
-        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
+        if(leftMostCoord < 0) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
             ++index;
-        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap) {
+        } else if (rightMostCoord >= this->simWidth) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
@@ -355,12 +384,12 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
     }
 
     if(percentageCD != 0) {
-        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
+        if(leftMostCoord < 0) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
             ++index;
-        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap) {
+        } else if (rightMostCoord >= this->simWidth) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
@@ -441,6 +470,16 @@ int SimulationField::calcGradientPointsDivideByDistance(int xCoords[], int yCoor
     }
 
     return nSurroundingPoints;
+}
+
+bool SimulationField::outOfBoundX(float x)
+{
+    return x < 0 || x > this->simWidth - 1;
+}
+
+bool SimulationField::outOfBoundY(float y)
+{
+    return y < 0 || y > this->simHeight - 1;
 }
 
 /**

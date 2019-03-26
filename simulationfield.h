@@ -23,6 +23,8 @@ private:
     int calcGradientPoints(int xCoords[4], int yCoords[4], float percentages[4], float x, float y);
     int calcGradientPointsHorVerSplit(int xCoords[], int yCoords[], float percentages[], float x, float y);
     int calcGradientPointsDivideByDistance(int xCoords[], int yCoords[], float percentages[], float x, float y);
+    bool outOfBoundX(float x);
+    bool outOfBoundY(float y);
     bool testValidity();
     Grid* mLastDensity;
     Grid* mLastSmokeDensity;

@@ -6,7 +6,7 @@
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
 const int VEL_VECTOR_SPARSENESS = 1;
-const int VEL_SCALE = 10;
+const int VEL_SCALE = 1;
 
 RenderEngine::RenderEngine(int width, int height, bool showVelocity) :
     mWidth(width), mHeight(height), mShowVelocity(showVelocity)
@@ -88,10 +88,15 @@ void RenderEngine::renderVelocity(QImage *image, Field *field)
     Grid* horVel = field->getHorizontalVelocity();
     Grid* verVel = field->getVerticalVelocity();
 
+    float pixWidth = (float)this->mWidth / (float)field->getWidth();
+    float pixHeight = (float)this->mHeight / (float)field->getHeight();
+    int offSetX = (int)(pixWidth/2);
+    int offSetY = (int)(pixHeight/2);
+
     for(int x = 0; x < field->getWidth(); x += VEL_VECTOR_SPARSENESS) {
         for (int y = 0; y < field->getHeight(); y += VEL_VECTOR_SPARSENESS) {
-            int baseX = (int)x*((float)image->width()/(float)field->getWidth());
-            int baseY = (int)y*((float)image->height()/(float)field->getHeight());
+            int baseX = (int)x*((float)image->width()/(float)field->getWidth()) + offSetX;
+            int baseY = (int)y*((float)image->height()/(float)field->getHeight()) + offSetY;
             int endX = baseX+horVel->get(x, y)*VEL_SCALE;
             int endY = baseY+verVel->get(x, y)*VEL_SCALE;
             painter->drawLine(baseX, baseY, endX, endY);
