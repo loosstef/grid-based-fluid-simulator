@@ -8,6 +8,7 @@
 #include "simulationfieldcontroller.h"
 #include "renderengine.h"
 #include "renderenginecontroller.h"
+#include "painttoolcontroller.h"
 
 const int FIELD_WIDTH = 100;
 const int FIELD_HEIGHT = 100;
@@ -38,8 +39,10 @@ void MainWindow::init()
     // init model-objects
     SimulationField* simField = new SimulationField(FIELD_WIDTH, FIELD_HEIGHT);
     PaintTool* paintTool = new PaintTool(simField->getSmokeDensityGrid());
-    paintTool->setHardness(INIT_BRUSH_HARDNESS);
-    paintTool->setSize(INIT_BRUSH_SIZE);
+    PaintToolController* paintToolController = paintTool->getController();
+    paintToolController->connectToBrushSettings(ui->brushSize, ui->brushHardness);
+    ui->brushSize->setValue(INIT_BRUSH_SIZE);
+    ui->brushHardness->setValue(INIT_BRUSH_HARDNESS);
 
     ui->simulationVisualisator->setSize(FIELD_WIDTH, FIELD_HEIGHT, VIEWER_WIDTH, VIEWER_HEIGHT);
 

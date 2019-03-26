@@ -35,7 +35,8 @@ SOURCES += \
     renderengine.cpp \
     velocitymanipulator.cpp \
     simulationfieldcontroller.cpp \
-    renderenginecontroller.cpp
+    renderenginecontroller.cpp \
+    painttoolcontroller.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +50,8 @@ HEADERS += \
     velocitymanipulator.h \
     vector2D.h \
     simulationfieldcontroller.h \
-    renderenginecontroller.h
+    renderenginecontroller.h \
+    painttoolcontroller.h
 
 FORMS += \
         mainwindow.ui

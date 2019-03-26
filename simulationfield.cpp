@@ -5,8 +5,8 @@
 #include <math.h>
 
 const float SLOWNESS_FORWARD_ADVECTION = 50;
-const float SLOWNESS_REVERSE_ADVECTION = 10;
-const float PRESSURE_SLOWNESS = 5000;
+const float SLOWNESS_REVERSE_ADVECTION = 100;
+const float PRESSURE_SLOWNESS = 500;
 const int METHOD_OF_DIVISION = 1;
 
 // TODO: add or remove code for reflection

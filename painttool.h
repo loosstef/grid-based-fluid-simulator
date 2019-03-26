@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "grid.h"
+#include "painttoolcontroller.h"
 
 
 class PaintTool : public QObject
@@ -13,6 +14,7 @@ public:
     void setSize(int size) {this->mSize = size;}
     void setHardness(float hardness) {this->mHardness = hardness;}
     void setGrid(Grid* grid) {this->mGrid = grid;}
+    PaintToolController *getController();
 public slots:
     void drawPoint(int x, int y);
 private:

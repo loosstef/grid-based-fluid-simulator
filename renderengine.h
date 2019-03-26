@@ -19,6 +19,7 @@ private:
     int mWidth;
     int mHeight;
     bool mShowVelocity;
+
 public slots:
     void toggleShowVelocity(bool visible);
 };

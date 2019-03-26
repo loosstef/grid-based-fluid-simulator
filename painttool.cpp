@@ -5,6 +5,11 @@ PaintTool::PaintTool(Grid* grid) : mGrid(grid)
 
 }
 
+PaintToolController *PaintTool::getController()
+{
+    return new PaintToolController(this);
+}
+
 /**
  * Draw a point in a given grid
  * @brief PaintTool::drawPoint

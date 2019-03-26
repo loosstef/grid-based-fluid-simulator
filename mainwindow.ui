@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
+    <width>633</width>
     <height>500</height>
    </rect>
   </property>
@@ -31,11 +31,11 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
       <item>
        <widget class="QGroupBox" name="horizontalGroupBox">
         <property name="title">
-         <string>time settings</string>
+         <string>Time settings</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
@@ -60,16 +60,26 @@
         <property name="title">
          <string>Visuals</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
+        <layout class="QFormLayout" name="formLayout_2">
          <property name="sizeConstraint">
           <enum>QLayout::SetMinimumSize</enum>
          </property>
-         <item alignment="Qt::AlignLeft|Qt::AlignTop">
+         <item row="0" column="0">
           <widget class="QCheckBox" name="velocityToggle">
            <property name="text">
             <string>velocity</string>
            </property>
           </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>velocity size</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="velocitySize"/>
          </item>
         </layout>
        </widget>
@@ -153,6 +163,52 @@
              <string>block</string>
             </property>
            </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string>Brush</string>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>size</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QSpinBox" name="brushSize">
+           <property name="maximum">
+            <number>10000</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>hardness</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="brushHardness">
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::UpDownArrows</enum>
+           </property>
+           <property name="decimals">
+            <number>2</number>
+           </property>
+           <property name="maximum">
+            <double>10.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
           </widget>
          </item>
         </layout>
