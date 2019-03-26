@@ -13,9 +13,10 @@ RenderEngineController::RenderEngineController(RenderEngine* renderEngine) :
  * @brief RenderEngineController::connect
  * @param toggleVelocityCheckBox
  */
-void RenderEngineController::connectView(QCheckBox *toggleVelocityCheckBox)
+void RenderEngineController::connectView(QCheckBox *toggleVelocityCheckBox, QDoubleSpinBox* velocityScale)
 {
     connect(toggleVelocityCheckBox, &QCheckBox::stateChanged, this, &RenderEngineController::toggleVelocityVisibility);
+    connect(velocityScale, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RenderEngineController::changeVelocityScale);
 }
 
 void RenderEngineController::toggleVelocityVisibility(int state)
@@ -25,4 +26,9 @@ void RenderEngineController::toggleVelocityVisibility(int state)
     } else {
         this->mRenderEngine->toggleShowVelocity(true);
     }
+}
+
+void RenderEngineController::changeVelocityScale(double scale)
+{
+    this->mRenderEngine->setVelocityScale(scale);
 }

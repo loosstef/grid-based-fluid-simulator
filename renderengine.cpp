@@ -6,7 +6,6 @@
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
 const int VEL_VECTOR_SPARSENESS = 1;
-const float VEL_SCALE = 10;
 
 RenderEngine::RenderEngine(int width, int height, bool showVelocity) :
     mWidth(width), mHeight(height), mShowVelocity(showVelocity)
@@ -40,6 +39,11 @@ QImage* RenderEngine::render(Field *field)
 RenderEngineController *RenderEngine::getController()
 {
     return new RenderEngineController(this);
+}
+
+void RenderEngine::setVelocityScale(float velScale)
+{
+    this->mVelocityScale = velScale;
 }
 
 /**
@@ -97,8 +101,8 @@ void RenderEngine::renderVelocity(QImage *image, Field *field)
         for (int y = 0; y < field->getHeight(); y += VEL_VECTOR_SPARSENESS) {
             int baseX = (int)x*((float)image->width()/(float)field->getWidth()) + offSetX;
             int baseY = (int)y*((float)image->height()/(float)field->getHeight()) + offSetY;
-            int endX = baseX+horVel->get(x, y)*VEL_SCALE;
-            int endY = baseY+verVel->get(x, y)*VEL_SCALE;
+            int endX = baseX+horVel->get(x, y)*this->mVelocityScale;
+            int endY = baseY+verVel->get(x, y)*this->mVelocityScale;
             painter->drawLine(baseX, baseY, endX, endY);
         }
     }

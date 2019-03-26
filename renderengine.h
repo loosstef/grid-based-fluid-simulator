@@ -12,6 +12,7 @@ public:
     QImage* render(Field* field);
     void showVelocity(bool showVelocity) {this->mShowVelocity = showVelocity;}
     RenderEngineController *getController();
+    void setVelocityScale(float velScale);
 private:
     void renderSmoke(QImage* image, Field* field);
     void renderVelocity(QImage* image, Field* field);
@@ -19,7 +20,7 @@ private:
     int mWidth;
     int mHeight;
     bool mShowVelocity;
-
+    float mVelocityScale = 1;
 public slots:
     void toggleShowVelocity(bool visible);
 };
