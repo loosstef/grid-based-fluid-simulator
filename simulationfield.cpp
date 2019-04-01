@@ -158,11 +158,11 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
  */
 void SimulationField::simulateReverseAdvection(int deltaTime)
 {
-    int nSources[this->simWidth * this->simHeight];
-    int sourceX[this->simWidth * this->simHeight][4];
-    int sourceY[this->simWidth * this->simHeight][4];
-    float sourcePercentage[this->simWidth * this->simHeight][4];
-    float totalAskedPercentages[this->simWidth * this->simHeight];
+    int* nSources = new int[this->simWidth * this->simHeight];
+    int (*sourceX)[4] = new int[this->simWidth * this->simHeight][4];
+    int (*sourceY)[4] = new int[this->simWidth * this->simHeight ][4];
+    float (*sourcePercentage)[4] = new float[this->simWidth * this->simHeight][4];
+    float* totalAskedPercentages = new float[this->simWidth * this->simHeight];
 
     for(int i = 0; i < this->simWidth * this->simHeight; ++i) {
         totalAskedPercentages[i] = 0;
@@ -225,6 +225,10 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
             }
         }
     }
+
+    delete sourceX;
+    delete sourceY;
+    delete sourcePercentage;
 }
 
 /**

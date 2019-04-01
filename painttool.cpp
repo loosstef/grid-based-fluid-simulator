@@ -25,8 +25,7 @@ void PaintTool::drawPoint(int x, int y)
     int maxYBound = minYBound + this->mSize;
     for(int drawX = minXBound; drawX < maxXBound; ++drawX ) {
         for(int drawY = minYBound; drawY < maxYBound; ++drawY) {
-            float density = this->mGrid->get(drawX, drawY);
-            this->mGrid->set(drawX, drawY, density + this->mHardness);
+            this->mGrid->add(drawX, drawY, this->mHardness);
         }
     }
 }

@@ -67,6 +67,11 @@ bool Grid::set(int x, int y, float value)
     }
 }
 
+void Grid::set(float *values)
+{
+    this->values = values;
+}
+
 /**
  * Add a value to the value of a point in this grid
  * @brief Grid::add

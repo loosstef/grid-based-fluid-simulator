@@ -18,6 +18,7 @@ public:
     float *getRaw() {return this->values;}
     int getSize() {return width*height;}
     bool set(int x, int y, float value);
+    void set(float* values);
     bool add(int x, int y, float value);
     void reset(float val);
 private:

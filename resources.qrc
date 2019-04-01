@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/opencl">
-        <file>copy_array.cl</file>
+        <file>simulation_steps.cl</file>
     </qresource>
 </RCC>

@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += opengl
 LIBS     += -lOpenCL
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -65,7 +66,7 @@ FORMS += \
         mainwindow.ui
 
 DISTFILES += \
-    copy_array.cl
+    simulation_steps.cl
 
 RESOURCES += \
     resources.qrc
