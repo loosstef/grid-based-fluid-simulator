@@ -3,10 +3,11 @@
 #include <cstdlib>
 #include <QtMath>
 #include <math.h>
+#include "gpucontroller.h"
 
 const float SLOWNESS_FORWARD_ADVECTION = 50;
 const float SLOWNESS_REVERSE_ADVECTION = 100;
-const float PRESSURE_SLOWNESS = 500;
+const float PRESSURE_SLOWNESS = 1000;
 const int METHOD_OF_DIVISION = 1;
 
 // TODO: add or remove code for reflection
@@ -28,10 +29,10 @@ bool SimulationField::simulateNextStep(int deltaTime)
 {
     this->baseLock.lock();
     if(this->mForwardAdvection) {
-        this->mLastDensity = new Grid(this->mDensity);
-        this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
-        this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
-        this->mLastVerticalVelocity = new Grid(this->mVerticalVelocity);
+        this->mLastDensity = new Grid(mDensity);
+        this->mLastSmokeDensity = new Grid(mSmokeDensity);
+        this->mLastHorizontalVelocity = new Grid(mHorizontalVelocity);
+        this->mLastVerticalVelocity = new Grid(mVerticalVelocity);
 
         this->simulateForwardAdvection(deltaTime);
 
@@ -41,10 +42,10 @@ bool SimulationField::simulateNextStep(int deltaTime)
         delete this->mLastVerticalVelocity;
     }
     if(this->mReverseAdvection) {
-        this->mLastDensity = new Grid(this->mDensity);
-        this->mLastSmokeDensity = new Grid(this->mSmokeDensity);
-        this->mLastHorizontalVelocity = new Grid(this->mHorizontalVelocity);
-        this->mLastVerticalVelocity = new Grid(this->mVerticalVelocity);
+        this->mLastDensity = new Grid(mDensity);
+        this->mLastSmokeDensity = new Grid(mSmokeDensity);
+        this->mLastHorizontalVelocity = new Grid(mHorizontalVelocity);
+        this->mLastVerticalVelocity = new Grid(mVerticalVelocity);
 
         this->simulateReverseAdvection(deltaTime);
 

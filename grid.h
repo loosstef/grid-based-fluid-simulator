@@ -8,12 +8,15 @@ class Grid
 {
 public:
     Grid(int width, int height, float initValue = 0);
+    Grid(float* values, int width, int height);
     Grid(Grid* grid);
     ~Grid();
     int getWidth() {return this->width;}
     int getHeight() {return this->height;}
     float get(int x, int y);
     float get(int i) {return this->values[i];}
+    float *getRaw() {return this->values;}
+    int getSize() {return width*height;}
     bool set(int x, int y, float value);
     bool add(int x, int y, float value);
     void reset(float val);

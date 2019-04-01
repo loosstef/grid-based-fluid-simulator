@@ -1,5 +1,6 @@
 #include "grid.h"
 #include <cstdlib>
+#include <stdio.h>
 
 #include <math.h>
 
@@ -13,12 +14,19 @@ Grid::Grid(int width, int height, float initValue):
     this->reset(initValue);
 }
 
+Grid::Grid(float *values, int width, int height) :
+    values(values), width(width), height(height)
+{
+
+}
+
 Grid::Grid(Grid *grid)
 {
-    this->values = new float[grid->getWidth()*grid->getHeight()];
-    for(int i = 0; i < grid->getWidth()*grid->getHeight(); ++i) {
+    this->values = new float[grid->getSize()];
+    memcpy(this->values, grid->getRaw(), (size_t) sizeof(float) * grid->getSize());
+    /*for(int i = 0; i < grid->getSize(); ++i) {
         this->values[i] = grid->get(i);
-    }
+    }*/
     this->width = grid->getWidth();
     this->height = grid->getHeight();
 }

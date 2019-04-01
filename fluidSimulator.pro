@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+LIBS     += -lOpenCL
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,6 +23,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+QMAKE_CXXFLAGS -= -O2
+QMAKE_CXXFLAGS += -Ofast
+QMAKE_CXXFLAGS_RELEASE -= -O2
+QMAKE_CXXFLAGS_RELEASE += -Ofast
+
 
 SOURCES += \
         main.cpp \
@@ -36,7 +42,8 @@ SOURCES += \
     velocitymanipulator.cpp \
     simulationfieldcontroller.cpp \
     renderenginecontroller.cpp \
-    painttoolcontroller.cpp
+    painttoolcontroller.cpp \
+    gpucontroller.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -51,7 +58,14 @@ HEADERS += \
     vector2D.h \
     simulationfieldcontroller.h \
     renderenginecontroller.h \
-    painttoolcontroller.h
+    painttoolcontroller.h \
+    gpucontroller.h
 
 FORMS += \
         mainwindow.ui
+
+DISTFILES += \
+    copy_array.cl
+
+RESOURCES += \
+    resources.qrc
