@@ -292,6 +292,8 @@ int SimulationField::calcGradientPoints(int xCoords[4], int yCoords[4], float pe
         percentages[i] = 0;
     }
 
+    // TODO: add assertion for checking if one of the four points is the starting point of the velocity vector
+
     int nPoints;
 
     if(METHOD_OF_DIVISION == 1) {
