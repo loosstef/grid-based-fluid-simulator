@@ -1,6 +1,6 @@
 #include "renderengine.h"
 #include <QtMath>
-#include <QPainter>
+#include <QPointF>
 #include "grid.h"
 #include "field.h"
 #include "renderenginecontroller.h"
@@ -17,10 +17,10 @@ RenderEngine::RenderEngine(const int width,  const int height, const bool showVe
 /**
  * Render an image based on a given field
  * @brief RenderEngine::render
- * @param image
  * @param field
+ * @return the rendered image
  */
-QImage* RenderEngine::render(const Field *field) const
+QImage* RenderEngine::render(const Field *field)
 {
     QImage* image = new QImage(field->getWidth(), field->getHeight(), QImage::Format_RGB32);
     // calculate the unscaled image
@@ -85,29 +85,38 @@ void RenderEngine::renderSmoke(QImage *image, const Field* field) const
  * @param image the image to override
  * @param field the field containing the velocity to render
  */
-void RenderEngine::renderVelocity(QImage *image, const Field *field) const
+void RenderEngine::renderVelocity(QImage *image, const Field *field)
 {
-    QPainter* painter = new QPainter(image);
-    painter->setPen(VELOCITY_COLOR);
-
     Grid* horVel = field->getHorizontalVelocity();
     Grid* verVel = field->getVerticalVelocity();
 
-    float pixWidth = (float)this->mWidth / (float)field->getWidth();
-    float pixHeight = (float)this->mHeight / (float)field->getHeight();
+    int pointsPairsIndex = 0;
+    QPoint* pointsPairs = new QPoint[field->getDensityGrid()->getSize()*2];
+
+    float pixWidth = (float)image->width() / (float)field->getWidth();
+    float pixHeight = (float)image->height() / (float)field->getHeight();
     int offSetX = (int)(pixWidth/2);
     int offSetY = (int)(pixHeight/2);
 
     for(int x = 0; x < field->getWidth(); x += VEL_VECTOR_SPARSENESS) {
         for (int y = 0; y < field->getHeight(); y += VEL_VECTOR_SPARSENESS) {
-            int baseX = (int)x*((float)image->width()/(float)field->getWidth()) + offSetX;
-            int baseY = (int)y*((float)image->height()/(float)field->getHeight()) + offSetY;
+            int baseX = (int)x*(pixWidth) + offSetX;
+            int baseY = (int)y*(pixHeight) + offSetY;
             int endX = baseX+horVel->get(x, y)*this->mVelocityScale;
             int endY = baseY+verVel->get(x, y)*this->mVelocityScale;
-            painter->drawLine(baseX, baseY, endX, endY);
+            pointsPairs[pointsPairsIndex].setX(baseX);
+            pointsPairs[pointsPairsIndex].setY(baseY);
+            ++pointsPairsIndex;
+            pointsPairs[pointsPairsIndex].setX(endX);
+            pointsPairs[pointsPairsIndex].setY(endY);
+            ++pointsPairsIndex;
         }
     }
-    painter->end();
+    this->mPainter.begin(image);
+    mPainter.setPen(VELOCITY_COLOR);
+    this->mPainter.drawLines(pointsPairs, pointsPairsIndex/2);
+    this->mPainter.end();
+    delete pointsPairs;
 }
 
 /**
