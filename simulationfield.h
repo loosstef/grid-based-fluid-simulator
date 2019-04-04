@@ -2,9 +2,9 @@
 #define SIMULATIONFIELD_H
 
 #include <QObject>
-#include <QMutex>
 #include "field.h"
-#include "simulationfieldcontroller.h"
+
+class SimulationFieldController;
 
 enum EdgeCaseMethod {wrap, block};
 
@@ -12,8 +12,8 @@ class SimulationField : public Field
 {
     Q_OBJECT
 public:
-    SimulationField(int width, int height, QObject* parent = nullptr);
-    bool simulateNextStep(int deltaTime);
+    SimulationField(const int width, const int height, QObject* parent = nullptr);
+    void simulateNextStep(const int deltaTime);
     SimulationFieldController *getController();
 private:
     bool simulateForwardAdvection(int deltaTime);

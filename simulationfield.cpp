@@ -1,18 +1,22 @@
 #include "simulationfield.h"
-
-#include <cstdlib>
 #include <QtMath>
 #include <math.h>
-#include "gpucontroller.h"
+#include "simulationfieldcontroller.h"
 
 const float SLOWNESS_FORWARD_ADVECTION = 50;
 const float SLOWNESS_REVERSE_ADVECTION = 100;
 const float PRESSURE_SLOWNESS = 1000;
 const int METHOD_OF_DIVISION = 1;
 
-// TODO: add or remove code for reflection
-
-SimulationField::SimulationField(int width, int height, QObject* parent) :
+/**
+ * Constructor. Generates a new simulation-field with a certain
+ * width and height.
+ * @brief SimulationField::SimulationField
+ * @param width the width of the field
+ * @param height the height of the field
+ * @param parent
+ */
+SimulationField::SimulationField(const int width, const int height, QObject* parent) :
     Field(width, height, parent)
 {
 
@@ -23,9 +27,8 @@ SimulationField::SimulationField(int width, int height, QObject* parent) :
  * while taking the elapsed time into account
  * @brief SimulationField::simulateNextStep
  * @param deltaTime
- * @return true if everything went well
  */
-bool SimulationField::simulateNextStep(int deltaTime)
+void SimulationField::simulateNextStep(const int deltaTime)
 {
     this->baseLock.lock();
     if(this->mForwardAdvection) {
@@ -80,7 +83,6 @@ bool SimulationField::simulateNextStep(int deltaTime)
 
     this->testValidity();
     this->baseLock.unlock();
-    return true;
 }
 
 /**
