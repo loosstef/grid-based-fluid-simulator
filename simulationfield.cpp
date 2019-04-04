@@ -29,10 +29,10 @@ bool SimulationField::simulateNextStep(int deltaTime)
 {
     this->baseLock.lock();
     if(this->mForwardAdvection) {
-        this->mLastDensity = new Grid(mDensity);
-        this->mLastSmokeDensity = new Grid(mSmokeDensity);
-        this->mLastHorizontalVelocity = new Grid(mHorizontalVelocity);
-        this->mLastVerticalVelocity = new Grid(mVerticalVelocity);
+        this->mLastDensity = Grid::deepCopy(mDensity);
+        this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
+        this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
+        this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
 
         this->simulateForwardAdvection(deltaTime);
 
@@ -42,10 +42,10 @@ bool SimulationField::simulateNextStep(int deltaTime)
         delete this->mLastVerticalVelocity;
     }
     if(this->mReverseAdvection) {
-        this->mLastDensity = new Grid(mDensity);
-        this->mLastSmokeDensity = new Grid(mSmokeDensity);
-        this->mLastHorizontalVelocity = new Grid(mHorizontalVelocity);
-        this->mLastVerticalVelocity = new Grid(mVerticalVelocity);
+        this->mLastDensity = Grid::deepCopy(mDensity);
+        this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
+        this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
+        this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
 
         this->simulateReverseAdvection(deltaTime);
 

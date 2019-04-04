@@ -1,26 +1,23 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include<QImage>
-#include<QMutex>
-
 class Grid
 {
 public:
-    Grid(int width, int height, float initValue = 0);
-    Grid(float* values, int width, int height);
-    Grid(Grid* grid);
+    Grid(const int width, const int height, const float initValue = 0);
+    Grid(float* values, const int width, const int height);
     ~Grid();
-    int getWidth() {return this->width;}
-    int getHeight() {return this->height;}
-    float get(int x, int y);
-    float get(int i) {return this->values[i];}
-    float *getRaw() {return this->values;}
-    int getSize() {return width*height;}
-    bool set(int x, int y, float value);
+    int getWidth() const {return this->width;}
+    int getHeight() const {return this->height;}
+    float get(int x, int y) const;
+    float get(int i) const {return this->values[i];}
+    const float *getRaw() const {return this->values;}
+    int getSize() const {return width*height;}
+    bool set(const int x, const int y, const float value);
     void set(float* values);
-    bool add(int x, int y, float value);
-    void reset(float val);
+    bool add(const int x, const int y, const float value);
+    void reset(const float val);
+    static Grid *deepCopy(const Grid* grid);
 private:
     int width;
     int height;

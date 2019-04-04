@@ -1,34 +1,21 @@
 #include "grid.h"
-#include <cstdlib>
-#include <stdio.h>
 
-#include <math.h>
+#include <cstring>
 
 /**
  * Constructor
  */
-Grid::Grid(int width, int height, float initValue):
+Grid::Grid(const int width, const int height, const float initValue):
     width(width), height(height)
 {
     this->values = new float[width*height];
     this->reset(initValue);
 }
 
-Grid::Grid(float *values, int width, int height) :
+Grid::Grid(float *values, const int width, const int height) :
     values(values), width(width), height(height)
 {
 
-}
-
-Grid::Grid(Grid *grid)
-{
-    this->values = new float[grid->getSize()];
-    memcpy(this->values, grid->getRaw(), (size_t) sizeof(float) * grid->getSize());
-    /*for(int i = 0; i < grid->getSize(); ++i) {
-        this->values[i] = grid->get(i);
-    }*/
-    this->width = grid->getWidth();
-    this->height = grid->getHeight();
 }
 
 Grid::~Grid()
@@ -43,7 +30,7 @@ Grid::~Grid()
  * @param y y-coordinate
  * @return the value on location (x,y)
  */
-float Grid::get(int x, int y)
+float Grid::get(int x, int y) const
 {
     return this->values[x + y*this->width];
 }
@@ -56,7 +43,7 @@ float Grid::get(int x, int y)
  * @param value the value
  * @return true if the coordinate was valid
  */
-bool Grid::set(int x, int y, float value)
+bool Grid::set(const int x, const int y, const float value)
 {
     // real code
     if(x >= 0 && y >= 0 && x < this->width && y < this->height) {
@@ -80,7 +67,7 @@ void Grid::set(float *values)
  * @param value the value to add to this cell
  * @return true if the given coordinate was valid
  */
-bool Grid::add(int x, int y, float value)
+bool Grid::add(const int x, const int y, const float value)
 {
     if(x >= 0 && y >= 0 && x < this->width && y < this->height) {
         this->values[x + y*this->width] += value;
@@ -90,9 +77,22 @@ bool Grid::add(int x, int y, float value)
     }
 }
 
-void Grid::reset(float val)
+void Grid::reset(const float val)
 {
     for(int i = 0; i < this->width * this->height; ++i) {
         this->values[i] = val;
     }
+}
+
+/**
+ * Make a deepcopy of this grid
+ * @brief Grid::copy
+ * @param grid
+ * @return
+ */
+Grid *Grid::deepCopy(const Grid *grid)
+{
+    float* copyOfValues = new float[grid->getSize()];
+    memcpy(copyOfValues, grid->getRaw(), sizeof(float) * grid->getSize());
+    return new Grid(copyOfValues, grid->getWidth(), grid->getHeight());
 }
