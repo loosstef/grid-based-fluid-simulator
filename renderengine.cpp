@@ -1,14 +1,14 @@
 #include "renderengine.h"
 #include <QtMath>
 #include <QPainter>
-#include <math.h>
-#include <unistd.h>
 #include "grid.h"
+#include "field.h"
+#include "renderenginecontroller.h"
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
 const int VEL_VECTOR_SPARSENESS = 1;
 
-RenderEngine::RenderEngine(int width, int height, bool showVelocity) :
+RenderEngine::RenderEngine(const int width,  const int height, const bool showVelocity) :
     mWidth(width), mHeight(height), mShowVelocity(showVelocity)
 {
 
@@ -20,7 +20,7 @@ RenderEngine::RenderEngine(int width, int height, bool showVelocity) :
  * @param image
  * @param field
  */
-QImage* RenderEngine::render(Field *field)
+QImage* RenderEngine::render(const Field *field) const
 {
     QImage* image = new QImage(field->getWidth(), field->getHeight(), QImage::Format_RGB32);
     // calculate the unscaled image
@@ -42,7 +42,7 @@ RenderEngineController *RenderEngine::getController()
     return new RenderEngineController(this);
 }
 
-void RenderEngine::setVelocityScale(float velScale)
+void RenderEngine::setVelocityScale(const float velScale)
 {
     this->mVelocityScale = velScale;
 }
@@ -52,7 +52,7 @@ void RenderEngine::setVelocityScale(float velScale)
  * @brief RenderEngine::toggleShowVelocity
  * @param visible true if you want the vectors to be visible
  */
-void RenderEngine::toggleShowVelocity(bool visible)
+void RenderEngine::toggleShowVelocity(const bool visible)
 {
     this->mShowVelocity = visible;
 }
@@ -63,7 +63,7 @@ void RenderEngine::toggleShowVelocity(bool visible)
  * @param image the image to override
  * @param field the field containing the smoke to render
  */
-void RenderEngine::renderSmoke(QImage *image, Field* field)
+void RenderEngine::renderSmoke(QImage *image, const Field* field) const
 {
     Grid* smokeDensityGrid = field->getSmokeDensityGrid();
     for(int x = 0; x < field->getWidth(); ++x) {
@@ -85,7 +85,7 @@ void RenderEngine::renderSmoke(QImage *image, Field* field)
  * @param image the image to override
  * @param field the field containing the velocity to render
  */
-void RenderEngine::renderVelocity(QImage *image, Field *field)
+void RenderEngine::renderVelocity(QImage *image, const Field *field) const
 {
     QPainter* painter = new QPainter(image);
     painter->setPen(VELOCITY_COLOR);
@@ -117,7 +117,7 @@ void RenderEngine::renderVelocity(QImage *image, Field *field)
  * @param value the value of the fluid in a certain point
  * @return the color-intensity of the given value, always between 0 and 255
  */
-float RenderEngine::valueToColorIntensity(float value)
+float RenderEngine::valueToColorIntensity(float value) const
 {
     if(value < 0) {
         value = 0;
