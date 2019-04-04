@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <math.h>
 #include <unistd.h>
+#include "grid.h"
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
 const int VEL_VECTOR_SPARSENESS = 1;

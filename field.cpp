@@ -1,10 +1,8 @@
 #include "field.h"
-#include <QImage>
 
-#include <cstdlib>
-#include <QtMath>
+#include "grid.h"
 
-Field::Field(int simWidth, int simHeight, QObject* parent) :
+Field::Field(const int simWidth, const int simHeight, QObject* parent) :
     QObject(parent),
     simWidth(simWidth), simHeight(simHeight)
 {

@@ -1,22 +1,22 @@
 #ifndef FIELD_H
 #define FIELD_H
 
-#include "grid.h"
-#include <QPixmap>
 #include <QObject>
 #include <QMutex>
+
+class Grid;
 
 class Field : public QObject
 {
 public:
-    Field(int simWidth, int simHeight, QObject* parent = nullptr);
+    Field(const int simWidth, const int simHeight, QObject* parent = nullptr);
     ~Field();
-    Grid* getDensityGrid() {return mDensity;}
-    Grid* getSmokeDensityGrid() {return mSmokeDensity;}
-    Grid* getHorizontalVelocity() {return mHorizontalVelocity;}
-    Grid* getVerticalVelocity() {return mVerticalVelocity;}
-    int getWidth() {return this->simWidth;}
-    int getHeight() {return this->simHeight;}
+    Grid* getDensityGrid() const {return mDensity;}
+    Grid* getSmokeDensityGrid() const {return mSmokeDensity;}
+    Grid* getHorizontalVelocity() const {return mHorizontalVelocity;}
+    Grid* getVerticalVelocity() const {return mVerticalVelocity;}
+    int getWidth() const {return this->simWidth;}
+    int getHeight() const {return this->simHeight;}
     void reset();
 protected:
     int simWidth;
