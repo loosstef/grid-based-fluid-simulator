@@ -111,12 +111,23 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             float sourceSmokeDensity = this->mLastSmokeDensity->get(x, y);
             float sourceHorVel = this->mLastHorizontalVelocity->get(x, y);
             float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
+            float sourceHorMovement = (sourceHorVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
+            float sourceVerMovement = (sourceVerVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
+            // TODO: remove debug code
+            if(qAbs(sourceHorMovement) > 1) {
+                sourceHorMovement = (sourceHorMovement > 0) ? 0.95 : -0.95;
+            }
+            if(qAbs(sourceVerMovement > 1)) {
+                sourceVerMovement = (sourceVerMovement > 0) ? 0.95 : -0.95;
+            }
+            Q_ASSERT(qAbs(sourceHorMovement) <= 1);
+            Q_ASSERT(qAbs(sourceVerMovement) <= 1);
             Q_ASSERT(sourceDensity >= 0);
             Q_ASSERT(sourceSmokeDensity >= 0);
             int targetX[4];
             int targetY[4];
             float targetPercentage[4];
-            int nTargets = this->calcGradientPoints(targetX, targetY, targetPercentage, x+(sourceHorVel*deltaTime/SLOWNESS_FORWARD_ADVECTION), y+(sourceVerVel*deltaTime/SLOWNESS_FORWARD_ADVECTION));
+            int nTargets = this->calcGradientPoints(targetX, targetY, targetPercentage, x+sourceHorMovement, y+sourceVerMovement);
 
             if(nTargets == 0) {
                 this->mHorizontalVelocity->set(x, y, 0);
@@ -482,6 +493,7 @@ bool SimulationField::outOfBoundY(float y)
  */
 bool SimulationField::testValidity()
 {
+    // Check for sum of densities
     float sumOfDensities = 0;
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simHeight; ++y) {
