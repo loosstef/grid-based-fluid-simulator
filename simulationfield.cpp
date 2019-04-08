@@ -5,8 +5,9 @@
 
 const float SLOWNESS_FORWARD_ADVECTION = 50;
 const float SLOWNESS_REVERSE_ADVECTION = 100;
-const float PRESSURE_SLOWNESS = 1000;
+const float PRESSURE_SLOWNESS = 100;
 const int METHOD_OF_DIVISION = 1;
+const float MAX_MOVEMENT_VECTOR_SIZE = 0.8;
 
 /**
  * Constructor. Generates a new simulation-field with a certain
@@ -113,15 +114,12 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
             float sourceHorMovement = (sourceHorVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
             float sourceVerMovement = (sourceVerVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
-            // TODO: remove debug code
-            if(qAbs(sourceHorMovement) > 1) {
-                sourceHorMovement = (sourceHorMovement > 0) ? 0.95 : -0.95;
+            if(qAbs(sourceHorMovement) > MAX_MOVEMENT_VECTOR_SIZE) {
+                sourceHorMovement = ((sourceHorMovement > 0) ? 1 : -1) * MAX_MOVEMENT_VECTOR_SIZE;
             }
-            if(qAbs(sourceVerMovement > 1)) {
-                sourceVerMovement = (sourceVerMovement > 0) ? 0.95 : -0.95;
+            if(qAbs(sourceVerMovement) > MAX_MOVEMENT_VECTOR_SIZE) {
+                sourceVerMovement = ((sourceVerMovement > 0) ? 1 : -1) * MAX_MOVEMENT_VECTOR_SIZE;
             }
-            Q_ASSERT(qAbs(sourceHorMovement) <= 1);
-            Q_ASSERT(qAbs(sourceVerMovement) <= 1);
             Q_ASSERT(sourceDensity >= 0);
             Q_ASSERT(sourceSmokeDensity >= 0);
             int targetX[4];
@@ -187,12 +185,20 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
             // init data
             float sourceHorVel = this->mLastHorizontalVelocity->get(x, y);
             float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
+            float sourceHorMovement = (sourceHorVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
+            float sourceVerMovement = (sourceVerVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
+            if(qAbs(sourceHorMovement) > MAX_MOVEMENT_VECTOR_SIZE) {
+                sourceHorMovement = ((sourceHorMovement > 0) ? 1 : -1) * MAX_MOVEMENT_VECTOR_SIZE;
+            }
+            if(qAbs(sourceVerMovement) > MAX_MOVEMENT_VECTOR_SIZE) {
+                sourceVerMovement = ((sourceVerMovement > 0) ? 1 : -1) * MAX_MOVEMENT_VECTOR_SIZE;
+            }
             nSources[x+y*this->simWidth] = this->calcGradientPoints(
                 sourceX[x+y*this->simWidth],
                 sourceY[x+y*this->simWidth],
                 sourcePercentage[x+y*this->simWidth],
-                x-(sourceHorVel*deltaTime/SLOWNESS_REVERSE_ADVECTION),
-                y-(sourceVerVel*deltaTime/SLOWNESS_REVERSE_ADVECTION)
+                x-sourceHorMovement,
+                y-sourceVerMovement
             );
             for(int i = 0; i < nSources[x+y*this->simWidth]; ++i) {
                 int xCoord = sourceX[x+y*this->simWidth][i];
