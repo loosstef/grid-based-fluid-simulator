@@ -6,8 +6,8 @@
 #include "simulationfield.h"
 #include "simulationviewer.h"
 
-const float INIT_POWER = 10;
-const int INIT_MANIPULATION_AREA = 1;
+const float INIT_POWER = 0.2;
+const int INIT_MANIPULATION_AREA = 5;
 
 SimulationFieldController::SimulationFieldController(SimulationField* field, QObject* parent) :
     QObject(parent),

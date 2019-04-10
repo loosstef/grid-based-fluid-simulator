@@ -324,11 +324,20 @@ void SimulationField::diffuse(int deltaTime)
             float verVelSum = 0;
             for(int surrX = x-1; surrX <= x+1; ++surrX) {
                 for(int surrY = y-1; surrY <= y+1; ++surrY) {
-                    if(surrX >= 0 && surrX < this->simWidth && surrY >=0 && surrY < this->simHeight) {
+                    if(this->mEdgeCaseMethod == block) {
+                        if(surrX >= 0 && surrX < this->simWidth && surrY >=0 && surrY < this->simHeight) {
+                            ++nSurroundingGridPoints;
+                            densitySum += this->mLastDensity->get(surrX, surrY);
+                            horVelSum += this->mLastHorizontalVelocity->get(surrX, surrY);
+                            verVelSum += this->mLastVerticalVelocity->get(surrX, surrY);
+                        }
+                    } else if(this->mEdgeCaseMethod == wrap) {
+                        int realSurrX = (surrX+this->simWidth)%this->simWidth;
+                        int realSurrY = (surrY+this->simHeight)%this->simHeight;
                         ++nSurroundingGridPoints;
-                        densitySum += this->mLastDensity->get(surrX, surrY);
-                        horVelSum += this->mLastHorizontalVelocity->get(surrX, surrY);
-                        verVelSum += this->mLastVerticalVelocity->get(surrX, surrY);
+                        densitySum += this->mLastDensity->get(realSurrX, realSurrY);
+                        horVelSum += this->mLastHorizontalVelocity->get(realSurrX, realSurrY);
+                        verVelSum += this->mLastVerticalVelocity->get(realSurrX, realSurrY);
                     }
                 }
             }
