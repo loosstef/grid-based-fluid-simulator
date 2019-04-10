@@ -102,7 +102,7 @@
         <property name="title">
          <string>simulation settings</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,1">
+        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,0,1">
          <item alignment="Qt::AlignTop">
           <widget class="QLabel" name="label_2">
            <property name="font">
@@ -139,6 +139,16 @@
           <widget class="QCheckBox" name="pressureToggle">
            <property name="text">
             <string>pressure flattening</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="diffusionToggle">
+           <property name="text">
+            <string>diffusion</string>
            </property>
            <property name="checked">
             <bool>true</bool>

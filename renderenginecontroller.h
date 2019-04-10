@@ -2,10 +2,10 @@
 #define RENDERENGINECONTROLLER_H
 
 #include <QObject>
-#include <QCheckBox>
-#include <QDoubleSpinBox>
 
 class RenderEngine;
+class QCheckBox;
+class QDoubleSpinBox;
 
 
 class RenderEngineController : public QObject

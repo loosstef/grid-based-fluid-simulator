@@ -51,7 +51,7 @@ void MainWindow::init()
 
     SimulationFieldController* simViewConnector = simField->getController();
     simViewConnector->connectToViewer(ui->simulationVisualisator);
-    simViewConnector->connectToSimSettingsCheckboxes(ui->forwardAdvectionToggle, ui->reverseAdvectionToggle, ui->pressureToggle);
+    simViewConnector->connectToSimSettingsCheckboxes(ui->forwardAdvectionToggle, ui->reverseAdvectionToggle, ui->pressureToggle, ui->diffusionToggle);
     simViewConnector->connectToResetButton(ui->resetButton);
     simViewConnector->connectEdgeCaseSelector(ui->edgeCaseSelector);
 
@@ -73,6 +73,7 @@ void MainWindow::init()
     Looper* looper = new Looper(simField, renderEngine);
     connect(looper, &Looper::FieldUpdated, this, &MainWindow::updateSimulationVisualisation);
     connect(ui->pauseButton, &QPushButton::released, looper, &Looper::toggleRunning);
+    connect(ui->pauseButton, &QPushButton::released, this, &MainWindow::pauseClicked);
     looper->start();
 }
 
@@ -99,4 +100,13 @@ void MainWindow::rightClicked(int x, int simY, int viewX, int viewY)
 {
     QString clickedPosText = QString("Right: (").append(QString::number(x).append(", ").append(QString::number(simY)).append(")"));
     ui->rightClickedPosViewer->setText(clickedPosText);
+}
+
+void MainWindow::pauseClicked()
+{
+    if(ui->pauseButton->text().compare(QString("Pause")) == 0) {
+        ui->pauseButton->setText(QString("Play"));
+    } else {
+        ui->pauseButton->setText(QString("Pause"));
+    }
 }

@@ -1,5 +1,6 @@
 #include "renderenginecontroller.h"
-
+#include <QCheckBox>
+#include <QDoubleSpinBox>
 #include "renderengine.h"
 
 RenderEngineController::RenderEngineController(RenderEngine* renderEngine) :

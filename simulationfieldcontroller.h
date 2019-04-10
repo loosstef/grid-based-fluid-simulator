@@ -2,14 +2,13 @@
 #define SIMULATIONFIELDCONTROLLER_H
 
 #include <QObject>
-#include <QCheckBox>
-#include <QPushButton>
-#include <QComboBox>
-#include "field.h"
 #include "velocitymanipulator.h"
-#include "simulationviewer.h"
 
+class QComboBox;
+class QCheckBox;
+class QPushButton;
 class SimulationField;
+class SimulationViewer;
 
 class SimulationFieldController : public QObject
 {
@@ -17,7 +16,7 @@ class SimulationFieldController : public QObject
 public:
     SimulationFieldController(SimulationField* field, QObject* parent = nullptr);
     void connectToViewer(SimulationViewer* simViewer);
-    void connectToSimSettingsCheckboxes(QCheckBox* forwardAdvectionToggle, QCheckBox* reverseAdvectionToggle, QCheckBox* pressureToggle);
+    void connectToSimSettingsCheckboxes(QCheckBox* forwardAdvectionToggle, QCheckBox* reverseAdvectionToggle, QCheckBox* pressureToggle, QCheckBox *diffusionToggle);
     void connectToResetButton(QPushButton* resetBtn);
     void connectEdgeCaseSelector(QComboBox* edgeCaseSelector);
 private:

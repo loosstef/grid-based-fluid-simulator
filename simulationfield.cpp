@@ -6,8 +6,9 @@
 const float SLOWNESS_FORWARD_ADVECTION = 25;
 const float SLOWNESS_REVERSE_ADVECTION = 25;
 const float PRESSURE_SLOWNESS = 50;
+const int DIFFUSE_SLOWNESS = 100;
 const int METHOD_OF_DIVISION = 1;
-const float MAX_MOVEMENT_VECTOR_SIZE = 0.8;
+const float MAX_MOVEMENT_VECTOR_SIZE = 0.4;
 
 /**
  * Constructor. Generates a new simulation-field with a certain
@@ -80,6 +81,21 @@ void SimulationField::simulateNextStep(const int deltaTime)
                 this->mHorizontalVelocity->set(this->simWidth-1, y, 0);
             }
         }
+    }
+
+    if(this->mDiffuse) {
+        // TODO: remove the correct copy's
+        this->mLastDensity = Grid::deepCopy(mDensity);
+        this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
+        this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
+        this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
+
+        this->diffuse(deltaTime);
+
+        delete this->mLastDensity;
+        delete this->mLastSmokeDensity;
+        delete this->mLastHorizontalVelocity;
+        delete this->mLastVerticalVelocity;
     }
 
     this->testValidity();
@@ -258,9 +274,8 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
  */
 void SimulationField::simulatePressureResult(int deltaTime)
 {
-    // TODO: add wrapping-conditions
-    for(int x = 0; x < this->simWidth; ++x) {
-        for(int y = 0; y < this->simHeight; ++y) {
+    for(int y = 0; y < this->simHeight; ++y) {
+        for(int x = 0; x < this->simWidth; ++x) {
             float localDensity = this->mDensity->get(x, y);
             float forceX = 0;
             float forceY = 0;
@@ -290,6 +305,44 @@ void SimulationField::simulatePressureResult(int deltaTime)
                 this->mVerticalVelocity->add(x, y, velY);
                 this->mVerticalVelocity->add(x, nextY, velY);
             }
+        }
+    }
+}
+
+/**
+ * Diffuse all the values in the field
+ * @brief SimulationField::diffuse
+ * @param deltaTime
+ */
+void SimulationField::diffuse(int deltaTime)
+{
+    for(int x = 0; x < this->simWidth; ++x) {
+        for(int y = 0; y < this->simWidth; ++y) {
+            int nSurroundingGridPoints = 0;
+            float densitySum = 0;
+            //float smokeDensitySum = 0;
+            float horVelSum = 0;
+            float verVelSum = 0;
+            for(int surrX = x-1; surrX <= x+1; ++surrX) {
+                for(int surrY = y-1; surrY <= y+1; ++surrY) {
+                    if(surrX >= 0 && surrX < this->simWidth && surrY >=0 && surrY < this->simHeight) {
+                        ++nSurroundingGridPoints;
+                        densitySum += this->mLastDensity->get(surrX, surrY);
+                        //smokeDensitySum += this->mLastSmokeDensity->get(surrX, surrY);
+                        horVelSum += this->mLastHorizontalVelocity->get(surrX, surrY);
+                        verVelSum += this->mLastVerticalVelocity->get(surrX, surrY);
+                    }
+                }
+            }
+            int ownWeight = DIFFUSE_SLOWNESS - nSurroundingGridPoints;
+            densitySum += this->mLastDensity->get(x, y) * ownWeight;
+            //smokeDensitySum += this->mLastSmokeDensity->get(x, y) * ownWeight;
+            horVelSum += this->mLastHorizontalVelocity->get(x, y) * ownWeight;
+            verVelSum += this->mLastVerticalVelocity->get(x, y) * ownWeight;
+            this->mDensity->set(x, y, densitySum/DIFFUSE_SLOWNESS);
+            //this->mSmokeDensity->set(x, y, smokeDensitySum/DIFFUSE_SLOWNESS);
+            this->mHorizontalVelocity->set(x, y, horVelSum/DIFFUSE_SLOWNESS);
+            this->mVerticalVelocity->set(x, y, verVelSum/DIFFUSE_SLOWNESS);
         }
     }
 }
@@ -520,5 +573,5 @@ bool SimulationField::testValidity()
             sumOfDensities += this->mDensity->get(x, y);
         }
     }
-    Q_ASSERT(qAbs(sumOfDensities - this->simWidth*this->simHeight) < 1);
+    Q_ASSERT(qAbs(sumOfDensities - this->simWidth*this->simHeight) < 10);
 }

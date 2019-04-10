@@ -1,7 +1,10 @@
 #include "simulationfieldcontroller.h"
-
 #include <QDateTime>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QPushButton>
 #include "simulationfield.h"
+#include "simulationviewer.h"
 
 const float INIT_POWER = 10;
 const int INIT_MANIPULATION_AREA = 1;
@@ -26,11 +29,17 @@ void SimulationFieldController::connectToViewer(SimulationViewer *simViewer)
     connect(simViewer, &SimulationViewer::mouseRightButtonMoved, this, &SimulationFieldController::rightMouseMove);
 }
 
-void SimulationFieldController::connectToSimSettingsCheckboxes(QCheckBox *forwardAdvectionToggle, QCheckBox *reverseAdvectionToggle, QCheckBox *pressureToggle)
+void SimulationFieldController::connectToSimSettingsCheckboxes(
+        QCheckBox *forwardAdvectionToggle,
+        QCheckBox *reverseAdvectionToggle,
+        QCheckBox *pressureToggle,
+        QCheckBox *diffusionToggle
+        )
 {
     connect(forwardAdvectionToggle, &QCheckBox::toggled, mSimField, &SimulationField::toggleSimulationOfFowardAdvection);
     connect(reverseAdvectionToggle, &QCheckBox::toggled, mSimField, &SimulationField::toggleSimulationOfReverseAdvection);
     connect(pressureToggle, &QCheckBox::toggled, mSimField, &SimulationField::toggleSimulationOfPressure);
+    connect(diffusionToggle, &QCheckBox::toggled, mSimField, &SimulationField::toggleDiffusion);
 }
 
 void SimulationFieldController::connectToResetButton(QPushButton *resetBtn)
