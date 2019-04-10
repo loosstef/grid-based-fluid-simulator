@@ -86,14 +86,12 @@ void SimulationField::simulateNextStep(const int deltaTime)
     if(this->mDiffuse) {
         // TODO: remove the correct copy's
         this->mLastDensity = Grid::deepCopy(mDensity);
-        this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
 
         this->diffuse(deltaTime);
 
         delete this->mLastDensity;
-        delete this->mLastSmokeDensity;
         delete this->mLastHorizontalVelocity;
         delete this->mLastVerticalVelocity;
     }
@@ -316,11 +314,11 @@ void SimulationField::simulatePressureResult(int deltaTime)
  */
 void SimulationField::diffuse(int deltaTime)
 {
+    // TODO: add edgecase for wrap
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simWidth; ++y) {
             int nSurroundingGridPoints = 0;
             float densitySum = 0;
-            //float smokeDensitySum = 0;
             float horVelSum = 0;
             float verVelSum = 0;
             for(int surrX = x-1; surrX <= x+1; ++surrX) {
@@ -328,7 +326,6 @@ void SimulationField::diffuse(int deltaTime)
                     if(surrX >= 0 && surrX < this->simWidth && surrY >=0 && surrY < this->simHeight) {
                         ++nSurroundingGridPoints;
                         densitySum += this->mLastDensity->get(surrX, surrY);
-                        //smokeDensitySum += this->mLastSmokeDensity->get(surrX, surrY);
                         horVelSum += this->mLastHorizontalVelocity->get(surrX, surrY);
                         verVelSum += this->mLastVerticalVelocity->get(surrX, surrY);
                     }
@@ -336,11 +333,9 @@ void SimulationField::diffuse(int deltaTime)
             }
             int ownWeight = DIFFUSE_SLOWNESS - nSurroundingGridPoints;
             densitySum += this->mLastDensity->get(x, y) * ownWeight;
-            //smokeDensitySum += this->mLastSmokeDensity->get(x, y) * ownWeight;
             horVelSum += this->mLastHorizontalVelocity->get(x, y) * ownWeight;
             verVelSum += this->mLastVerticalVelocity->get(x, y) * ownWeight;
             this->mDensity->set(x, y, densitySum/DIFFUSE_SLOWNESS);
-            //this->mSmokeDensity->set(x, y, smokeDensitySum/DIFFUSE_SLOWNESS);
             this->mHorizontalVelocity->set(x, y, horVelSum/DIFFUSE_SLOWNESS);
             this->mVerticalVelocity->set(x, y, verVelSum/DIFFUSE_SLOWNESS);
         }
