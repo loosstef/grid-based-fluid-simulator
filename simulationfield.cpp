@@ -314,8 +314,7 @@ void SimulationField::simulatePressureResult(int deltaTime)
  */
 void SimulationField::diffuse(int deltaTime)
 {
-    // TODO: add deltaTime
-    // TODO: add edgecase for wrap
+    // TODO: make use of deltaTime?
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simWidth; ++y) {
             int nSurroundingGridPoints = 0;
