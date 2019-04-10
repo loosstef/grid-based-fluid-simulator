@@ -314,6 +314,7 @@ void SimulationField::simulatePressureResult(int deltaTime)
  */
 void SimulationField::diffuse(int deltaTime)
 {
+    // TODO: add deltaTime
     // TODO: add edgecase for wrap
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simWidth; ++y) {
@@ -331,6 +332,7 @@ void SimulationField::diffuse(int deltaTime)
                     }
                 }
             }
+            // TODO: check if the speed-problem exists here
             int ownWeight = DIFFUSE_SLOWNESS - nSurroundingGridPoints;
             densitySum += this->mLastDensity->get(x, y) * ownWeight;
             horVelSum += this->mLastHorizontalVelocity->get(x, y) * ownWeight;
