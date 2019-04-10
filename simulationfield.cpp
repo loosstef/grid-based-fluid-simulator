@@ -3,9 +3,9 @@
 #include <math.h>
 #include "simulationfieldcontroller.h"
 
-const float SLOWNESS_FORWARD_ADVECTION = 50;
-const float SLOWNESS_REVERSE_ADVECTION = 50;
-const float PRESSURE_SLOWNESS = 25;
+const float SLOWNESS_FORWARD_ADVECTION = 25;
+const float SLOWNESS_REVERSE_ADVECTION = 25;
+const float PRESSURE_SLOWNESS = 50;
 const int METHOD_OF_DIVISION = 1;
 const float MAX_MOVEMENT_VECTOR_SIZE = 0.8;
 
@@ -264,18 +264,32 @@ void SimulationField::simulatePressureResult(int deltaTime)
             float localDensity = this->mDensity->get(x, y);
             float forceX = 0;
             float forceY = 0;
-            if(x + 1 < this->simWidth) {
-                forceX = localDensity - this->mDensity->get(x+1, y);
+            if(this->mEdgeCaseMethod == block) {
+                if(x + 1 < this->simWidth) {
+                    forceX = localDensity - this->mDensity->get(x+1, y);
+                }
+                if(y + 1 < this->simHeight) {
+                    forceY = localDensity - this->mDensity->get(x, y+1);
+                }
+                float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
+                float velY = forceY * deltaTime / PRESSURE_SLOWNESS;
+                this->mHorizontalVelocity->add(x, y, velX);
+                this->mHorizontalVelocity->add(x+1, y, velX);
+                this->mVerticalVelocity->add(x, y, velY);
+                this->mVerticalVelocity->add(x, y+1, velY);
             }
-            if(y + 1 < this->simHeight) {
-                forceY = localDensity - this->mDensity->get(x, y+1);
+            else if(this->mEdgeCaseMethod == wrap) {
+                int nextX = (x + 1) % this->simWidth;
+                int nextY = (y + 1) % this->simHeight;
+                forceX = localDensity - this->mDensity->get(nextX, y);
+                forceY = localDensity - this->mDensity->get(x, nextY);
+                float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
+                float velY = forceY * deltaTime / PRESSURE_SLOWNESS;
+                this->mHorizontalVelocity->add(x, y, velX);
+                this->mHorizontalVelocity->add(nextX, y, velX);
+                this->mVerticalVelocity->add(x, y, velY);
+                this->mVerticalVelocity->add(x, nextY, velY);
             }
-            float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
-            float velY = forceY * deltaTime / PRESSURE_SLOWNESS;
-            this->mHorizontalVelocity->add(x, y, velX);
-            this->mHorizontalVelocity->add(x+1, y, velX);
-            this->mVerticalVelocity->add(x, y, velY);
-            this->mVerticalVelocity->add(x, y+1, velY);
         }
     }
 }
