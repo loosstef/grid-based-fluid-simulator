@@ -4,8 +4,8 @@
 #include "simulationfieldcontroller.h"
 
 const float SLOWNESS_FORWARD_ADVECTION = 50;
-const float SLOWNESS_REVERSE_ADVECTION = 100;
-const float PRESSURE_SLOWNESS = 100;
+const float SLOWNESS_REVERSE_ADVECTION = 50;
+const float PRESSURE_SLOWNESS = 25;
 const int METHOD_OF_DIVISION = 1;
 const float MAX_MOVEMENT_VECTOR_SIZE = 0.8;
 

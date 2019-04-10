@@ -6,7 +6,7 @@
 #include "renderenginecontroller.h"
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
-const int VEL_VECTOR_SPARSENESS = 2;
+const int VEL_VECTOR_SPARSENESS = 3;
 
 RenderEngine::RenderEngine(const int width,  const int height, const bool showVelocity) :
     mWidth(width), mHeight(height), mShowVelocity(showVelocity)
