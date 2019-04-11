@@ -11,6 +11,7 @@ IO::IO()
 
 }
 
+// TODO: maybe clean up this code a bith
 void IO::saveImage(QString &path, QImage *image, bool override)
 {
     QStringList splittedPath = path.split(QString("/"));
