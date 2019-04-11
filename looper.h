@@ -24,9 +24,11 @@ private:
     SimulationField* mSimField;
     RenderEngine* mRenderEngine;
     bool running = true;
+    int sleepPerLoop = 0;
     QMutex runLock;
 public slots:
     void toggleRunning();
+    void setSleepPerLoop(int value) {this->sleepPerLoop = value;}
 };
 
 #endif // LOOPER_H

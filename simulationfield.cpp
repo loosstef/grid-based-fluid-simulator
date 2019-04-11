@@ -8,7 +8,7 @@ const float SLOWNESS_REVERSE_ADVECTION = 25;
 const float PRESSURE_SLOWNESS = 50;
 const int DIFFUSE_SLOWNESS = 100;
 const int METHOD_OF_DIVISION = 1;
-const float MAX_MOVEMENT_VECTOR_SIZE = 0.4;
+const float MAX_MOVEMENT_VECTOR_SIZE = 0.8;
 
 /**
  * Constructor. Generates a new simulation-field with a certain

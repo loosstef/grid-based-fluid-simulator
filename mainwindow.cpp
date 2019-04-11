@@ -20,6 +20,7 @@ const int VIEWER_HEIGHT = 800;
 const int INIT_BRUSH_SIZE = 10;
 const int INIT_BRUSH_HARDNESS = 1;
 const double INIT_VELOCITY_SCALE = 10;
+const int INIT_SLEEP_PER_LOOP = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -79,6 +80,9 @@ void MainWindow::init()
     connect(ui->pauseButton, &QPushButton::released, this, &MainWindow::pauseClicked);
 
     connect(ui->saveImageButton, &QPushButton::released, this, &MainWindow::saveImageClicked);
+    connect(ui->sleepPerLoopInput, qOverload<int>(&QSpinBox::valueChanged), looper, &Looper::setSleepPerLoop);
+    ui->sleepPerLoopInput->setValue(INIT_SLEEP_PER_LOOP);
+
     looper->start();
 }
 

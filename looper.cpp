@@ -43,5 +43,7 @@ void Looper::run() {
         timer = QDateTime::currentMSecsSinceEpoch();
         QImage* renderedImage = this->mRenderEngine->render(this->mSimField);
         emit FieldUpdated(renderedImage);
+        // sleep (debug tool)
+        this->msleep(this->sleepPerLoop);
     }
 }
