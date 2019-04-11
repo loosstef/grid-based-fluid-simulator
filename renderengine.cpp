@@ -25,9 +25,9 @@ QImage* RenderEngine::render(const Field *field)
     QImage* image = new QImage(field->getWidth(), field->getHeight(), QImage::Format_RGB32);
     // calculate the unscaled image
     if(this->mRenderType == smoke) {
-        renderSmoke(image, field);
+        renderGrid(image, field->getSmokeDensityGrid(), RenderEngine::smokeToColorIntensity);
     } else if(this->mRenderType == density) {
-        renderDensity(image, field);
+        renderGrid(image, field->getDensityGrid(), RenderEngine::densityToColorIntensity);
     }
     // scale the image
     QImage scaledImage = image->scaled(this->mWidth, this->mHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
@@ -52,6 +52,25 @@ void RenderEngine::setVelocityScale(const float velScale)
 }
 
 /**
+ * Render an image based on a given grid, and a translation function
+ * @brief RenderEngine::renderGrid
+ * @param image the image to write to
+ * @param grid the grid with the nescesary info
+ * @param f the translation function from value to color-intensity
+ */
+void RenderEngine::renderGrid(QImage *image, const Grid *grid, float (*f)(float)) const
+{
+    for(int x = 0; x < grid->getWidth(); ++x) {
+        for(int y = 0; y < grid->getHeight(); ++y) {
+            float colorIntensity = this->valueToColorIntensity(grid->get(x, y), f);
+            QColor color = QColor(colorIntensity, colorIntensity, colorIntensity);
+            Q_ASSERT(color.isValid());
+            image->setPixelColor(x, y, color);
+        }
+    }
+}
+
+/**
  * Toggle the visibility of the velocity-vectors
  * @brief RenderEngine::toggleShowVelocity
  * @param visible true if you want the vectors to be visible
@@ -59,44 +78,6 @@ void RenderEngine::setVelocityScale(const float velScale)
 void RenderEngine::toggleShowVelocity(const bool visible)
 {
     this->mShowVelocity = visible;
-}
-
-/**
- * Render an image based on the smoke-density in the field
- * @brief RenderEngine::renderSmoke
- * @param image the image to override
- * @param field the field containing the smoke to render
- */
-void RenderEngine::renderSmoke(QImage *image, const Field* field) const
-{
-    Grid* smokeDensityGrid = field->getSmokeDensityGrid();
-    for(int x = 0; x < field->getWidth(); ++x) {
-        for(int y = 0; y < field->getHeight(); ++y) {
-            float colorIntensity = this->valueToColorIntensity(smokeDensityGrid->get(x, y), RenderEngine::smokeToColorIntensity);
-            QColor color = QColor(colorIntensity, colorIntensity, colorIntensity);
-            if(color.isValid()) {
-                image->setPixelColor(x, y, color);
-            } else {
-                image->setPixelColor(x, y, QColor(0, 255, 0));
-            }
-        }
-    }
-}
-
-void RenderEngine::renderDensity(QImage *image, const Field *field) const
-{
-    Grid* densityGrid = field->getDensityGrid();
-    for(int x = 0; x < field->getWidth(); ++x) {
-        for(int y = 0; y < field->getHeight(); ++y) {
-            float colorIntensity = this->valueToColorIntensity(densityGrid->get(x, y), RenderEngine::densityToColorIntensity);
-            QColor color = QColor(colorIntensity, colorIntensity, colorIntensity);
-            if(color.isValid()) {
-                image->setPixelColor(x, y, color);
-            } else {
-                image->setPixelColor(x, y, QColor(0, 255, 0));
-            }
-        }
-    }
 }
 
 /**

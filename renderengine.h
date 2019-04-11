@@ -6,6 +6,7 @@
 
 class QImage;
 class Field;
+class Grid;
 class RenderEngineController;
 
 enum RenderType {smoke, density};
@@ -20,8 +21,7 @@ public:
     RenderEngineController *getController();
     void setVelocityScale(const float velScale);
 private:
-    void renderSmoke(QImage* image, const Field* field) const;
-    void renderDensity(QImage* image, const Field* field) const;
+    void renderGrid(QImage* image, const Grid* grid, float (*f)(float)) const;
     void renderVelocity(QImage* image, const Field* field);
     float valueToColorIntensity(float value, float (*f)(float)) const;
     static float smokeToColorIntensity(float value);
