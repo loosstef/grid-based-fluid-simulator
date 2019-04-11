@@ -72,7 +72,7 @@ void RenderEngine::renderSmoke(QImage *image, const Field* field) const
     Grid* smokeDensityGrid = field->getSmokeDensityGrid();
     for(int x = 0; x < field->getWidth(); ++x) {
         for(int y = 0; y < field->getHeight(); ++y) {
-            float colorIntensity = this->valueToColorIntensity(smokeDensityGrid->get(x, y));
+            float colorIntensity = this->valueToColorIntensity(smokeDensityGrid->get(x, y), RenderEngine::smokeToColorIntensity);
             QColor color = QColor(colorIntensity, colorIntensity, colorIntensity);
             if(color.isValid()) {
                 image->setPixelColor(x, y, color);
@@ -88,7 +88,7 @@ void RenderEngine::renderDensity(QImage *image, const Field *field) const
     Grid* densityGrid = field->getDensityGrid();
     for(int x = 0; x < field->getWidth(); ++x) {
         for(int y = 0; y < field->getHeight(); ++y) {
-            float colorIntensity = this->valueToColorIntensity(densityGrid->get(x, y));
+            float colorIntensity = this->valueToColorIntensity(densityGrid->get(x, y), RenderEngine::densityToColorIntensity);
             QColor color = QColor(colorIntensity, colorIntensity, colorIntensity);
             if(color.isValid()) {
                 image->setPixelColor(x, y, color);
@@ -146,16 +146,26 @@ void RenderEngine::renderVelocity(QImage *image, const Field *field)
  * @param value the value of the fluid in a certain point
  * @return the color-intensity of the given value, always between 0 and 255
  */
-float RenderEngine::valueToColorIntensity(float value) const
+float RenderEngine::valueToColorIntensity(float value, float (*f)(float)) const
 {
     if(value < 0) {
         value = 0;
     }
-    float colorIntensity = qSqrt(value)*75;
+    float colorIntensity = f(value);
     if(colorIntensity < 0) {
         colorIntensity = 0;
     } else if(colorIntensity > 255) {
         colorIntensity = 255;
     }
     return colorIntensity;
+}
+
+float RenderEngine::smokeToColorIntensity(float value)
+{
+    return qSqrt(value) * 75;
+}
+
+float RenderEngine::densityToColorIntensity(float value)
+{
+    return value * 65;
 }

@@ -23,7 +23,9 @@ private:
     void renderSmoke(QImage* image, const Field* field) const;
     void renderDensity(QImage* image, const Field* field) const;
     void renderVelocity(QImage* image, const Field* field);
-    float valueToColorIntensity(float value) const;
+    float valueToColorIntensity(float value, float (*f)(float)) const;
+    static float smokeToColorIntensity(float value);
+    static float densityToColorIntensity(float value);
     int mWidth;
     int mHeight;
     bool mShowVelocity;
