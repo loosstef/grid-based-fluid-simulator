@@ -35,15 +35,22 @@ void Looper::run() {
 
     // start loop
     while(true) {
+        qint64 deltaTime = QDateTime::currentMSecsSinceEpoch() - timer;
+        if(deltaTime < this->sleepPerLoop) {
+            this->msleep(this->sleepPerLoop-deltaTime);
+        }
+        deltaTime = QDateTime::currentMSecsSinceEpoch() - timer;
+        timer = QDateTime::currentMSecsSinceEpoch();
         if(this->runLock.tryLock()) {
             this->runLock.unlock();
-            qint64 deltaTime = QDateTime::currentMSecsSinceEpoch() - timer;
             this->mSimField->simulateNextStep(deltaTime);
         }
-        timer = QDateTime::currentMSecsSinceEpoch();
         QImage* renderedImage = this->mRenderEngine->render(this->mSimField);
         emit FieldUpdated(renderedImage);
-        // sleep (debug tool)
-        this->msleep(this->sleepPerLoop);
     }
 }
+/*
+            // Sleep as debug tool
+            if(deltaTime < this->sleepPerLoop) {
+                this->msleep(this->sleepPerLoop-deltaTime);
+            }*/
