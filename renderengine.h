@@ -8,6 +8,8 @@ class QImage;
 class Field;
 class RenderEngineController;
 
+enum RenderType {smoke, density};
+
 class RenderEngine : public QObject
 {
     Q_OBJECT
@@ -19,6 +21,7 @@ public:
     void setVelocityScale(const float velScale);
 private:
     void renderSmoke(QImage* image, const Field* field) const;
+    void renderDensity(QImage* image, const Field* field) const;
     void renderVelocity(QImage* image, const Field* field);
     float valueToColorIntensity(float value) const;
     int mWidth;
@@ -26,6 +29,7 @@ private:
     bool mShowVelocity;
     float mVelocityScale = 1;
     QPainter mPainter;
+    RenderType mRenderType = density;
 
 public slots:
     void toggleShowVelocity(const bool visible);

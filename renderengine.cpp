@@ -24,7 +24,11 @@ QImage* RenderEngine::render(const Field *field)
 {
     QImage* image = new QImage(field->getWidth(), field->getHeight(), QImage::Format_RGB32);
     // calculate the unscaled image
-    renderSmoke(image, field);
+    if(this->mRenderType == smoke) {
+        renderSmoke(image, field);
+    } else if(this->mRenderType == density) {
+        renderDensity(image, field);
+    }
     // scale the image
     QImage scaledImage = image->scaled(this->mWidth, this->mHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     QImage* scaledImageHeap = new QImage(scaledImage);
@@ -69,6 +73,22 @@ void RenderEngine::renderSmoke(QImage *image, const Field* field) const
     for(int x = 0; x < field->getWidth(); ++x) {
         for(int y = 0; y < field->getHeight(); ++y) {
             float colorIntensity = this->valueToColorIntensity(smokeDensityGrid->get(x, y));
+            QColor color = QColor(colorIntensity, colorIntensity, colorIntensity);
+            if(color.isValid()) {
+                image->setPixelColor(x, y, color);
+            } else {
+                image->setPixelColor(x, y, QColor(0, 255, 0));
+            }
+        }
+    }
+}
+
+void RenderEngine::renderDensity(QImage *image, const Field *field) const
+{
+    Grid* densityGrid = field->getDensityGrid();
+    for(int x = 0; x < field->getWidth(); ++x) {
+        for(int y = 0; y < field->getHeight(); ++y) {
+            float colorIntensity = this->valueToColorIntensity(densityGrid->get(x, y));
             QColor color = QColor(colorIntensity, colorIntensity, colorIntensity);
             if(color.isValid()) {
                 image->setPixelColor(x, y, color);

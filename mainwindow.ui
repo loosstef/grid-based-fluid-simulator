@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>633</width>
-    <height>519</height>
+    <width>632</width>
+    <height>613</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -60,38 +60,70 @@
         <property name="title">
          <string>Visuals</string>
         </property>
-        <layout class="QFormLayout" name="formLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
          <property name="sizeConstraint">
           <enum>QLayout::SetMinimumSize</enum>
          </property>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="velocityToggle">
-           <property name="text">
-            <string>velocity</string>
+         <item>
+          <layout class="QFormLayout" name="formLayout_2">
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="velocityToggle">
+             <property name="text">
+              <string>velocity</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>velocity size</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="velocitySize">
+             <property name="minimum">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>1000.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>10.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>1.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_5">
+         <item>
+          <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>velocity size</string>
+            <string>Render Type</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="velocitySize">
-           <property name="minimum">
-            <double>1.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>1000.000000000000000</double>
-           </property>
-           <property name="singleStep">
-            <double>10.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
+         <item>
+          <widget class="QComboBox" name="comboBox">
+           <item>
+            <property name="text">
+             <string>Smoke</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Pressure</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>
