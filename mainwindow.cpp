@@ -11,6 +11,7 @@
 #include "renderengine.h"
 #include "renderenginecontroller.h"
 #include "painttoolcontroller.h"
+#include "io.h"
 
 const int FIELD_WIDTH = 150;
 const int FIELD_HEIGHT = 150;
@@ -76,13 +77,17 @@ void MainWindow::init()
     connect(looper, &Looper::FieldUpdated, this, &MainWindow::updateSimulationVisualisation);
     connect(ui->pauseButton, &QPushButton::released, looper, &Looper::toggleRunning);
     connect(ui->pauseButton, &QPushButton::released, this, &MainWindow::pauseClicked);
+
+    connect(ui->saveImageButton, &QPushButton::released, this, &MainWindow::saveImageClicked);
     looper->start();
 }
 
 void MainWindow::updateSimulationVisualisation(QImage* image)
 {
+    QImage* lastImage = this->currentImage;
+    this->currentImage = image;
+    delete lastImage;
     ui->simulationVisualisator->updateView(image);
-    delete image;
     ++this->counter;
     qint64 diffTime = QDateTime::currentMSecsSinceEpoch() - this->timer;
     if(diffTime > 500) {
@@ -111,4 +116,10 @@ void MainWindow::pauseClicked()
     } else {
         ui->pauseButton->setText(QString("Pause"));
     }
+}
+
+void MainWindow::saveImageClicked()
+{
+    QString fileName = ui->fileNameInput->displayText();
+    IO::saveImage(fileName, this->currentImage);
 }

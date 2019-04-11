@@ -8,7 +8,7 @@ class IO
 {
 public:
     IO();
-    static void saveImage(QString* fileName, QImage* image);
+    static void saveImage(QString &path, QImage* image, bool override = false);
 };
 
 #endif // IO_H
