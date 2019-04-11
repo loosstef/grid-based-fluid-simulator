@@ -113,7 +113,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox">
+          <widget class="QComboBox" name="renderTypeSelector">
            <item>
             <property name="text">
              <string>Smoke</string>

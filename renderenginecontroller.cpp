@@ -1,6 +1,7 @@
 #include "renderenginecontroller.h"
 #include <QCheckBox>
 #include <QDoubleSpinBox>
+#include <QComboBox>
 #include "renderengine.h"
 
 RenderEngineController::RenderEngineController(RenderEngine* renderEngine) :
@@ -20,6 +21,11 @@ void RenderEngineController::connectView(QCheckBox *toggleVelocityCheckBox, QDou
     connect(velocityScale, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RenderEngineController::changeVelocityScale);
 }
 
+void RenderEngineController::connectRenderTypeSelector(QComboBox *renderTypeSelector)
+{
+    connect(renderTypeSelector, qOverload<int>(&QComboBox::currentIndexChanged), this, &RenderEngineController::renderTypeChanged);
+}
+
 void RenderEngineController::toggleVelocityVisibility(int state)
 {
     if(state == Qt::Unchecked) {
@@ -32,4 +38,10 @@ void RenderEngineController::toggleVelocityVisibility(int state)
 void RenderEngineController::changeVelocityScale(double scale)
 {
     this->mRenderEngine->setVelocityScale(scale);
+}
+
+void RenderEngineController::renderTypeChanged(int newRenderTypeIndex)
+{
+    RenderType renderType = (RenderType) newRenderTypeIndex;
+    this->mRenderEngine->setRenderType(renderType);
 }

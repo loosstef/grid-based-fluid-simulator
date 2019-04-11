@@ -6,6 +6,7 @@
 class RenderEngine;
 class QCheckBox;
 class QDoubleSpinBox;
+class QComboBox;
 
 
 class RenderEngineController : public QObject
@@ -14,11 +15,13 @@ class RenderEngineController : public QObject
 public:
     RenderEngineController(RenderEngine* renderEngine);
     void connectView(QCheckBox* toggleVelocityCheckBox, QDoubleSpinBox* velocityScale);
+    void connectRenderTypeSelector(QComboBox* renderTypeSelector);
 private:
     RenderEngine* mRenderEngine;
 public slots:
     void toggleVelocityVisibility(int state);
     void changeVelocityScale(double scale);
+    void renderTypeChanged(int newRenderTypeIndex);
 };
 
 #endif // RENDERENGINECONTROLLER_H

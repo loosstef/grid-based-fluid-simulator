@@ -65,8 +65,10 @@ void MainWindow::init()
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, this, &MainWindow::rightClicked);
 
     RenderEngine* renderEngine = new RenderEngine(VIEWER_WIDTH, VIEWER_HEIGHT, false);
-    RenderEngineController* RenderEngineController = renderEngine->getController();
-    RenderEngineController->connectView(ui->velocityToggle, ui->velocitySize);
+    RenderEngineController* renderEngineController = renderEngine->getController();
+    renderEngineController->connectView(ui->velocityToggle, ui->velocitySize);
+    renderEngineController->connectRenderTypeSelector(ui->renderTypeSelector);
+
     ui->velocitySize->setValue(INIT_VELOCITY_SCALE);
 
     // init and start the looper

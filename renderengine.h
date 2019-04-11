@@ -31,10 +31,11 @@ private:
     bool mShowVelocity;
     float mVelocityScale = 1;
     QPainter mPainter;
-    RenderType mRenderType = density;
+    RenderType mRenderType = smoke;
 
 public slots:
     void toggleShowVelocity(const bool visible);
+    void setRenderType(const RenderType renderType) {this->mRenderType = renderType;}
 };
 
 #endif // RENDERENGINE_H
