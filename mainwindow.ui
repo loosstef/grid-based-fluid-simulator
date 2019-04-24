@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>735</width>
+    <width>765</width>
     <height>700</height>
    </rect>
   </property>
@@ -195,7 +195,7 @@
          <item alignment="Qt::AlignTop">
           <widget class="QCheckBox" name="pressureToggle">
            <property name="text">
-            <string>pressure flattening</string>
+            <string>pressure</string>
            </property>
            <property name="checked">
             <bool>true</bool>
