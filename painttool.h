@@ -17,6 +17,7 @@ public:
     PaintToolController *getController();
 public slots:
     void drawPoint(int x, int y);
+    void resetPoint(int x, int y);
 private:
     int mSize = 1;
     float mHardness = 1;

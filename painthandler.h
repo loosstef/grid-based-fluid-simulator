@@ -12,6 +12,8 @@ class PaintToolController;
 class SimulationViewer;
 class VelocityManipulator;
 
+enum PaintType {SMOKE, WALL};
+
 class PaintHandler : public QObject
 {
     Q_OBJECT
@@ -19,10 +21,14 @@ public:
     PaintHandler(Field* field);
     void connectToSimulationViewer(SimulationViewer* simViewer);
     void connectToSettings(QSpinBox* brushSize, QDoubleSpinBox* hardness);
+    void setPaintType(PaintType paintType) {mPaintType = paintType;}
 private:
     PaintTool* mSmokePaintTool;
+    PaintTool* mWallPaintTool;
     PaintToolController* mSmokePaintToolController;
+    PaintToolController* mWallPaintToolController;
     VelocityManipulator* mVelocityManipulator;
+    PaintType mPaintType = WALL;
     int mLastSimX = 0;
     int mLastSimY = 0;
     int mLastViewX = 0;
