@@ -6,12 +6,11 @@
 #include "looper.h"
 #include "simulationviewer.h"
 #include "simulationfield.h"
-#include "painttool.h"
 #include "simulationfieldcontroller.h"
 #include "renderengine.h"
 #include "renderenginecontroller.h"
-#include "painttoolcontroller.h"
 #include "io.h"
+#include "painthandler.h"
 
 const int FIELD_WIDTH = 120;
 const int FIELD_HEIGHT = 120;
@@ -43,9 +42,9 @@ void MainWindow::init()
 {
     // init model-objects
     SimulationField* simField = new SimulationField(FIELD_WIDTH, FIELD_HEIGHT);
-    PaintTool* paintTool = new PaintTool(simField->getSmokeDensityGrid());
-    PaintToolController* paintToolController = paintTool->getController();
-    paintToolController->connectToBrushSettings(ui->brushSize, ui->brushHardness);
+    PaintHandler* paintHandler = new PaintHandler(simField);
+    paintHandler->connectToSettings(ui->brushSize, ui->brushHardness);
+    paintHandler->connectToSimulationViewer(ui->simulationVisualisator);
     ui->brushSize->setValue(INIT_BRUSH_SIZE);
     ui->brushHardness->setValue(INIT_BRUSH_HARDNESS);
 
@@ -60,8 +59,6 @@ void MainWindow::init()
     // connect model and GUI
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, this, &MainWindow::clicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonMoved, this, &MainWindow::clicked);
-    connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, paintTool, &PaintTool::drawPoint);
-    connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonMoved, paintTool, &PaintTool::drawPoint);
 
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, this, &MainWindow::rightClicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, this, &MainWindow::rightClicked);

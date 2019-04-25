@@ -45,7 +45,8 @@ SOURCES += \
     renderenginecontroller.cpp \
     painttoolcontroller.cpp \
     gpucontroller.cpp \
-    io.cpp
+    io.cpp \
+    painthandler.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -62,7 +63,8 @@ HEADERS += \
     renderenginecontroller.h \
     painttoolcontroller.h \
     gpucontroller.h \
-    io.h
+    io.h \
+    painthandler.h
 
 FORMS += \
         mainwindow.ui
