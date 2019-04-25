@@ -43,7 +43,7 @@ void MainWindow::init()
     // init model-objects
     SimulationField* simField = new SimulationField(FIELD_WIDTH, FIELD_HEIGHT);
     PaintHandler* paintHandler = new PaintHandler(simField);
-    paintHandler->connectToSettings(ui->brushSize, ui->brushHardness);
+    paintHandler->connectToSettings(ui->paintTypeSelector, ui->brushSize, ui->brushHardness);
     paintHandler->connectToSimulationViewer(ui->simulationVisualisator);
     ui->brushSize->setValue(INIT_BRUSH_SIZE);
     ui->brushHardness->setValue(INIT_BRUSH_HARDNESS);

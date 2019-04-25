@@ -5,6 +5,7 @@
 
 class QSpinBox;
 class QDoubleSpinBox;
+class QComboBox;
 
 class Field;
 class PaintTool;
@@ -20,7 +21,7 @@ class PaintHandler : public QObject
 public:
     PaintHandler(Field* field);
     void connectToSimulationViewer(SimulationViewer* simViewer);
-    void connectToSettings(QSpinBox* brushSize, QDoubleSpinBox* hardness);
+    void connectToSettings(QComboBox* brushType, QSpinBox* brushSize, QDoubleSpinBox* hardness);
     void setPaintType(PaintType paintType) {mPaintType = paintType;}
 private:
     PaintTool* mSmokePaintTool;
@@ -28,7 +29,7 @@ private:
     PaintToolController* mSmokePaintToolController;
     PaintToolController* mWallPaintToolController;
     VelocityManipulator* mVelocityManipulator;
-    PaintType mPaintType = WALL;
+    PaintType mPaintType = SMOKE;
     int mLastSimX = 0;
     int mLastSimY = 0;
     int mLastViewX = 0;
@@ -39,6 +40,7 @@ public slots:
     void leftMoved(int x, int y);
     void rightMouseClick(int simX, int simY, int viewX, int viewY);
     void rightMouseMove(int simX, int simY, int viewX, int viewY);
+    void paintTypeChanged(int value);
 };
 
 #endif // PAINTHANDLER_H

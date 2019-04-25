@@ -2,6 +2,7 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QDateTime>
+#include <QComboBox>
 #include "field.h"
 #include "painttool.h"
 #include "painttoolcontroller.h"
@@ -30,10 +31,11 @@ void PaintHandler::connectToSimulationViewer(SimulationViewer *simViewer)
     connect(simViewer, &SimulationViewer::mouseRightButtonMoved, this, &PaintHandler::rightMouseMove);
 }
 
-void PaintHandler::connectToSettings(QSpinBox *brushSize, QDoubleSpinBox *hardness)
+void PaintHandler::connectToSettings(QComboBox* brushType, QSpinBox *brushSize, QDoubleSpinBox *hardness)
 {
     mSmokePaintToolController->connectToBrushSettings(brushSize, hardness);
     mWallPaintToolController->connectToBrushSettings(brushSize, hardness);
+    connect(brushType, qOverload<int>(&QComboBox::currentIndexChanged), this, &PaintHandler::paintTypeChanged);
 }
 
 void PaintHandler::leftClicked(int x, int y)
@@ -82,5 +84,14 @@ void PaintHandler::rightMouseMove(int simX, int simY, int viewX, int viewY)
         this->mTimer = QDateTime::currentMSecsSinceEpoch();
     } else if(mPaintType == WALL) {
         mWallPaintTool->resetPoint(simX, simY);
+    }
+}
+
+void PaintHandler::paintTypeChanged(int value)
+{
+    if(value == 0) {
+        setPaintType(SMOKE);
+    } else if(value == 1) {
+        setPaintType(WALL);
     }
 }
