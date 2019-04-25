@@ -10,10 +10,7 @@ Field::Field(const int simWidth, const int simHeight, QObject* parent) :
     this->mSmokeDensity = new Grid(simWidth, simHeight);
     this->mHorizontalVelocity = new Grid(simWidth, simHeight);
     this->mVerticalVelocity = new Grid(simWidth, simHeight);
-    this->mWalls = new bool[simWidth*simHeight];
-    for(int i = 0; i < simWidth*simHeight; ++i) {
-        this->mWalls[i] = false;
-    }
+    this->mWalls = new Grid(simWidth, simHeight);
 }
 
 Field::~Field()

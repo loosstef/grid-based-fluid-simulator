@@ -76,13 +76,13 @@ void RenderEngine::renderGrid(QImage *image, const Grid *grid, float (*f)(float)
     }
 }
 
-void RenderEngine::renderWalls(QImage *image, const bool *walls, int width, int height, float xScale, float yScale)
+void RenderEngine::renderWalls(QImage *image, Grid *walls, int width, int height, float xScale, float yScale)
 {
     this->mPainter.begin(image);
     mPainter.setPen(WALL_COLOR);
     for(int x = 0; x < width; ++x) {
         for(int y = 0; y < height; ++y) {
-            if(walls[x + width*y]) {
+            if(walls->get(x, y) > 0) {
                 this->mPainter.fillRect(ceil(x*xScale), ceil(y*yScale), ceil(xScale), ceil(yScale), WALL_COLOR);
             }
         }
