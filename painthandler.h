@@ -10,6 +10,7 @@ class Field;
 class PaintTool;
 class PaintToolController;
 class SimulationViewer;
+class VelocityManipulator;
 
 class PaintHandler : public QObject
 {
@@ -21,11 +22,17 @@ public:
 private:
     PaintTool* mSmokePaintTool;
     PaintToolController* mSmokePaintToolController;
+    VelocityManipulator* mVelocityManipulator;
+    int mLastSimX = 0;
+    int mLastSimY = 0;
+    int mLastViewX = 0;
+    int mLastViewY = 0;
+    qint64 mTimer;
 public slots:
     void leftClicked(int x, int y);
     void leftMoved(int x, int y);
-    void rightClicked(int x, int y);
-    void rightMoved(int x, int y);
+    void rightMouseClick(int simX, int simY, int viewX, int viewY);
+    void rightMouseMove(int simX, int simY, int viewX, int viewY);
 };
 
 #endif // PAINTHANDLER_H

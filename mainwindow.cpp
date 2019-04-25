@@ -51,7 +51,7 @@ void MainWindow::init()
     ui->simulationVisualisator->setSize(FIELD_WIDTH, FIELD_HEIGHT, VIEWER_WIDTH, VIEWER_HEIGHT);
 
     SimulationFieldController* simViewConnector = simField->getController();
-    simViewConnector->connectToViewer(ui->simulationVisualisator);
+    //simViewConnector->connectToViewer(ui->simulationVisualisator);
     simViewConnector->connectToSimSettingsCheckboxes(ui->forwardAdvectionToggle, ui->reverseAdvectionToggle, ui->pressureToggle, ui->diffusionToggle);
     simViewConnector->connectToResetButton(ui->resetButton);
     simViewConnector->connectEdgeCaseSelector(ui->edgeCaseSelector);
@@ -59,7 +59,6 @@ void MainWindow::init()
     // connect model and GUI
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonClicked, this, &MainWindow::clicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonMoved, this, &MainWindow::clicked);
-
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, this, &MainWindow::rightClicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, this, &MainWindow::rightClicked);
 
