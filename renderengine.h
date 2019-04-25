@@ -22,6 +22,7 @@ public:
     void setVelocityScale(const float velScale);
 private:
     void renderGrid(QImage* image, const Grid* grid, float (*f)(float)) const;
+    void renderWalls(QImage* image, const bool* walls, int width, int height, float xScale, float yScale);
     void renderVelocity(QImage* image, const Field* field);
     float valueToColorIntensity(float value, float (*f)(float)) const;
     static float smokeToColorIntensity(float value);

@@ -15,6 +15,7 @@ public:
     Grid* getSmokeDensityGrid() const {return mSmokeDensity;}
     Grid* getHorizontalVelocity() const {return mHorizontalVelocity;}
     Grid* getVerticalVelocity() const {return mVerticalVelocity;}
+    const bool* getWalls() const {return this->mWalls;}
     int getWidth() const {return this->simWidth;}
     int getHeight() const {return this->simHeight;}
     void reset();
@@ -25,6 +26,7 @@ protected:
     Grid* mSmokeDensity;
     Grid* mHorizontalVelocity;
     Grid* mVerticalVelocity;
+    bool* mWalls;
     QMutex baseLock;
 };
 

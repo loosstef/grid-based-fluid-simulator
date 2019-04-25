@@ -6,6 +6,7 @@
 #include "renderenginecontroller.h"
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
+const Qt::GlobalColor WALL_COLOR = Qt::blue;
 const int VEL_VECTOR_SPARSENESS = 3;
 
 RenderEngine::RenderEngine(const int width,  const int height, const bool showVelocity) :
@@ -33,6 +34,11 @@ QImage* RenderEngine::render(const Field *field)
     QImage scaledImage = image->scaled(this->mWidth, this->mHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     QImage* scaledImageHeap = new QImage(scaledImage);
     delete image;
+
+    // draw walls
+    const float widthScale = (float)this->mWidth/(float)field->getWidth();
+    const float heightScale = (float)this->mHeight/(float)field->getHeight();
+    renderWalls(scaledImageHeap, field->getWalls(), field->getWidth(), field->getHeight(), widthScale, heightScale);
 
     if(this->mShowVelocity) {
         this->renderVelocity(scaledImageHeap, field);
@@ -68,6 +74,20 @@ void RenderEngine::renderGrid(QImage *image, const Grid *grid, float (*f)(float)
             image->setPixelColor(x, y, color);
         }
     }
+}
+
+void RenderEngine::renderWalls(QImage *image, const bool *walls, int width, int height, float xScale, float yScale)
+{
+    this->mPainter.begin(image);
+    mPainter.setPen(WALL_COLOR);
+    for(int x = 0; x < width; ++x) {
+        for(int y = 0; y < height; ++y) {
+            if(walls[x + width*y]) {
+                this->mPainter.fillRect(ceil(x*xScale), ceil(y*yScale), ceil(xScale), ceil(yScale), WALL_COLOR);
+            }
+        }
+    }
+    this->mPainter.end();
 }
 
 /**
