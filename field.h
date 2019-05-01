@@ -15,7 +15,7 @@ public:
     Grid* getSmokeDensityGrid() const {return mSmokeDensity;}
     Grid* getHorizontalVelocity() const {return mHorizontalVelocity;}
     Grid* getVerticalVelocity() const {return mVerticalVelocity;}
-    Grid* getWalls() const {return this->mWalls;}
+    Grid* getWallsGrid() const {return this->mWalls;}
     int getWidth() const {return this->simWidth;}
     int getHeight() const {return this->simHeight;}
     void reset();

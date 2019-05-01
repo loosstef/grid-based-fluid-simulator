@@ -96,6 +96,19 @@ void SimulationField::simulateNextStep(const int deltaTime)
         delete this->mLastVerticalVelocity;
     }
 
+    // change velocities based on walls
+    this->mLastDensity = Grid::deepCopy(mDensity);
+    this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
+    this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
+    this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
+
+    this->makeVelocityVectorsNotPointToWalls();
+
+    delete mLastDensity;
+    delete mLastSmokeDensity;
+    delete mLastHorizontalVelocity;
+    delete mLastVerticalVelocity;
+
     this->testValidity();
     this->baseLock.unlock();
 }
@@ -121,6 +134,10 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
 {
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simHeight; ++y) {
+            bool currPosIsWall = this->mWalls->get(x, y) > 0;
+            if(currPosIsWall) {
+                continue;
+            }
             // init data
             float sourceDensity = this->mLastDensity->get(x, y);
             float sourceSmokeDensity = this->mLastSmokeDensity->get(x, y);
@@ -226,6 +243,9 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
     //move everything
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simHeight; ++y) {
+            if(this->mWalls->get(x, y) > 0) {
+                continue;
+            }
             for(int i = 0; i < nSources[x+y*this->simWidth]; ++i) {
                 int sX = sourceX[x+y*this->simWidth][i];
                 int sY = sourceY[x+y*this->simWidth][i];
@@ -274,14 +294,17 @@ void SimulationField::simulatePressureResult(int deltaTime)
 {
     for(int y = 0; y < this->simHeight; ++y) {
         for(int x = 0; x < this->simWidth; ++x) {
+            if(this->mWalls->get(x, y) > 0) {
+                continue;
+            }
             float localDensity = this->mDensity->get(x, y);
             float forceX = 0;
             float forceY = 0;
             if(this->mEdgeCaseMethod == block) {
-                if(x + 1 < this->simWidth) {
+                if(x + 1 < this->simWidth && this->mWalls->get(x+1, y) == 0) {
                     forceX = localDensity - this->mDensity->get(x+1, y);
                 }
-                if(y + 1 < this->simHeight) {
+                if(y + 1 < this->simHeight && this->mWalls->get(x, y+1) == 0) {
                     forceY = localDensity - this->mDensity->get(x, y+1);
                 }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
@@ -294,8 +317,12 @@ void SimulationField::simulatePressureResult(int deltaTime)
             else if(this->mEdgeCaseMethod == wrap) {
                 int nextX = (x + 1) % this->simWidth;
                 int nextY = (y + 1) % this->simHeight;
-                forceX = localDensity - this->mDensity->get(nextX, y);
-                forceY = localDensity - this->mDensity->get(x, nextY);
+                if(this->mWalls->get(nextX, y) == 0) {
+                    forceX = localDensity - this->mDensity->get(nextX, y);
+                }
+                if(this->mWalls->get(x, nextY) == 0) {
+                    forceY = localDensity - this->mDensity->get(x, nextY);
+                }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
                 float velY = forceY * deltaTime / PRESSURE_SLOWNESS;
                 this->mHorizontalVelocity->add(x, y, velX);
@@ -317,12 +344,18 @@ void SimulationField::diffuse(int deltaTime)
     // TODO: make use of deltaTime?
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simWidth; ++y) {
+            if(this->mWalls->get(x, y) > 0) {
+                continue;
+            }
             int nSurroundingGridPoints = 0;
             float densitySum = 0;
             float horVelSum = 0;
             float verVelSum = 0;
             for(int surrX = x-1; surrX <= x+1; ++surrX) {
                 for(int surrY = y-1; surrY <= y+1; ++surrY) {
+                    if(this->mWalls->get(surrX, surrY) > 0) {
+                        continue;
+                    }
                     if(this->mEdgeCaseMethod == block) {
                         if(surrX >= 0 && surrX < this->simWidth && surrY >=0 && surrY < this->simHeight) {
                             ++nSurroundingGridPoints;
@@ -350,6 +383,51 @@ void SimulationField::diffuse(int deltaTime)
             this->mVerticalVelocity->set(x, y, verVelSum/DIFFUSE_SLOWNESS);
         }
     }
+}
+
+void SimulationField::makeVelocityVectorsNotPointToWalls()
+{
+    for(int x = 0; x < this->getWidth(); ++x) {
+        for(int y = 0; y < this->getHeight(); ++y) {
+            if(this->mWalls->get(x, y) > 0) {
+                this->mVerticalVelocity->set(x, y, 0);
+                this->mHorizontalVelocity->set(x, y, 0);
+            }
+            // upper wall
+            int upperY = y - 1;
+            if(this->mEdgeCaseMethod == wrap && upperY < 0) {
+                upperY = this->getHeight() - 1;
+            }
+            if(this->mWalls->get(x, upperY) > 0 && this->mVerticalVelocity->get(x, y) < 0) {
+                mVerticalVelocity->set(x, y, 0);
+            }
+            // lower wall
+            int lowerY = y + 1;
+            if(this->mEdgeCaseMethod == wrap && lowerY >= this->getHeight()) {
+                lowerY = 0;
+            }
+            if(this->mWalls->get(x, lowerY) > 0 && this->mVerticalVelocity->get(x, y) > 0) {
+                this->mVerticalVelocity->set(x, y, 0);
+            }
+            // left wall
+            int leftX = x - 1;
+            if(this->mEdgeCaseMethod == wrap && leftX < 0) {
+                leftX = this->getWidth() - 1;
+            }
+            if(this->mWalls->get(leftX, y) > 0 && this->mHorizontalVelocity->get(x, y) < 0) {
+                this->mHorizontalVelocity->set(x, y, 0);
+            }
+            // right wall
+            int rightX = x + 1;
+            if(this->mEdgeCaseMethod == wrap && rightX >= this->getWidth()) {
+                rightX = 0;
+            }
+            if(this->mWalls->get(rightX, y) > 0 && this->mHorizontalVelocity->get(x, y) > 0) {
+                this->mHorizontalVelocity->set(x, y, 0);
+            }
+        }
+    }
+
 }
 
 /**
@@ -443,48 +521,62 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
     }
 
     if(percentageAB != 0) {
-        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
+        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap && this->mWalls->get(rightMostCoord, upperMostCoord) == 0) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
             ++index;
-        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap) {
+        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap && this->mWalls->get(leftMostCoord, upperMostCoord) == 0) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
             ++index;
         } else {
-            xCoords[index] = (leftMostCoord + this->simWidth)%this->simWidth;
-            yCoords[index] = (upperMostCoord + this->simHeight)%this->simHeight;
-            percentages[index] = percentageAB * (1 - (x - leftMostCoord));
-            ++index;
-            xCoords[index] = (rightMostCoord + this->simWidth)%this->simWidth;
-            yCoords[index] = (upperMostCoord + this->simHeight)%this->simHeight;
-            percentages[index] = percentageAB * (x - leftMostCoord);
-            ++index;
+            int wrappedLeftMostCoord = (leftMostCoord + this->simWidth)%this->simWidth;
+            int wrappedUpperMostCoord = (upperMostCoord + this->simHeight)%this->simHeight;
+            if(this->mWalls->get(wrappedLeftMostCoord, wrappedUpperMostCoord) == 0) {
+                xCoords[index] = wrappedLeftMostCoord;
+                yCoords[index] = wrappedUpperMostCoord;
+                percentages[index] = percentageAB * (1 - (x - leftMostCoord));
+                ++index;
+            }
+            int wrappedRightMostCoord = (rightMostCoord + this->simWidth)%this->simWidth;
+            if(this->mWalls->get(wrappedRightMostCoord, wrappedUpperMostCoord) == 0) {
+                xCoords[index] = wrappedRightMostCoord;
+                yCoords[index] = wrappedUpperMostCoord;
+                percentages[index] = percentageAB * (x - leftMostCoord);
+                ++index;
+            }
         }
     }
 
     if(percentageCD != 0) {
-        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap) {
+        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap && this->mWalls->get(rightMostCoord, lowerMostCoord) == 0) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
             ++index;
-        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap) {
+        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap && this->mWalls->get(leftMostCoord, lowerMostCoord) == 0) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
             ++index;
         } else {
-            xCoords[index] = (leftMostCoord + this->simWidth)%this->simWidth;
-            yCoords[index] = (lowerMostCoord + this->simHeight)%this->simHeight;
-            percentages[index] = percentageCD * (1 - (x - leftMostCoord));
-            ++index;
-            xCoords[index] = (rightMostCoord + this->simWidth)%this->simWidth;
-            yCoords[index] = (lowerMostCoord + this->simHeight)%this->simHeight;
-            percentages[index] = percentageCD * (x - leftMostCoord);
-            ++index;
+            int wrappedLeftMostCoord = (leftMostCoord + this->simWidth)%this->simWidth;
+            int wrappedLowerMostCoord = (lowerMostCoord + this->simHeight)%this->simHeight;
+            if(this->mWalls->get(wrappedLeftMostCoord, wrappedLowerMostCoord) == 0) {
+                xCoords[index] = wrappedLeftMostCoord;
+                yCoords[index] = wrappedLowerMostCoord;
+                percentages[index] = percentageCD * (1 - (x - leftMostCoord));
+                ++index;
+            }
+            int wrappedRightMostCoord = (rightMostCoord + this->simWidth)%this->simWidth;
+            if(this->mWalls->get(wrappedRightMostCoord, wrappedLowerMostCoord) == 0) {
+                xCoords[index] = wrappedRightMostCoord;
+                yCoords[index] = (lowerMostCoord + this->simHeight)%this->simHeight;
+                percentages[index] = percentageCD * (x - leftMostCoord);
+                ++index;
+            }
         }
     }
 

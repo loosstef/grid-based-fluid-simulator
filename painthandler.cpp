@@ -15,7 +15,7 @@ const int INIT_MANIPULATION_AREA = 5;
 PaintHandler::PaintHandler(Field* field)
 {
     mSmokePaintTool = new PaintTool(field->getSmokeDensityGrid());
-    mWallPaintTool = new PaintTool(field->getWalls());
+    mWallPaintTool = new PaintTool(field->getWallsGrid());
     mSmokePaintToolController = mSmokePaintTool->getController();
     mWallPaintToolController = mWallPaintTool->getController();
     mVelocityManipulator = new VelocityManipulator(field);

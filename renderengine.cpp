@@ -38,7 +38,7 @@ QImage* RenderEngine::render(const Field *field)
     // draw walls
     const float widthScale = (float)this->mWidth/(float)field->getWidth();
     const float heightScale = (float)this->mHeight/(float)field->getHeight();
-    renderWalls(scaledImageHeap, field->getWalls(), field->getWidth(), field->getHeight(), widthScale, heightScale);
+    renderWalls(scaledImageHeap, field->getWallsGrid(), field->getWidth(), field->getHeight(), widthScale, heightScale);
 
     if(this->mShowVelocity) {
         this->renderVelocity(scaledImageHeap, field);
