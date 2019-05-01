@@ -7,7 +7,7 @@
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
 const Qt::GlobalColor WALL_COLOR = Qt::blue;
-const int VEL_VECTOR_SPARSENESS = 3;
+//const int VEL_VECTOR_SPARSENESS = 1;
 
 RenderEngine::RenderEngine(const int width,  const int height, const bool showVelocity) :
     mWidth(width), mHeight(height), mShowVelocity(showVelocity)
@@ -119,8 +119,8 @@ void RenderEngine::renderVelocity(QImage *image, const Field *field)
     int offSetX = (int)(pixWidth/2);
     int offSetY = (int)(pixHeight/2);
 
-    for(int x = 0; x < field->getWidth(); x += VEL_VECTOR_SPARSENESS) {
-        for (int y = 0; y < field->getHeight(); y += VEL_VECTOR_SPARSENESS) {
+    for(int x = 0; x < field->getWidth(); x += this->mVelocitySparseness) {
+        for (int y = 0; y < field->getHeight(); y += this->mVelocitySparseness) {
             int baseX = (int)x*(pixWidth) + offSetX;
             int baseY = (int)y*(pixHeight) + offSetY;
             int endX = baseX+horVel->get(x, y)*this->mVelocityScale;

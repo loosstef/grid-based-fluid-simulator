@@ -19,6 +19,7 @@ const int VIEWER_HEIGHT = 800;
 const int INIT_BRUSH_SIZE = 10;
 const int INIT_BRUSH_HARDNESS = 1;
 const double INIT_VELOCITY_SCALE = 10;
+const int INIT_VELOCITY_SPARSENESS = 1;
 const int INIT_SLEEP_PER_LOOP = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -64,10 +65,11 @@ void MainWindow::init()
 
     RenderEngine* renderEngine = new RenderEngine(VIEWER_WIDTH, VIEWER_HEIGHT, false);
     RenderEngineController* renderEngineController = renderEngine->getController();
-    renderEngineController->connectView(ui->velocityToggle, ui->velocitySize);
+    renderEngineController->connectView(ui->velocityToggle, ui->velocitySize, ui->sparsnessInput);
     renderEngineController->connectRenderTypeSelector(ui->renderTypeSelector);
 
     ui->velocitySize->setValue(INIT_VELOCITY_SCALE);
+    ui->sparsnessInput->setValue(INIT_VELOCITY_SPARSENESS);
 
     // init and start the looper
     Looper* looper = new Looper(simField, renderEngine);

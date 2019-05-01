@@ -20,6 +20,7 @@ public:
     void showVelocity(const bool showVelocity) {this->mShowVelocity = showVelocity;}
     RenderEngineController *getController();
     void setVelocityScale(const float velScale);
+    void setVelocitySparseness(const int velSparseness) {this->mVelocitySparseness = velSparseness;}
 private:
     void renderGrid(QImage* image, const Grid* grid, float (*f)(float)) const;
     void renderWalls(QImage* image, Grid* walls, int width, int height, float xScale, float yScale);
@@ -31,6 +32,7 @@ private:
     int mHeight;
     bool mShowVelocity;
     float mVelocityScale = 1;
+    int mVelocitySparseness = 1;
     QPainter mPainter;
     RenderType mRenderType = smoke;
 
