@@ -20,7 +20,7 @@ Grid::Grid(float *values, const int width, const int height) :
 
 Grid::~Grid()
 {
-    delete this->values;
+    delete[] this->values;
 }
 
 /**

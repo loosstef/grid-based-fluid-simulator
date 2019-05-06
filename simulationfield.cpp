@@ -84,7 +84,6 @@ void SimulationField::simulateNextStep(const int deltaTime)
     }
 
     if(this->mDiffuse) {
-        // TODO: remove the correct copy's
         this->mLastDensity = Grid::deepCopy(mDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
