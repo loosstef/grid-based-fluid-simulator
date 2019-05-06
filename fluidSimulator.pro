@@ -44,7 +44,6 @@ SOURCES += \
     simulationfieldcontroller.cpp \
     renderenginecontroller.cpp \
     painttoolcontroller.cpp \
-    gpucontroller.cpp \
     io.cpp \
     painthandler.cpp
 
@@ -62,7 +61,6 @@ HEADERS += \
     simulationfieldcontroller.h \
     renderenginecontroller.h \
     painttoolcontroller.h \
-    gpucontroller.h \
     io.h \
     painthandler.h
 
