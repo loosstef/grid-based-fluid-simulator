@@ -23,6 +23,13 @@ PaintHandler::PaintHandler(Field* field)
     mVelocityManipulator->setManipulationArea(INIT_MANIPULATION_AREA);
 }
 
+PaintHandler::~PaintHandler()
+{
+    delete mSmokePaintTool;
+    delete mWallPaintTool;
+    delete mVelocityManipulator;
+}
+
 void PaintHandler::connectToSimulationViewer(SimulationViewer *simViewer)
 {
     connect(simViewer, &SimulationViewer::mouseLeftButtonClicked, this, &PaintHandler::leftClicked);

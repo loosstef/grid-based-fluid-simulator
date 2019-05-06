@@ -20,6 +20,7 @@ class PaintHandler : public QObject
     Q_OBJECT
 public:
     PaintHandler(Field* field);
+    ~PaintHandler();
     void connectToSimulationViewer(SimulationViewer* simViewer);
     void connectToSettings(QComboBox* brushType, QSpinBox* brushSize, QDoubleSpinBox* hardness);
     void setPaintType(PaintType paintType) {mPaintType = paintType;}

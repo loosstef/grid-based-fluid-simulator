@@ -278,9 +278,11 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
         }
     }
 
-    delete sourceX;
-    delete sourceY;
-    delete sourcePercentage;
+    delete[] nSources;
+    delete[] sourceX;
+    delete[] sourceY;
+    delete[] sourcePercentage;
+    delete[] totalAskedPercentages;
 }
 
 /**

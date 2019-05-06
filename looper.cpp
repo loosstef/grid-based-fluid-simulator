@@ -49,8 +49,3 @@ void Looper::run() {
         emit FieldUpdated(renderedImage);
     }
 }
-/*
-            // Sleep as debug tool
-            if(deltaTime < this->sleepPerLoop) {
-                this->msleep(this->sleepPerLoop-deltaTime);
-            }*/

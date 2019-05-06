@@ -137,7 +137,7 @@ void RenderEngine::renderVelocity(QImage *image, const Field *field)
     mPainter.setPen(VELOCITY_COLOR);
     this->mPainter.drawLines(pointsPairs, pointsPairsIndex/2);
     this->mPainter.end();
-    delete pointsPairs;
+    delete[] pointsPairs;
 }
 
 /**
