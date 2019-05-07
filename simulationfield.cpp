@@ -151,6 +151,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
             float sourceHorMovement = (sourceHorVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
             float sourceVerMovement = (sourceVerVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
+            float sourceTemperature = this->mLastTemperature->get(x, y);
             if(qAbs(sourceHorMovement) > MAX_MOVEMENT_VECTOR_SIZE) {
                 sourceHorMovement = ((sourceHorMovement > 0) ? 1 : -1) * MAX_MOVEMENT_VECTOR_SIZE;
             }
@@ -170,6 +171,8 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 continue;
             }
             for(int i = 0; i < nTargets; ++i) {
+                int tarX = targetX[i];
+                int tarY = targetY[i];
                 float densityValue = sourceDensity * targetPercentage[i];
                 Q_ASSERT(densityValue >= 0);
                 float smokeDensityValue = sourceSmokeDensity * targetPercentage[i];
@@ -183,6 +186,10 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 this->mHorizontalVelocity->add(targetX[i], targetY[i], VelXValue);
                 this->mVerticalVelocity->add(x, y, -VelYValue);
                 this->mVerticalVelocity->add(targetX[i], targetY[i], VelYValue);
+                float tarTemp =
+                        (mMass->get(tarX, tarY) * mLastTemperature->get(tarX, tarY) + sourceDensity * sourceTemperature)
+                        / (mMass->get(tarX, tarY) + sourceDensity);
+                this->mTemperature->set(x, y, tarTemp);
 
                 // FIXME: there should be a better solution than this
                 Q_ASSERT(this->mMass->get(x, y) >= -0.0001);
