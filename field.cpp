@@ -11,6 +11,7 @@ Field::Field(const int simWidth, const int simHeight, QObject* parent) :
     this->mHorizontalVelocity = new Grid(simWidth, simHeight);
     this->mVerticalVelocity = new Grid(simWidth, simHeight);
     this->mWalls = new Grid(simWidth, simHeight);
+    this->mTemperature = new Grid(simWidth, simHeight, 273+15);
 }
 
 Field::~Field()
