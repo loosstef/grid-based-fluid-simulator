@@ -259,6 +259,8 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
             if(this->mWalls->get(x, y) > 0) {
                 continue;
             }
+            float weightedSumTemperatures = this->mLastTemperature->get(x, y) * this->mLastMass->get(x, y);
+            float sumWeightsOfTemperatures = this->mLastMass->get(x, y);
             for(int i = 0; i < nSources[x+y*this->simWidth]; ++i) {
                 int sX = sourceX[x+y*this->simWidth][i];
                 int sY = sourceY[x+y*this->simWidth][i];
@@ -267,28 +269,30 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                 if(totalSourcePercentage > 1) {
                     askedPercentage /= totalSourcePercentage;
                 }
-                float densityValue = this->mLastMass->get(sX, sY) * askedPercentage;
+                float massValue = this->mLastMass->get(sX, sY) * askedPercentage;
                 float smokeDensityValue = this->mLastSmokeDensity->get(sX, sY) * askedPercentage;
                 float horVelValue = this->mLastHorizontalVelocity->get(sX, sY) * askedPercentage;
                 float verVelValue = this->mLastVerticalVelocity->get(sX, sY) * askedPercentage;
                 Q_ASSERT(!isinf(smokeDensityValue));
                 Q_ASSERT(smokeDensityValue >= 0);
-                this->mMass->add(sX, sY, -densityValue);
-                this->mMass->add(x, y, densityValue);
+                this->mMass->add(sX, sY, -massValue);
+                this->mMass->add(x, y, massValue);
                 this->mSmokeDensity->add(sX, sY, -smokeDensityValue);
                 this->mSmokeDensity->add(x, y, smokeDensityValue);
+                weightedSumTemperatures += this->mLastTemperature->get(sX, sY) * massValue;
+                sumWeightsOfTemperatures += massValue;
                 Q_ASSERT(!isinf(this->mSmokeDensity->get(x, y)));
                 Q_ASSERT(this->mSmokeDensity->get(sX, sY) > -0.001);
                 // FIXME: there should be a better solution
                 if(this->mSmokeDensity->get(sX, sY) < 0) {
                     this->mSmokeDensity->set(sX, sY, 0);
                 }
-                // NOTE: not sure if velocity should be pulled or pushed backwards
                 this->mHorizontalVelocity->add(sX, sY, -horVelValue);
                 this->mHorizontalVelocity->add(x, y, horVelValue);
                 this->mVerticalVelocity->add(sX, sY, -verVelValue);
                 this->mVerticalVelocity->add(x, y, verVelValue);
             }
+            this->mTemperature->set(x, y, weightedSumTemperatures/sumWeightsOfTemperatures);
         }
     }
 
