@@ -39,6 +39,7 @@ void SimulationField::simulateNextStep(const int deltaTime)
         this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
+        this->mLastTemperature = Grid::deepCopy(mTemperature);
 
         this->simulateForwardAdvection(deltaTime);
 
@@ -46,12 +47,14 @@ void SimulationField::simulateNextStep(const int deltaTime)
         delete this->mLastSmokeDensity;
         delete this->mLastHorizontalVelocity;
         delete this->mLastVerticalVelocity;
+        delete this->mLastTemperature;
     }
     if(this->mReverseAdvection) {
         this->mLastMass = Grid::deepCopy(mMass);
         this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
+        this->mLastTemperature = Grid::deepCopy(mTemperature);
 
         this->simulateReverseAdvection(deltaTime);
 
@@ -59,6 +62,7 @@ void SimulationField::simulateNextStep(const int deltaTime)
         delete mLastSmokeDensity;
         delete mLastHorizontalVelocity;
         delete mLastVerticalVelocity;
+        delete mLastTemperature;
     }
     if(this->mPressure) {
         this->simulatePressureResult(deltaTime);
@@ -88,12 +92,14 @@ void SimulationField::simulateNextStep(const int deltaTime)
         this->mLastMass = Grid::deepCopy(mMass);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
+        this->mLastTemperature = Grid::deepCopy(mTemperature);
 
         this->diffuse(deltaTime);
 
         delete this->mLastMass;
         delete this->mLastHorizontalVelocity;
         delete this->mLastVerticalVelocity;
+        delete this->mLastTemperature;
     }
 
     // change velocities based on walls
@@ -299,15 +305,17 @@ void SimulationField::simulatePressureResult(int deltaTime)
             if(this->mWalls->get(x, y) > 0) {
                 continue;
             }
-            float localDensity = this->mMass->get(x, y);
+            float localPressure = this->mMass->get(x, y) * this->mTemperature->get(x, y) * THERMAL_EXPENSION_FACTOR;
             float forceX = 0;
             float forceY = 0;
             if(this->mEdgeCaseMethod == block) {
                 if(x + 1 < this->simWidth && this->mWalls->get(x+1, y) == 0) {
-                    forceX = localDensity - this->mMass->get(x+1, y);
+                    float remotePressure = this->mMass->get(x+1, y) * this->mTemperature->get(x+1, y) * THERMAL_EXPENSION_FACTOR;
+                    forceX = localPressure - remotePressure;
                 }
                 if(y + 1 < this->simHeight && this->mWalls->get(x, y+1) == 0) {
-                    forceY = localDensity - this->mMass->get(x, y+1);
+                    float remotePressure = this->mMass->get(x, y+1) * this->mTemperature->get(x, y+1) * THERMAL_EXPENSION_FACTOR;
+                    forceY = localPressure - remotePressure;
                 }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
                 float velY = forceY * deltaTime / PRESSURE_SLOWNESS;
@@ -320,10 +328,12 @@ void SimulationField::simulatePressureResult(int deltaTime)
                 int nextX = (x + 1) % this->simWidth;
                 int nextY = (y + 1) % this->simHeight;
                 if(this->mWalls->get(nextX, y) == 0) {
-                    forceX = localDensity - this->mMass->get(nextX, y);
+                    float remotePressure = this->mMass->get(nextX, y) * this->mTemperature->get(nextX, y) * THERMAL_EXPENSION_FACTOR;
+                    forceX = localPressure - remotePressure;
                 }
                 if(this->mWalls->get(x, nextY) == 0) {
-                    forceY = localDensity - this->mMass->get(x, nextY);
+                    float remotePressure = this->mMass->get(x, nextY) * this->mTemperature->get(x, nextY) * THERMAL_EXPENSION_FACTOR;
+                    forceY = localPressure - remotePressure;
                 }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
                 float velY = forceY * deltaTime / PRESSURE_SLOWNESS;
