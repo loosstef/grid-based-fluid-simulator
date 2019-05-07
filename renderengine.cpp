@@ -29,6 +29,8 @@ QImage* RenderEngine::render(const Field *field)
         renderGrid(image, field->getSmokeDensityGrid(), RenderEngine::smokeToColorIntensity);
     } else if(this->mRenderType == density) {
         renderGrid(image, field->getMassGrid(), RenderEngine::densityToColorIntensity);
+    } else if(this->mRenderType == temperature) {
+        renderGrid(image, field->getTemperatureGrid(), RenderEngine::temperatureToColorIntensity);
     }
     // scale the image
     QImage scaledImage = image->scaled(this->mWidth, this->mHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
@@ -169,4 +171,9 @@ float RenderEngine::smokeToColorIntensity(float value)
 float RenderEngine::densityToColorIntensity(float value)
 {
     return value * 65;
+}
+
+float RenderEngine::temperatureToColorIntensity(float value)
+{
+    return value / 2;
 }

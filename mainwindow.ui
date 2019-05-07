@@ -166,6 +166,11 @@
              <string>Pressure</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>temperature</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>

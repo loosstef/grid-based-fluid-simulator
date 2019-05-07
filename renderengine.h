@@ -9,7 +9,7 @@ class Field;
 class Grid;
 class RenderEngineController;
 
-enum RenderType {smoke, density};
+enum RenderType {smoke, density, temperature};
 
 class RenderEngine : public QObject
 {
@@ -28,6 +28,7 @@ private:
     float valueToColorIntensity(float value, float (*f)(float)) const;
     static float smokeToColorIntensity(float value);
     static float densityToColorIntensity(float value);
+    static float temperatureToColorIntensity(float value);
     int mWidth;
     int mHeight;
     bool mShowVelocity;
