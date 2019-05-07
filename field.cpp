@@ -2,6 +2,8 @@
 
 #include "grid.h"
 
+const int INIT_TEMP = 288;
+
 Field::Field(const int simWidth, const int simHeight, QObject* parent) :
     QObject(parent),
     simWidth(simWidth), simHeight(simHeight)
@@ -34,5 +36,6 @@ void Field::reset()
     this->mSmokeDensity->reset(0);
     this->mHorizontalVelocity->reset(0);
     this->mVerticalVelocity->reset(0);
+    this->mTemperature->reset(INIT_TEMP);
     this->baseLock.unlock();
 }
