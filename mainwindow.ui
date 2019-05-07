@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>769</width>
-    <height>731</height>
+    <height>763</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -244,7 +244,7 @@
             </font>
            </property>
            <property name="text">
-            <string>edge case</string>
+            <string>edge mode</string>
            </property>
           </widget>
          </item>
