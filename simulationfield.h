@@ -28,7 +28,7 @@ private:
     bool outOfBoundX(float x);
     bool outOfBoundY(float y);
     bool testValidity();
-    Grid* mLastDensity;
+    Grid* mLastMass;
     Grid* mLastSmokeDensity;
     Grid* mLastHorizontalVelocity;
     Grid* mLastVerticalVelocity;

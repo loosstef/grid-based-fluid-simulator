@@ -9,6 +9,7 @@ const float PRESSURE_SLOWNESS = 50;
 const int DIFFUSE_SLOWNESS = 200;
 const int METHOD_OF_DIVISION = 1;
 const float MAX_MOVEMENT_VECTOR_SIZE = 0.8;
+const float THERMAL_EXPENSION_FACTOR = 0.00347222222;
 
 /**
  * Constructor. Generates a new simulation-field with a certain
@@ -34,27 +35,27 @@ void SimulationField::simulateNextStep(const int deltaTime)
 {
     this->baseLock.lock();
     if(this->mForwardAdvection) {
-        this->mLastDensity = Grid::deepCopy(mMass);
+        this->mLastMass = Grid::deepCopy(mMass);
         this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
 
         this->simulateForwardAdvection(deltaTime);
 
-        delete this->mLastDensity;
+        delete this->mLastMass;
         delete this->mLastSmokeDensity;
         delete this->mLastHorizontalVelocity;
         delete this->mLastVerticalVelocity;
     }
     if(this->mReverseAdvection) {
-        this->mLastDensity = Grid::deepCopy(mMass);
+        this->mLastMass = Grid::deepCopy(mMass);
         this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
 
         this->simulateReverseAdvection(deltaTime);
 
-        delete mLastDensity;
+        delete mLastMass;
         delete mLastSmokeDensity;
         delete mLastHorizontalVelocity;
         delete mLastVerticalVelocity;
@@ -84,26 +85,26 @@ void SimulationField::simulateNextStep(const int deltaTime)
     }
 
     if(this->mDiffuse) {
-        this->mLastDensity = Grid::deepCopy(mMass);
+        this->mLastMass = Grid::deepCopy(mMass);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
 
         this->diffuse(deltaTime);
 
-        delete this->mLastDensity;
+        delete this->mLastMass;
         delete this->mLastHorizontalVelocity;
         delete this->mLastVerticalVelocity;
     }
 
     // change velocities based on walls
-    this->mLastDensity = Grid::deepCopy(mMass);
+    this->mLastMass = Grid::deepCopy(mMass);
     this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
     this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
     this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
 
     this->makeVelocityVectorsNotPointToWalls();
 
-    delete mLastDensity;
+    delete mLastMass;
     delete mLastSmokeDensity;
     delete mLastHorizontalVelocity;
     delete mLastVerticalVelocity;
@@ -138,7 +139,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 continue;
             }
             // init data
-            float sourceDensity = this->mLastDensity->get(x, y);
+            float sourceDensity = this->mLastMass->get(x, y);
             float sourceSmokeDensity = this->mLastSmokeDensity->get(x, y);
             float sourceHorVel = this->mLastHorizontalVelocity->get(x, y);
             float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
@@ -253,7 +254,7 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                 if(totalSourcePercentage > 1) {
                     askedPercentage /= totalSourcePercentage;
                 }
-                float densityValue = this->mLastDensity->get(sX, sY) * askedPercentage;
+                float densityValue = this->mLastMass->get(sX, sY) * askedPercentage;
                 float smokeDensityValue = this->mLastSmokeDensity->get(sX, sY) * askedPercentage;
                 float horVelValue = this->mLastHorizontalVelocity->get(sX, sY) * askedPercentage;
                 float verVelValue = this->mLastVerticalVelocity->get(sX, sY) * askedPercentage;
@@ -360,7 +361,7 @@ void SimulationField::diffuse(int deltaTime)
                     if(this->mEdgeCaseMethod == block) {
                         if(surrX >= 0 && surrX < this->simWidth && surrY >=0 && surrY < this->simHeight) {
                             ++nSurroundingGridPoints;
-                            densitySum += this->mLastDensity->get(surrX, surrY);
+                            densitySum += this->mLastMass->get(surrX, surrY);
                             horVelSum += this->mLastHorizontalVelocity->get(surrX, surrY);
                             verVelSum += this->mLastVerticalVelocity->get(surrX, surrY);
                         }
@@ -368,7 +369,7 @@ void SimulationField::diffuse(int deltaTime)
                         int realSurrX = (surrX+this->simWidth)%this->simWidth;
                         int realSurrY = (surrY+this->simHeight)%this->simHeight;
                         ++nSurroundingGridPoints;
-                        densitySum += this->mLastDensity->get(realSurrX, realSurrY);
+                        densitySum += this->mLastMass->get(realSurrX, realSurrY);
                         horVelSum += this->mLastHorizontalVelocity->get(realSurrX, realSurrY);
                         verVelSum += this->mLastVerticalVelocity->get(realSurrX, realSurrY);
                     }
@@ -376,7 +377,7 @@ void SimulationField::diffuse(int deltaTime)
             }
             // TODO: check if the speed-problem exists here
             int ownWeight = DIFFUSE_SLOWNESS - nSurroundingGridPoints;
-            densitySum += this->mLastDensity->get(x, y) * ownWeight;
+            densitySum += this->mLastMass->get(x, y) * ownWeight;
             horVelSum += this->mLastHorizontalVelocity->get(x, y) * ownWeight;
             verVelSum += this->mLastVerticalVelocity->get(x, y) * ownWeight;
             this->mMass->set(x, y, densitySum/DIFFUSE_SLOWNESS);
