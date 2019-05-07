@@ -374,6 +374,7 @@ void SimulationField::diffuse(int deltaTime)
             float densitySum = 0;
             float horVelSum = 0;
             float verVelSum = 0;
+            float tempSum = 0;
             for(int surrX = x-1; surrX <= x+1; ++surrX) {
                 for(int surrY = y-1; surrY <= y+1; ++surrY) {
                     if(this->mWalls->get(surrX, surrY) > 0) {
@@ -385,6 +386,7 @@ void SimulationField::diffuse(int deltaTime)
                             densitySum += this->mLastMass->get(surrX, surrY);
                             horVelSum += this->mLastHorizontalVelocity->get(surrX, surrY);
                             verVelSum += this->mLastVerticalVelocity->get(surrX, surrY);
+                            tempSum += this->mLastTemperature->get(surrX, surrY);
                         }
                     } else if(this->mEdgeCaseMethod == wrap) {
                         int realSurrX = (surrX+this->simWidth)%this->simWidth;
@@ -393,6 +395,7 @@ void SimulationField::diffuse(int deltaTime)
                         densitySum += this->mLastMass->get(realSurrX, realSurrY);
                         horVelSum += this->mLastHorizontalVelocity->get(realSurrX, realSurrY);
                         verVelSum += this->mLastVerticalVelocity->get(realSurrX, realSurrY);
+                        tempSum += this->mLastTemperature->get(realSurrX, realSurrY);
                     }
                 }
             }
@@ -401,9 +404,11 @@ void SimulationField::diffuse(int deltaTime)
             densitySum += this->mLastMass->get(x, y) * ownWeight;
             horVelSum += this->mLastHorizontalVelocity->get(x, y) * ownWeight;
             verVelSum += this->mLastVerticalVelocity->get(x, y) * ownWeight;
+            tempSum += this->mLastTemperature->get(x, y) * ownWeight;
             this->mMass->set(x, y, densitySum/DIFFUSE_SLOWNESS);
             this->mHorizontalVelocity->set(x, y, horVelSum/DIFFUSE_SLOWNESS);
             this->mVerticalVelocity->set(x, y, verVelSum/DIFFUSE_SLOWNESS);
+            this->mTemperature->set(x, y, tempSum/DIFFUSE_SLOWNESS);
         }
     }
 }
