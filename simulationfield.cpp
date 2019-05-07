@@ -34,7 +34,7 @@ void SimulationField::simulateNextStep(const int deltaTime)
 {
     this->baseLock.lock();
     if(this->mForwardAdvection) {
-        this->mLastDensity = Grid::deepCopy(mDensity);
+        this->mLastDensity = Grid::deepCopy(mMass);
         this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
@@ -47,7 +47,7 @@ void SimulationField::simulateNextStep(const int deltaTime)
         delete this->mLastVerticalVelocity;
     }
     if(this->mReverseAdvection) {
-        this->mLastDensity = Grid::deepCopy(mDensity);
+        this->mLastDensity = Grid::deepCopy(mMass);
         this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
@@ -84,7 +84,7 @@ void SimulationField::simulateNextStep(const int deltaTime)
     }
 
     if(this->mDiffuse) {
-        this->mLastDensity = Grid::deepCopy(mDensity);
+        this->mLastDensity = Grid::deepCopy(mMass);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
 
@@ -96,7 +96,7 @@ void SimulationField::simulateNextStep(const int deltaTime)
     }
 
     // change velocities based on walls
-    this->mLastDensity = Grid::deepCopy(mDensity);
+    this->mLastDensity = Grid::deepCopy(mMass);
     this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
     this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
     this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
@@ -168,8 +168,8 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 float smokeDensityValue = sourceSmokeDensity * targetPercentage[i];
                 float VelXValue = sourceHorVel * targetPercentage[i];
                 float VelYValue = sourceVerVel * targetPercentage[i];
-                this->mDensity->add(x, y, -densityValue);
-                this->mDensity->add(targetX[i], targetY[i], densityValue);
+                this->mMass->add(x, y, -densityValue);
+                this->mMass->add(targetX[i], targetY[i], densityValue);
                 this->mSmokeDensity->add(x, y, -smokeDensityValue);
                 this->mSmokeDensity->add(targetX[i], targetY[i], smokeDensityValue);
                 this->mHorizontalVelocity->add(x, y, -VelXValue);
@@ -178,10 +178,10 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 this->mVerticalVelocity->add(targetX[i], targetY[i], VelYValue);
 
                 // FIXME: there should be a better solution than this
-                Q_ASSERT(this->mDensity->get(x, y) >= -0.0001);
+                Q_ASSERT(this->mMass->get(x, y) >= -0.0001);
                 Q_ASSERT(this->mSmokeDensity->get(x, y) >= -0.0001);
-                if(this->mDensity->get(x, y) < 0) {
-                    mDensity->set(x, y, 0);
+                if(this->mMass->get(x, y) < 0) {
+                    mMass->set(x, y, 0);
                 }
                 if(this->mSmokeDensity->get(x, y) < 0) {
                     mSmokeDensity->set(x, y, 0);
@@ -259,8 +259,8 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                 float verVelValue = this->mLastVerticalVelocity->get(sX, sY) * askedPercentage;
                 Q_ASSERT(!isinf(smokeDensityValue));
                 Q_ASSERT(smokeDensityValue >= 0);
-                this->mDensity->add(sX, sY, -densityValue);
-                this->mDensity->add(x, y, densityValue);
+                this->mMass->add(sX, sY, -densityValue);
+                this->mMass->add(x, y, densityValue);
                 this->mSmokeDensity->add(sX, sY, -smokeDensityValue);
                 this->mSmokeDensity->add(x, y, smokeDensityValue);
                 Q_ASSERT(!isinf(this->mSmokeDensity->get(x, y)));
@@ -298,15 +298,15 @@ void SimulationField::simulatePressureResult(int deltaTime)
             if(this->mWalls->get(x, y) > 0) {
                 continue;
             }
-            float localDensity = this->mDensity->get(x, y);
+            float localDensity = this->mMass->get(x, y);
             float forceX = 0;
             float forceY = 0;
             if(this->mEdgeCaseMethod == block) {
                 if(x + 1 < this->simWidth && this->mWalls->get(x+1, y) == 0) {
-                    forceX = localDensity - this->mDensity->get(x+1, y);
+                    forceX = localDensity - this->mMass->get(x+1, y);
                 }
                 if(y + 1 < this->simHeight && this->mWalls->get(x, y+1) == 0) {
-                    forceY = localDensity - this->mDensity->get(x, y+1);
+                    forceY = localDensity - this->mMass->get(x, y+1);
                 }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
                 float velY = forceY * deltaTime / PRESSURE_SLOWNESS;
@@ -319,10 +319,10 @@ void SimulationField::simulatePressureResult(int deltaTime)
                 int nextX = (x + 1) % this->simWidth;
                 int nextY = (y + 1) % this->simHeight;
                 if(this->mWalls->get(nextX, y) == 0) {
-                    forceX = localDensity - this->mDensity->get(nextX, y);
+                    forceX = localDensity - this->mMass->get(nextX, y);
                 }
                 if(this->mWalls->get(x, nextY) == 0) {
-                    forceY = localDensity - this->mDensity->get(x, nextY);
+                    forceY = localDensity - this->mMass->get(x, nextY);
                 }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
                 float velY = forceY * deltaTime / PRESSURE_SLOWNESS;
@@ -379,7 +379,7 @@ void SimulationField::diffuse(int deltaTime)
             densitySum += this->mLastDensity->get(x, y) * ownWeight;
             horVelSum += this->mLastHorizontalVelocity->get(x, y) * ownWeight;
             verVelSum += this->mLastVerticalVelocity->get(x, y) * ownWeight;
-            this->mDensity->set(x, y, densitySum/DIFFUSE_SLOWNESS);
+            this->mMass->set(x, y, densitySum/DIFFUSE_SLOWNESS);
             this->mHorizontalVelocity->set(x, y, horVelSum/DIFFUSE_SLOWNESS);
             this->mVerticalVelocity->set(x, y, verVelSum/DIFFUSE_SLOWNESS);
         }
@@ -670,7 +670,7 @@ bool SimulationField::testValidity()
     float sumOfDensities = 0;
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simHeight; ++y) {
-            sumOfDensities += this->mDensity->get(x, y);
+            sumOfDensities += this->mMass->get(x, y);
         }
     }
     Q_ASSERT(qAbs(sumOfDensities - this->simWidth*this->simHeight) < 10);

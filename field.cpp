@@ -6,7 +6,7 @@ Field::Field(const int simWidth, const int simHeight, QObject* parent) :
     QObject(parent),
     simWidth(simWidth), simHeight(simHeight)
 {
-    this->mDensity = new Grid(simWidth, simHeight, 1);
+    this->mMass = new Grid(simWidth, simHeight, 1);
     this->mSmokeDensity = new Grid(simWidth, simHeight);
     this->mHorizontalVelocity = new Grid(simWidth, simHeight);
     this->mVerticalVelocity = new Grid(simWidth, simHeight);
@@ -16,7 +16,7 @@ Field::Field(const int simWidth, const int simHeight, QObject* parent) :
 
 Field::~Field()
 {
-    delete this->mDensity;
+    delete this->mMass;
     delete this->mSmokeDensity;
     delete this->mHorizontalVelocity;
     delete this->mVerticalVelocity;
@@ -30,7 +30,7 @@ Field::~Field()
 void Field::reset()
 {
     this->baseLock.lock();
-    this->mDensity->reset(1);
+    this->mMass->reset(1);
     this->mSmokeDensity->reset(0);
     this->mHorizontalVelocity->reset(0);
     this->mVerticalVelocity->reset(0);

@@ -28,7 +28,7 @@ QImage* RenderEngine::render(const Field *field)
     if(this->mRenderType == smoke) {
         renderGrid(image, field->getSmokeDensityGrid(), RenderEngine::smokeToColorIntensity);
     } else if(this->mRenderType == density) {
-        renderGrid(image, field->getDensityGrid(), RenderEngine::densityToColorIntensity);
+        renderGrid(image, field->getMassGrid(), RenderEngine::densityToColorIntensity);
     }
     // scale the image
     QImage scaledImage = image->scaled(this->mWidth, this->mHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
@@ -112,7 +112,7 @@ void RenderEngine::renderVelocity(QImage *image, const Field *field)
     Grid* verVel = field->getVerticalVelocity();
 
     int pointsPairsIndex = 0;
-    QPoint* pointsPairs = new QPoint[field->getDensityGrid()->getSize()*2];
+    QPoint* pointsPairs = new QPoint[field->getMassGrid()->getSize()*2];
 
     float pixWidth = (float)image->width() / (float)field->getWidth();
     float pixHeight = (float)image->height() / (float)field->getHeight();

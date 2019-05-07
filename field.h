@@ -11,7 +11,7 @@ class Field : public QObject
 public:
     Field(const int simWidth, const int simHeight, QObject* parent = nullptr);
     ~Field();
-    Grid* getDensityGrid() const {return mDensity;}
+    Grid* getMassGrid() const {return mMass;}
     Grid* getSmokeDensityGrid() const {return mSmokeDensity;}
     Grid* getHorizontalVelocity() const {return mHorizontalVelocity;}
     Grid* getVerticalVelocity() const {return mVerticalVelocity;}
@@ -23,7 +23,7 @@ public:
 protected:
     int simWidth;
     int simHeight;
-    Grid* mDensity;
+    Grid* mMass;
     Grid* mSmokeDensity;
     Grid* mHorizontalVelocity;
     Grid* mVerticalVelocity;
