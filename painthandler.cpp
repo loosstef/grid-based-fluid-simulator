@@ -15,9 +15,14 @@ const int INIT_MANIPULATION_AREA = 5;
 PaintHandler::PaintHandler(Field* field)
 {
     mSmokePaintTool = new PaintTool(field->getSmokeDensityGrid());
+    mSmokePaintTool->setMinValue(0);
     mWallPaintTool = new PaintTool(field->getWallsGrid());
+    mWallPaintTool->setMinValue(0);
+    mTemperaturePainttool = new PaintTool(field->getTemperatureGrid());
+    mTemperaturePainttool->setMinValue(173);
     mSmokePaintToolController = mSmokePaintTool->getController();
     mWallPaintToolController = mWallPaintTool->getController();
+    mTemperaturePaintToolController = mTemperaturePainttool->getController();
     mVelocityManipulator = new VelocityManipulator(field);
     mVelocityManipulator->setPower(INIT_POWER);
     mVelocityManipulator->setManipulationArea(INIT_MANIPULATION_AREA);
@@ -42,6 +47,7 @@ void PaintHandler::connectToSettings(QComboBox* brushType, QSpinBox *brushSize, 
 {
     mSmokePaintToolController->connectToBrushSettings(brushSize, hardness);
     mWallPaintToolController->connectToBrushSettings(brushSize, hardness);
+    mTemperaturePaintToolController->connectToBrushSettings(brushSize, hardness);
     connect(brushType, qOverload<int>(&QComboBox::currentIndexChanged), this, &PaintHandler::paintTypeChanged);
 }
 
@@ -51,6 +57,8 @@ void PaintHandler::leftClicked(int x, int y)
         mSmokePaintTool->drawPoint(x, y);
     } else if(mPaintType == WALL) {
         mWallPaintTool->drawPoint(x, y);
+    } else if(mPaintType == TEMPERATURE) {
+        mTemperaturePainttool->drawPoint(x, y);
     }
 }
 
@@ -60,6 +68,8 @@ void PaintHandler::leftMoved(int x, int y)
         mSmokePaintTool->drawPoint(x, y);
     } else if(mPaintType == WALL) {
         mWallPaintTool->drawPoint(x, y);
+    } else if(mPaintType == TEMPERATURE) {
+        mTemperaturePainttool->drawPoint(x, y);
     }
 }
 
@@ -73,6 +83,8 @@ void PaintHandler::rightMouseClick(int simX, int simY, int viewX, int viewY)
         this->mTimer = QDateTime::currentMSecsSinceEpoch();
     } else if(mPaintType == WALL) {
         mWallPaintTool->resetPoint(simX, simY);
+    } else if(mPaintType == TEMPERATURE) {
+        mTemperaturePainttool->erasePoint(simX, simY);
     }
 }
 
@@ -91,6 +103,8 @@ void PaintHandler::rightMouseMove(int simX, int simY, int viewX, int viewY)
         this->mTimer = QDateTime::currentMSecsSinceEpoch();
     } else if(mPaintType == WALL) {
         mWallPaintTool->resetPoint(simX, simY);
+    } else if(mPaintType == TEMPERATURE) {
+        mTemperaturePainttool->erasePoint(simX, simY);
     }
 }
 
@@ -100,5 +114,7 @@ void PaintHandler::paintTypeChanged(int value)
         setPaintType(SMOKE);
     } else if(value == 1) {
         setPaintType(WALL);
+    } else if(value == 2) {
+        setPaintType(TEMPERATURE);
     }
 }

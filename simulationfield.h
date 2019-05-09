@@ -5,8 +5,8 @@
 #include "field.h"
 
 class SimulationFieldController;
-
 enum EdgeCaseMethod {wrap, block};
+const float THERMAL_EXPENSION_FACTOR = 0.00347222222;
 
 class SimulationField : public Field
 {
@@ -28,6 +28,7 @@ private:
     bool outOfBoundX(float x);
     bool outOfBoundY(float y);
     bool testValidity();
+    void calculateAndEmitDebugData();
     Grid* mLastMass;
     Grid* mLastSmokeDensity;
     Grid* mLastHorizontalVelocity;
@@ -38,6 +39,10 @@ private:
     bool mPressure = true;
     bool mDiffuse = true;
     EdgeCaseMethod mEdgeCaseMethod = wrap;
+
+signals:
+    void totalMassCalculated(float totalMass);
+    void avgTempCalculated(float avgTemp);
 
 public slots:
     void toggleSimulationOfFowardAdvection(bool val) {this->mForwardAdvection = val;}

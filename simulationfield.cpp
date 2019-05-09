@@ -9,7 +9,6 @@ const float PRESSURE_SLOWNESS = 50;
 const int DIFFUSE_SLOWNESS = 200;
 const int METHOD_OF_DIVISION = 1;
 const float MAX_MOVEMENT_VECTOR_SIZE = 0.8;
-const float THERMAL_EXPENSION_FACTOR = 0.00347222222;
 
 /**
  * Constructor. Generates a new simulation-field with a certain
@@ -116,6 +115,7 @@ void SimulationField::simulateNextStep(const int deltaTime)
     delete mLastVerticalVelocity;
 
     this->testValidity();
+    this->calculateAndEmitDebugData();
     this->baseLock.unlock();
 }
 
@@ -700,5 +700,17 @@ bool SimulationField::testValidity()
             sumOfDensities += this->mMass->get(x, y);
         }
     }
+    emit totalMassCalculated(sumOfDensities);
     Q_ASSERT(qAbs(sumOfDensities - this->simWidth*this->simHeight) < 10);
+}
+
+void SimulationField::calculateAndEmitDebugData()
+{
+    float weightedSumOfTemperatures = 0;
+    for(int x = 0; x < this->simWidth; ++x) {
+        for(int y = 0; y < this->simHeight; ++y) {
+            weightedSumOfTemperatures += mTemperature->get(x, y) * mMass->get(x, y);
+        }
+    }
+    emit avgTempCalculated(weightedSumOfTemperatures / (this->simWidth*this->simHeight));
 }

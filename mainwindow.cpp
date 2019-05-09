@@ -63,6 +63,10 @@ void MainWindow::init()
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, this, &MainWindow::rightClicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, this, &MainWindow::rightClicked);
 
+    // connect debug data
+    connect(simField, &SimulationField::totalMassCalculated, this, &MainWindow::updateTotalMass);
+    connect(simField, &SimulationField::avgTempCalculated, this, &MainWindow::updateAvgTemp);
+
     RenderEngine* renderEngine = new RenderEngine(VIEWER_WIDTH, VIEWER_HEIGHT, false);
     RenderEngineController* renderEngineController = renderEngine->getController();
     renderEngineController->connectView(ui->velocityToggle, ui->velocitySize, ui->sparsnessInput);
@@ -124,4 +128,14 @@ void MainWindow::saveImageClicked()
 {
     QString fileName = ui->fileNameInput->displayText();
     IO::saveImage(fileName, this->currentImage);
+}
+
+void MainWindow::updateTotalMass(float totalMass)
+{
+    ui->totalMassLabel->setText(QString::number(totalMass));
+}
+
+void MainWindow::updateAvgTemp(float avgTemp)
+{
+    ui->avgTempLabel->setText(QString::number(avgTemp));
 }

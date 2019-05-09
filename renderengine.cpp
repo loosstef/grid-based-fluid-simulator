@@ -3,6 +3,7 @@
 #include <QPointF>
 #include "grid.h"
 #include "field.h"
+#include "simulationfield.h"
 #include "renderenginecontroller.h"
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
@@ -28,7 +29,9 @@ QImage* RenderEngine::render(const Field *field)
     if(this->mRenderType == smoke) {
         renderGrid(image, field->getSmokeDensityGrid(), RenderEngine::smokeToColorIntensity);
     } else if(this->mRenderType == density) {
-        renderGrid(image, field->getMassGrid(), RenderEngine::densityToColorIntensity);
+        Grid* pressureGrid = RenderEngine::generatePressureGrid(field->getMassGrid(), field->getTemperatureGrid());
+        renderGrid(image, pressureGrid, RenderEngine::densityToColorIntensity);
+        delete pressureGrid;
     } else if(this->mRenderType == temperature) {
         renderGrid(image, field->getTemperatureGrid(), RenderEngine::temperatureToColorIntensity);
     }
@@ -176,4 +179,15 @@ float RenderEngine::densityToColorIntensity(float value)
 float RenderEngine::temperatureToColorIntensity(float value)
 {
     return value / 2;
+}
+
+Grid *RenderEngine::generatePressureGrid(Grid *mass, Grid *temp)
+{
+    Grid* pressureGrid = new Grid(mass->getWidth(), mass->getHeight());
+    for(int x = 0; x < mass->getWidth(); ++x) {
+        for(int y = 0; y < mass->getHeight(); ++y) {
+            pressureGrid->set(x, y, mass->get(x, y) * temp->get(x, y) * THERMAL_EXPENSION_FACTOR);
+        }
+    }
+    return pressureGrid;
 }

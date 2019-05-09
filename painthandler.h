@@ -13,7 +13,7 @@ class PaintToolController;
 class SimulationViewer;
 class VelocityManipulator;
 
-enum PaintType {SMOKE, WALL};
+enum PaintType {SMOKE, WALL, TEMPERATURE};
 
 class PaintHandler : public QObject
 {
@@ -27,8 +27,10 @@ public:
 private:
     PaintTool* mSmokePaintTool;
     PaintTool* mWallPaintTool;
+    PaintTool* mTemperaturePainttool;
     PaintToolController* mSmokePaintToolController;
     PaintToolController* mWallPaintToolController;
+    PaintToolController* mTemperaturePaintToolController;
     VelocityManipulator* mVelocityManipulator;
     PaintType mPaintType = SMOKE;
     int mLastSimX = 0;

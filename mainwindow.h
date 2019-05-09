@@ -31,6 +31,9 @@ public slots:
     void rightClicked(int x, int simY, int viewX, int viewY);  //TODO: remove this function
     void pauseClicked();
     void saveImageClicked();
+private slots:
+    void updateTotalMass(float totalMass);
+    void updateAvgTemp(float avgTemp);
 };
 
 #endif // MAINWINDOW_H
