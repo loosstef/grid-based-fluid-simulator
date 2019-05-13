@@ -31,7 +31,9 @@ QImage* RenderEngine::render(const Field *field)
     } else if(this->mRenderType == density) {
         renderGrid(image, field->getEnergyGrid(), RenderEngine::densityToColorIntensity);
     } else if(this->mRenderType == temperature) {
+        Grid* tempGrid = this->generateTemperatureGrid(field->getMassGrid(), field->getEnergyGrid());
         renderGrid(image, field->getEnergyGrid(), RenderEngine::temperatureToColorIntensity);
+        delete tempGrid;
     }
     // scale the image
     QImage scaledImage = image->scaled(this->mWidth, this->mHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
@@ -179,13 +181,13 @@ float RenderEngine::temperatureToColorIntensity(float value)
     return value / 2;
 }
 
-Grid *RenderEngine::generatePressureGrid(Grid *mass, Grid *temp)
+Grid *RenderEngine::generateTemperatureGrid(Grid *mass, Grid *energy)
 {
-    Grid* pressureGrid = new Grid(mass->getWidth(), mass->getHeight());
+    Grid* temperatureGrid = new Grid(mass->getWidth(), mass->getHeight());
     for(int x = 0; x < mass->getWidth(); ++x) {
         for(int y = 0; y < mass->getHeight(); ++y) {
-            pressureGrid->set(x, y, mass->get(x, y) * temp->get(x, y) * THERMAL_EXPENSION_FACTOR);
+            temperatureGrid->set(x, y, energy->get(x, y) / mass->get(x, y));
         }
     }
-    return pressureGrid;
+    return temperatureGrid;
 }

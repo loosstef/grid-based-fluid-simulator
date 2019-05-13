@@ -29,7 +29,7 @@ private:
     static float smokeToColorIntensity(float value);
     static float densityToColorIntensity(float value);
     static float temperatureToColorIntensity(float value);
-    static Grid *generatePressureGrid(Grid* mass, Grid* temp);
+    static Grid *generateTemperatureGrid(Grid* mass, Grid* energy);
     int mWidth;
     int mHeight;
     bool mShowVelocity;
