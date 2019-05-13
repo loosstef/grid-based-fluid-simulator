@@ -258,8 +258,6 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
             if(this->mWalls->get(x, y) > 0) {
                 continue;
             }
-            float weightedSumTemperatures = this->mLastEnergy->get(x, y) * this->mLastMass->get(x, y);
-            float sumWeightsOfTemperatures = this->mLastMass->get(x, y);
             for(int i = 0; i < nSources[x+y*this->simWidth]; ++i) {
                 int sX = sourceX[x+y*this->simWidth][i];
                 int sY = sourceY[x+y*this->simWidth][i];
@@ -272,14 +270,13 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                 float smokeDensityValue = this->mLastSmokeDensity->get(sX, sY) * askedPercentage;
                 float horVelValue = this->mLastHorizontalVelocity->get(sX, sY) * askedPercentage;
                 float verVelValue = this->mLastVerticalVelocity->get(sX, sY) * askedPercentage;
+                float energyValue = this->mLastEnergy->get(sX, sY) * askedPercentage;
                 Q_ASSERT(!isinf(smokeDensityValue));
                 Q_ASSERT(smokeDensityValue >= 0);
                 this->mMass->add(sX, sY, -massValue);
                 this->mMass->add(x, y, massValue);
                 this->mSmokeDensity->add(sX, sY, -smokeDensityValue);
                 this->mSmokeDensity->add(x, y, smokeDensityValue);
-                weightedSumTemperatures += this->mLastEnergy->get(sX, sY) * massValue;
-                sumWeightsOfTemperatures += massValue;
                 Q_ASSERT(!isinf(this->mSmokeDensity->get(x, y)));
                 Q_ASSERT(this->mSmokeDensity->get(sX, sY) > -0.001);
                 // FIXME: there should be a better solution
@@ -290,8 +287,9 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                 this->mHorizontalVelocity->add(x, y, horVelValue);
                 this->mVerticalVelocity->add(sX, sY, -verVelValue);
                 this->mVerticalVelocity->add(x, y, verVelValue);
+                this->mEnergy->add(sX, sY, -energyValue);
+                this->mEnergy->add(x, y, energyValue);
             }
-            this->mEnergy->set(x, y, weightedSumTemperatures/sumWeightsOfTemperatures);
         }
     }
 
