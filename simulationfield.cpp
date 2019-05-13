@@ -313,16 +313,16 @@ void SimulationField::simulatePressureResult(int deltaTime)
             if(this->mWalls->get(x, y) > 0) {
                 continue;
             }
-            float localPressure = this->mMass->get(x, y) * this->mEnergy->get(x, y) * THERMAL_EXPENSION_FACTOR;
+            float localPressure = this->mEnergy->get(x, y) * THERMAL_EXPENSION_FACTOR;
             float forceX = 0;
             float forceY = 0;
             if(this->mEdgeCaseMethod == block) {
                 if(x + 1 < this->simWidth && this->mWalls->get(x+1, y) == 0) {
-                    float remotePressure = this->mMass->get(x+1, y) * this->mEnergy->get(x+1, y) * THERMAL_EXPENSION_FACTOR;
+                    float remotePressure = this->mEnergy->get(x+1, y) * THERMAL_EXPENSION_FACTOR;
                     forceX = localPressure - remotePressure;
                 }
                 if(y + 1 < this->simHeight && this->mWalls->get(x, y+1) == 0) {
-                    float remotePressure = this->mMass->get(x, y+1) * this->mEnergy->get(x, y+1) * THERMAL_EXPENSION_FACTOR;
+                    float remotePressure = this->mEnergy->get(x, y+1) * THERMAL_EXPENSION_FACTOR;
                     forceY = localPressure - remotePressure;
                 }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
@@ -336,11 +336,11 @@ void SimulationField::simulatePressureResult(int deltaTime)
                 int nextX = (x + 1) % this->simWidth;
                 int nextY = (y + 1) % this->simHeight;
                 if(this->mWalls->get(nextX, y) == 0) {
-                    float remotePressure = this->mMass->get(nextX, y) * this->mEnergy->get(nextX, y) * THERMAL_EXPENSION_FACTOR;
+                    float remotePressure = this->mEnergy->get(nextX, y) * THERMAL_EXPENSION_FACTOR;
                     forceX = localPressure - remotePressure;
                 }
                 if(this->mWalls->get(x, nextY) == 0) {
-                    float remotePressure = this->mMass->get(x, nextY) * this->mEnergy->get(x, nextY) * THERMAL_EXPENSION_FACTOR;
+                    float remotePressure = this->mEnergy->get(x, nextY) * THERMAL_EXPENSION_FACTOR;
                     forceY = localPressure - remotePressure;
                 }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
