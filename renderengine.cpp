@@ -86,9 +86,10 @@ void RenderEngine::renderWalls(QImage *image, Grid *walls, int width, int height
         for(int y = 0; y < height; ++y) {
             float wallSolidity = walls->get(x, y);
             if(wallSolidity > 0) {
+                float redIntensity = weightedAverage(255, 0, wallSolidity, 0, 5);
                 float greenIntensity = weightedAverage(0, 255, wallSolidity, 0, 60);
                 float blueIntensity = weightedAverage(255, 0, wallSolidity, 0, 60);
-                QColor wallColor(0, greenIntensity, blueIntensity);
+                QColor wallColor(redIntensity, greenIntensity, blueIntensity);
                 mPainter.setPen(wallColor);
                 this->mPainter.fillRect(ceil(x*xScale), ceil(y*yScale), ceil(xScale), ceil(yScale), wallColor);
             }

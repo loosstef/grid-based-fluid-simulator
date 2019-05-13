@@ -467,8 +467,22 @@ void SimulationField::tearDownWalls(int deltaTime)
     for(int x = 0; x < this->getWidth(); ++x) {
         for(int y = 0; y < this->getHeight(); ++y) {
             if(this->mWalls->get(x, y) > 0) {
-                float temperature = mEnergy->get(x, y) / mMass->get(x, y);
-                if(temperature >= WALL_TEAR_DOWN_TEMP) {
+                bool hotNeighbor = false;
+                for(int surrX = x-1; surrX <= x+1; ++surrX) {
+                    for(int surrY = y-1; surrY <= y+1; ++surrY) {
+                        int realSurrX = surrX;
+                        int realSurrY = surrY;
+                        if(mEdgeCaseMethod == wrap) {
+                            realSurrX = (surrX+this->simWidth)%this->simWidth;
+                            realSurrY = (surrY+this->simHeight)%this->simHeight;
+                        }
+                        float temperature = mEnergy->get(realSurrX, realSurrY) / mMass->get(realSurrX, realSurrY);
+                        if(temperature >= WALL_TEAR_DOWN_TEMP) {
+                            hotNeighbor = true;
+                        }
+                    }
+                }
+                if(hotNeighbor) {
                     mWalls->add(x, y, -((float)deltaTime)/1000.0f);
                 }
             }
