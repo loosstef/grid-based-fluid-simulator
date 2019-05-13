@@ -29,9 +29,7 @@ QImage* RenderEngine::render(const Field *field)
     if(this->mRenderType == smoke) {
         renderGrid(image, field->getSmokeDensityGrid(), RenderEngine::smokeToColorIntensity);
     } else if(this->mRenderType == density) {
-        Grid* pressureGrid = RenderEngine::generatePressureGrid(field->getMassGrid(), field->getEnergyGrid());
-        renderGrid(image, pressureGrid, RenderEngine::densityToColorIntensity);
-        delete pressureGrid;
+        renderGrid(image, field->getEnergyGrid(), RenderEngine::densityToColorIntensity);
     } else if(this->mRenderType == temperature) {
         renderGrid(image, field->getEnergyGrid(), RenderEngine::temperatureToColorIntensity);
     }
@@ -173,7 +171,7 @@ float RenderEngine::smokeToColorIntensity(float value)
 
 float RenderEngine::densityToColorIntensity(float value)
 {
-    return value * 65;
+    return value * 65 / 288;
 }
 
 float RenderEngine::temperatureToColorIntensity(float value)
