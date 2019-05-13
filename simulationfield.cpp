@@ -375,6 +375,9 @@ void SimulationField::diffuse(int deltaTime)
                     if(this->mWalls->get(surrX, surrY) > 0) {
                         continue;
                     }
+                    if(this->mWalls->get(surrX, y) > 0 && this->mWalls->get(x, surrY) > 0) {
+                        continue;
+                    }
                     if(this->mEdgeCaseMethod == block) {
                         if(surrX >= 0 && surrX < this->simWidth && surrY >=0 && surrY < this->simHeight) {
                             ++nSurroundingGridPoints;
