@@ -145,7 +145,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 continue;
             }
             // init data
-            float sourceDensity = this->mLastMass->get(x, y);
+            float sourceMass = this->mLastMass->get(x, y);
             float sourceSmokeDensity = this->mLastSmokeDensity->get(x, y);
             float sourceHorVel = this->mLastHorizontalVelocity->get(x, y);
             float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
@@ -158,7 +158,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             if(qAbs(sourceVerMovement) > MAX_MOVEMENT_VECTOR_SIZE) {
                 sourceVerMovement = ((sourceVerMovement > 0) ? 1 : -1) * MAX_MOVEMENT_VECTOR_SIZE;
             }
-            Q_ASSERT(sourceDensity >= 0);
+            Q_ASSERT(sourceMass >= 0);
             Q_ASSERT(sourceSmokeDensity >= 0);
             int targetX[4];
             int targetY[4];
@@ -171,16 +171,14 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 continue;
             }
             for(int i = 0; i < nTargets; ++i) {
-                int tarX = targetX[i];
-                int tarY = targetY[i];
-                float densityValue = sourceDensity * targetPercentage[i];
-                Q_ASSERT(densityValue >= 0);
+                float massValue = sourceMass * targetPercentage[i];
+                Q_ASSERT(massValue >= 0);
                 float smokeDensityValue = sourceSmokeDensity * targetPercentage[i];
                 float VelXValue = sourceHorVel * targetPercentage[i];
                 float VelYValue = sourceVerVel * targetPercentage[i];
                 float energyValue = sourceEnergy * targetPercentage[i];
-                this->mMass->add(x, y, -densityValue);
-                this->mMass->add(targetX[i], targetY[i], densityValue);
+                this->mMass->add(x, y, -massValue);
+                this->mMass->add(targetX[i], targetY[i], massValue);
                 this->mSmokeDensity->add(x, y, -smokeDensityValue);
                 this->mSmokeDensity->add(targetX[i], targetY[i], smokeDensityValue);
                 this->mHorizontalVelocity->add(x, y, -VelXValue);
@@ -188,7 +186,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 this->mVerticalVelocity->add(x, y, -VelYValue);
                 this->mVerticalVelocity->add(targetX[i], targetY[i], VelYValue);
                 this->mEnergy->add(x, y, -energyValue);
-                this->mEnergy->add(tarX, tarY, energyValue);
+                this->mEnergy->add(targetX[i], targetY[i], energyValue);
 
                 // FIXME: there should be a better solution than this
                 Q_ASSERT(this->mMass->get(x, y) >= -0.0001);

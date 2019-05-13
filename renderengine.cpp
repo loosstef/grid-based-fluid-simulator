@@ -32,7 +32,7 @@ QImage* RenderEngine::render(const Field *field)
         renderGrid(image, field->getEnergyGrid(), RenderEngine::densityToColorIntensity);
     } else if(this->mRenderType == temperature) {
         Grid* tempGrid = this->generateTemperatureGrid(field->getMassGrid(), field->getEnergyGrid());
-        renderGrid(image, field->getEnergyGrid(), RenderEngine::temperatureToColorIntensity);
+        renderGrid(image, tempGrid, RenderEngine::temperatureToColorIntensity);
         delete tempGrid;
     }
     // scale the image
@@ -186,7 +186,7 @@ Grid *RenderEngine::generateTemperatureGrid(Grid *mass, Grid *energy)
     Grid* temperatureGrid = new Grid(mass->getWidth(), mass->getHeight());
     for(int x = 0; x < mass->getWidth(); ++x) {
         for(int y = 0; y < mass->getHeight(); ++y) {
-            temperatureGrid->set(x, y, energy->get(x, y) / mass->get(x, y));
+            temperatureGrid->set(x, y, (energy->get(x, y) / mass->get(x, y)));
         }
     }
     return temperatureGrid;
