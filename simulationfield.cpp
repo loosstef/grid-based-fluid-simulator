@@ -368,10 +368,10 @@ void SimulationField::diffuse(int deltaTime)
                 continue;
             }
             int nSurroundingGridPoints = 0;
-            float densitySum = 0;
+            float massSum = 0;
             float horVelSum = 0;
             float verVelSum = 0;
-            float tempSum = 0;
+            float energySum = 0;
             for(int surrX = x-1; surrX <= x+1; ++surrX) {
                 for(int surrY = y-1; surrY <= y+1; ++surrY) {
                     if(this->mWalls->get(surrX, surrY) > 0) {
@@ -380,32 +380,32 @@ void SimulationField::diffuse(int deltaTime)
                     if(this->mEdgeCaseMethod == block) {
                         if(surrX >= 0 && surrX < this->simWidth && surrY >=0 && surrY < this->simHeight) {
                             ++nSurroundingGridPoints;
-                            densitySum += this->mLastMass->get(surrX, surrY);
+                            massSum += this->mLastMass->get(surrX, surrY);
                             horVelSum += this->mLastHorizontalVelocity->get(surrX, surrY);
                             verVelSum += this->mLastVerticalVelocity->get(surrX, surrY);
-                            tempSum += this->mLastEnergy->get(surrX, surrY);
+                            energySum += this->mLastEnergy->get(surrX, surrY);
                         }
                     } else if(this->mEdgeCaseMethod == wrap) {
                         int realSurrX = (surrX+this->simWidth)%this->simWidth;
                         int realSurrY = (surrY+this->simHeight)%this->simHeight;
                         ++nSurroundingGridPoints;
-                        densitySum += this->mLastMass->get(realSurrX, realSurrY);
+                        massSum += this->mLastMass->get(realSurrX, realSurrY);
                         horVelSum += this->mLastHorizontalVelocity->get(realSurrX, realSurrY);
                         verVelSum += this->mLastVerticalVelocity->get(realSurrX, realSurrY);
-                        tempSum += this->mLastEnergy->get(realSurrX, realSurrY);
+                        energySum += this->mLastEnergy->get(realSurrX, realSurrY);
                     }
                 }
             }
             // TODO: check if the speed-problem exists here
             int ownWeight = DIFFUSE_SLOWNESS - nSurroundingGridPoints;
-            densitySum += this->mLastMass->get(x, y) * ownWeight;
+            massSum += this->mLastMass->get(x, y) * ownWeight;
             horVelSum += this->mLastHorizontalVelocity->get(x, y) * ownWeight;
             verVelSum += this->mLastVerticalVelocity->get(x, y) * ownWeight;
-            tempSum += this->mLastEnergy->get(x, y) * ownWeight;
-            this->mMass->set(x, y, densitySum/DIFFUSE_SLOWNESS);
+            energySum += this->mLastEnergy->get(x, y) * ownWeight;
+            this->mMass->set(x, y, massSum/DIFFUSE_SLOWNESS);
             this->mHorizontalVelocity->set(x, y, horVelSum/DIFFUSE_SLOWNESS);
             this->mVerticalVelocity->set(x, y, verVelSum/DIFFUSE_SLOWNESS);
-            this->mEnergy->set(x, y, tempSum/DIFFUSE_SLOWNESS);
+            this->mEnergy->set(x, y, energySum/DIFFUSE_SLOWNESS);
         }
     }
 }
