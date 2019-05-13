@@ -188,7 +188,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 this->mVerticalVelocity->add(x, y, -VelYValue);
                 this->mVerticalVelocity->add(targetX[i], targetY[i], VelYValue);
                 this->mEnergy->add(x, y, -energyValue);
-                this->mEnergy->add(x, y, energyValue);
+                this->mEnergy->add(tarX, tarY, energyValue);
 
                 // FIXME: there should be a better solution than this
                 Q_ASSERT(this->mMass->get(x, y) >= -0.0001);
@@ -708,7 +708,7 @@ void SimulationField::calculateAndEmitDebugData()
     float weightedSumOfTemperatures = 0;
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simHeight; ++y) {
-            weightedSumOfTemperatures += mEnergy->get(x, y) * mMass->get(x, y);
+            weightedSumOfTemperatures += mEnergy->get(x, y);
         }
     }
     emit avgTempCalculated(weightedSumOfTemperatures / (this->simWidth*this->simHeight));
