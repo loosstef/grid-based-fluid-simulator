@@ -38,7 +38,7 @@ void SimulationField::simulateNextStep(const int deltaTime)
         this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
-        this->mLastTemperature = Grid::deepCopy(mTemperature);
+        this->mLastEnergy = Grid::deepCopy(mEnergy);
 
         this->simulateForwardAdvection(deltaTime);
 
@@ -46,14 +46,14 @@ void SimulationField::simulateNextStep(const int deltaTime)
         delete this->mLastSmokeDensity;
         delete this->mLastHorizontalVelocity;
         delete this->mLastVerticalVelocity;
-        delete this->mLastTemperature;
+        delete this->mLastEnergy;
     }
     if(this->mReverseAdvection) {
         this->mLastMass = Grid::deepCopy(mMass);
         this->mLastSmokeDensity = Grid::deepCopy(mSmokeDensity);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
-        this->mLastTemperature = Grid::deepCopy(mTemperature);
+        this->mLastEnergy = Grid::deepCopy(mEnergy);
 
         this->simulateReverseAdvection(deltaTime);
 
@@ -61,7 +61,7 @@ void SimulationField::simulateNextStep(const int deltaTime)
         delete mLastSmokeDensity;
         delete mLastHorizontalVelocity;
         delete mLastVerticalVelocity;
-        delete mLastTemperature;
+        delete mLastEnergy;
     }
     if(this->mPressure) {
         this->simulatePressureResult(deltaTime);
@@ -91,14 +91,14 @@ void SimulationField::simulateNextStep(const int deltaTime)
         this->mLastMass = Grid::deepCopy(mMass);
         this->mLastHorizontalVelocity = Grid::deepCopy(mHorizontalVelocity);
         this->mLastVerticalVelocity = Grid::deepCopy(mVerticalVelocity);
-        this->mLastTemperature = Grid::deepCopy(mTemperature);
+        this->mLastEnergy = Grid::deepCopy(mEnergy);
 
         this->diffuse(deltaTime);
 
         delete this->mLastMass;
         delete this->mLastHorizontalVelocity;
         delete this->mLastVerticalVelocity;
-        delete this->mLastTemperature;
+        delete this->mLastEnergy;
     }
 
     // change velocities based on walls
@@ -151,7 +151,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
             float sourceVerVel = this->mLastVerticalVelocity->get(x, y);
             float sourceHorMovement = (sourceHorVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
             float sourceVerMovement = (sourceVerVel*deltaTime/SLOWNESS_FORWARD_ADVECTION);
-            float sourceTemperature = this->mLastTemperature->get(x, y);
+            float sourceEnergy = this->mLastEnergy->get(x, y);
             if(qAbs(sourceHorMovement) > MAX_MOVEMENT_VECTOR_SIZE) {
                 sourceHorMovement = ((sourceHorMovement > 0) ? 1 : -1) * MAX_MOVEMENT_VECTOR_SIZE;
             }
@@ -178,6 +178,7 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 float smokeDensityValue = sourceSmokeDensity * targetPercentage[i];
                 float VelXValue = sourceHorVel * targetPercentage[i];
                 float VelYValue = sourceVerVel * targetPercentage[i];
+                float energyValue = sourceEnergy * targetPercentage[i];
                 this->mMass->add(x, y, -densityValue);
                 this->mMass->add(targetX[i], targetY[i], densityValue);
                 this->mSmokeDensity->add(x, y, -smokeDensityValue);
@@ -186,10 +187,8 @@ bool SimulationField::simulateForwardAdvection(int deltaTime)
                 this->mHorizontalVelocity->add(targetX[i], targetY[i], VelXValue);
                 this->mVerticalVelocity->add(x, y, -VelYValue);
                 this->mVerticalVelocity->add(targetX[i], targetY[i], VelYValue);
-                float tarTemp =
-                        (mMass->get(tarX, tarY) * mLastTemperature->get(tarX, tarY) + sourceDensity * sourceTemperature)
-                        / (mMass->get(tarX, tarY) + sourceDensity);
-                this->mTemperature->set(x, y, tarTemp);
+                this->mEnergy->add(x, y, -energyValue);
+                this->mEnergy->add(x, y, energyValue);
 
                 // FIXME: there should be a better solution than this
                 Q_ASSERT(this->mMass->get(x, y) >= -0.0001);
@@ -259,7 +258,7 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
             if(this->mWalls->get(x, y) > 0) {
                 continue;
             }
-            float weightedSumTemperatures = this->mLastTemperature->get(x, y) * this->mLastMass->get(x, y);
+            float weightedSumTemperatures = this->mLastEnergy->get(x, y) * this->mLastMass->get(x, y);
             float sumWeightsOfTemperatures = this->mLastMass->get(x, y);
             for(int i = 0; i < nSources[x+y*this->simWidth]; ++i) {
                 int sX = sourceX[x+y*this->simWidth][i];
@@ -279,7 +278,7 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                 this->mMass->add(x, y, massValue);
                 this->mSmokeDensity->add(sX, sY, -smokeDensityValue);
                 this->mSmokeDensity->add(x, y, smokeDensityValue);
-                weightedSumTemperatures += this->mLastTemperature->get(sX, sY) * massValue;
+                weightedSumTemperatures += this->mLastEnergy->get(sX, sY) * massValue;
                 sumWeightsOfTemperatures += massValue;
                 Q_ASSERT(!isinf(this->mSmokeDensity->get(x, y)));
                 Q_ASSERT(this->mSmokeDensity->get(sX, sY) > -0.001);
@@ -292,7 +291,7 @@ void SimulationField::simulateReverseAdvection(int deltaTime)
                 this->mVerticalVelocity->add(sX, sY, -verVelValue);
                 this->mVerticalVelocity->add(x, y, verVelValue);
             }
-            this->mTemperature->set(x, y, weightedSumTemperatures/sumWeightsOfTemperatures);
+            this->mEnergy->set(x, y, weightedSumTemperatures/sumWeightsOfTemperatures);
         }
     }
 
@@ -316,16 +315,16 @@ void SimulationField::simulatePressureResult(int deltaTime)
             if(this->mWalls->get(x, y) > 0) {
                 continue;
             }
-            float localPressure = this->mMass->get(x, y) * this->mTemperature->get(x, y) * THERMAL_EXPENSION_FACTOR;
+            float localPressure = this->mMass->get(x, y) * this->mEnergy->get(x, y) * THERMAL_EXPENSION_FACTOR;
             float forceX = 0;
             float forceY = 0;
             if(this->mEdgeCaseMethod == block) {
                 if(x + 1 < this->simWidth && this->mWalls->get(x+1, y) == 0) {
-                    float remotePressure = this->mMass->get(x+1, y) * this->mTemperature->get(x+1, y) * THERMAL_EXPENSION_FACTOR;
+                    float remotePressure = this->mMass->get(x+1, y) * this->mEnergy->get(x+1, y) * THERMAL_EXPENSION_FACTOR;
                     forceX = localPressure - remotePressure;
                 }
                 if(y + 1 < this->simHeight && this->mWalls->get(x, y+1) == 0) {
-                    float remotePressure = this->mMass->get(x, y+1) * this->mTemperature->get(x, y+1) * THERMAL_EXPENSION_FACTOR;
+                    float remotePressure = this->mMass->get(x, y+1) * this->mEnergy->get(x, y+1) * THERMAL_EXPENSION_FACTOR;
                     forceY = localPressure - remotePressure;
                 }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
@@ -339,11 +338,11 @@ void SimulationField::simulatePressureResult(int deltaTime)
                 int nextX = (x + 1) % this->simWidth;
                 int nextY = (y + 1) % this->simHeight;
                 if(this->mWalls->get(nextX, y) == 0) {
-                    float remotePressure = this->mMass->get(nextX, y) * this->mTemperature->get(nextX, y) * THERMAL_EXPENSION_FACTOR;
+                    float remotePressure = this->mMass->get(nextX, y) * this->mEnergy->get(nextX, y) * THERMAL_EXPENSION_FACTOR;
                     forceX = localPressure - remotePressure;
                 }
                 if(this->mWalls->get(x, nextY) == 0) {
-                    float remotePressure = this->mMass->get(x, nextY) * this->mTemperature->get(x, nextY) * THERMAL_EXPENSION_FACTOR;
+                    float remotePressure = this->mMass->get(x, nextY) * this->mEnergy->get(x, nextY) * THERMAL_EXPENSION_FACTOR;
                     forceY = localPressure - remotePressure;
                 }
                 float velX = forceX * deltaTime / PRESSURE_SLOWNESS;
@@ -386,7 +385,7 @@ void SimulationField::diffuse(int deltaTime)
                             densitySum += this->mLastMass->get(surrX, surrY);
                             horVelSum += this->mLastHorizontalVelocity->get(surrX, surrY);
                             verVelSum += this->mLastVerticalVelocity->get(surrX, surrY);
-                            tempSum += this->mLastTemperature->get(surrX, surrY);
+                            tempSum += this->mLastEnergy->get(surrX, surrY);
                         }
                     } else if(this->mEdgeCaseMethod == wrap) {
                         int realSurrX = (surrX+this->simWidth)%this->simWidth;
@@ -395,7 +394,7 @@ void SimulationField::diffuse(int deltaTime)
                         densitySum += this->mLastMass->get(realSurrX, realSurrY);
                         horVelSum += this->mLastHorizontalVelocity->get(realSurrX, realSurrY);
                         verVelSum += this->mLastVerticalVelocity->get(realSurrX, realSurrY);
-                        tempSum += this->mLastTemperature->get(realSurrX, realSurrY);
+                        tempSum += this->mLastEnergy->get(realSurrX, realSurrY);
                     }
                 }
             }
@@ -404,11 +403,11 @@ void SimulationField::diffuse(int deltaTime)
             densitySum += this->mLastMass->get(x, y) * ownWeight;
             horVelSum += this->mLastHorizontalVelocity->get(x, y) * ownWeight;
             verVelSum += this->mLastVerticalVelocity->get(x, y) * ownWeight;
-            tempSum += this->mLastTemperature->get(x, y) * ownWeight;
+            tempSum += this->mLastEnergy->get(x, y) * ownWeight;
             this->mMass->set(x, y, densitySum/DIFFUSE_SLOWNESS);
             this->mHorizontalVelocity->set(x, y, horVelSum/DIFFUSE_SLOWNESS);
             this->mVerticalVelocity->set(x, y, verVelSum/DIFFUSE_SLOWNESS);
-            this->mTemperature->set(x, y, tempSum/DIFFUSE_SLOWNESS);
+            this->mEnergy->set(x, y, tempSum/DIFFUSE_SLOWNESS);
         }
     }
 }
@@ -709,7 +708,7 @@ void SimulationField::calculateAndEmitDebugData()
     float weightedSumOfTemperatures = 0;
     for(int x = 0; x < this->simWidth; ++x) {
         for(int y = 0; y < this->simHeight; ++y) {
-            weightedSumOfTemperatures += mTemperature->get(x, y) * mMass->get(x, y);
+            weightedSumOfTemperatures += mEnergy->get(x, y) * mMass->get(x, y);
         }
     }
     emit avgTempCalculated(weightedSumOfTemperatures / (this->simWidth*this->simHeight));

@@ -2,7 +2,7 @@
 
 #include "grid.h"
 
-const int INIT_TEMP = 288;
+const int INIT_ENERGY = 288;
 
 Field::Field(const int simWidth, const int simHeight, QObject* parent) :
     QObject(parent),
@@ -13,7 +13,7 @@ Field::Field(const int simWidth, const int simHeight, QObject* parent) :
     this->mHorizontalVelocity = new Grid(simWidth, simHeight);
     this->mVerticalVelocity = new Grid(simWidth, simHeight);
     this->mWalls = new Grid(simWidth, simHeight);
-    this->mTemperature = new Grid(simWidth, simHeight, 273+15);
+    this->mEnergy = new Grid(simWidth, simHeight, 273+15);
 }
 
 Field::~Field()
@@ -23,6 +23,7 @@ Field::~Field()
     delete this->mHorizontalVelocity;
     delete this->mVerticalVelocity;
     delete this->mWalls;
+    delete this->mEnergy;
 }
 
 /**
@@ -36,6 +37,6 @@ void Field::reset()
     this->mSmokeDensity->reset(0);
     this->mHorizontalVelocity->reset(0);
     this->mVerticalVelocity->reset(0);
-    this->mTemperature->reset(INIT_TEMP);
+    this->mEnergy->reset(INIT_ENERGY);
     this->baseLock.unlock();
 }

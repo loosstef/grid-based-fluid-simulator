@@ -16,7 +16,7 @@ public:
     Grid* getHorizontalVelocity() const {return mHorizontalVelocity;}
     Grid* getVerticalVelocity() const {return mVerticalVelocity;}
     Grid* getWallsGrid() const {return this->mWalls;}
-    Grid* getTemperatureGrid() const {return  this->mTemperature;}
+    Grid* getEnergyGrid() const {return  this->mEnergy;}
     int getWidth() const {return this->simWidth;}
     int getHeight() const {return this->simHeight;}
     void reset();
@@ -28,7 +28,7 @@ protected:
     Grid* mHorizontalVelocity;
     Grid* mVerticalVelocity;
     Grid* mWalls;
-    Grid* mTemperature;
+    Grid* mEnergy;
     QMutex baseLock;
 };
 

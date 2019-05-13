@@ -29,11 +29,11 @@ QImage* RenderEngine::render(const Field *field)
     if(this->mRenderType == smoke) {
         renderGrid(image, field->getSmokeDensityGrid(), RenderEngine::smokeToColorIntensity);
     } else if(this->mRenderType == density) {
-        Grid* pressureGrid = RenderEngine::generatePressureGrid(field->getMassGrid(), field->getTemperatureGrid());
+        Grid* pressureGrid = RenderEngine::generatePressureGrid(field->getMassGrid(), field->getEnergyGrid());
         renderGrid(image, pressureGrid, RenderEngine::densityToColorIntensity);
         delete pressureGrid;
     } else if(this->mRenderType == temperature) {
-        renderGrid(image, field->getTemperatureGrid(), RenderEngine::temperatureToColorIntensity);
+        renderGrid(image, field->getEnergyGrid(), RenderEngine::temperatureToColorIntensity);
     }
     // scale the image
     QImage scaledImage = image->scaled(this->mWidth, this->mHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);

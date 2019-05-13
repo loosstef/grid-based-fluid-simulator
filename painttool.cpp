@@ -24,11 +24,7 @@ void PaintTool::drawPoint(int x, int y)
 
 void PaintTool::erasePoint(int x, int y)
 {
-    if(mGrid->get(x, y) - mHardness < mMinValue) {
-       resetPoint(x, y);
-    } else {
-        drawPoint(x, y, -mHardness);
-    }
+    drawPoint(x, y, -mHardness);
 }
 
 void PaintTool::resetPoint(int x, int y)
@@ -52,7 +48,11 @@ void PaintTool::drawPoint(int x, int y, float value)
     int maxYBound = minYBound + this->mSize;
     for(int drawX = minXBound; drawX < maxXBound; ++drawX ) {
         for(int drawY = minYBound; drawY < maxYBound; ++drawY) {
-            this->mGrid->add(drawX, drawY, value);
+            if(this->mGrid->get(drawX, drawY) + value < mMinValue) {
+                this->mGrid->set(drawX, drawY, mMinValue);
+            } else {
+                this->mGrid->add(drawX, drawY, value);
+            }
         }
     }
 }

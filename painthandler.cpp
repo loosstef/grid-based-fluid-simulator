@@ -18,7 +18,7 @@ PaintHandler::PaintHandler(Field* field)
     mSmokePaintTool->setMinValue(0);
     mWallPaintTool = new PaintTool(field->getWallsGrid());
     mWallPaintTool->setMinValue(0);
-    mTemperaturePainttool = new PaintTool(field->getTemperatureGrid());
+    mTemperaturePainttool = new PaintTool(field->getEnergyGrid());
     mTemperaturePainttool->setMinValue(173);
     mSmokePaintToolController = mSmokePaintTool->getController();
     mWallPaintToolController = mWallPaintTool->getController();

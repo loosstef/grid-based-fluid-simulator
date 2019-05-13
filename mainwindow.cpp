@@ -12,8 +12,8 @@
 #include "io.h"
 #include "painthandler.h"
 
-const int FIELD_WIDTH = 120;
-const int FIELD_HEIGHT = 120;
+const int FIELD_WIDTH = 20;
+const int FIELD_HEIGHT = 20;
 const int VIEWER_WIDTH = 800;
 const int VIEWER_HEIGHT = 800;
 const int INIT_BRUSH_SIZE = 10;

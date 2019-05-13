@@ -33,7 +33,7 @@ private:
     Grid* mLastSmokeDensity;
     Grid* mLastHorizontalVelocity;
     Grid* mLastVerticalVelocity;
-    Grid* mLastTemperature;
+    Grid* mLastEnergy;
     bool mForwardAdvection = true;
     bool mReverseAdvection = true;
     bool mPressure = true;
