@@ -27,6 +27,19 @@ void PaintTool::erasePoint(int x, int y)
     drawPoint(x, y, -mHardness);
 }
 
+void PaintTool::setPoint(int x, int y)
+{
+    int minXBound = x - (int)(this->mSize/2);
+    int maxXBound = minXBound + this->mSize;
+    int minYBound = y - (int)(this->mSize/2);
+    int maxYBound = minYBound + this->mSize;
+    for(int drawX = minXBound; drawX < maxXBound; ++drawX ) {
+        for(int drawY = minYBound; drawY < maxYBound; ++drawY) {
+            this->mGrid->set(drawX, drawY, mHardness);
+        }
+    }
+}
+
 void PaintTool::resetPoint(int x, int y)
 {
     int minXBound = x - (int)(this->mSize/2);

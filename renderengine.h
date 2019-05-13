@@ -30,6 +30,7 @@ private:
     static float densityToColorIntensity(float value);
     static float temperatureToColorIntensity(float value);
     static Grid *generateTemperatureGrid(Grid* mass, Grid* energy);
+    static float weightedAverage(float value1, float value2, float weight, float minWeight, float maxWeight);
     int mWidth;
     int mHeight;
     bool mShowVelocity;

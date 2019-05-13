@@ -7,8 +7,6 @@
 #include "renderenginecontroller.h"
 
 const Qt::GlobalColor VELOCITY_COLOR = Qt::red;
-const Qt::GlobalColor WALL_COLOR = Qt::blue;
-//const int VEL_VECTOR_SPARSENESS = 1;
 
 RenderEngine::RenderEngine(const int width,  const int height, const bool showVelocity) :
     mWidth(width), mHeight(height), mShowVelocity(showVelocity)
@@ -84,11 +82,15 @@ void RenderEngine::renderGrid(QImage *image, const Grid *grid, float (*f)(float)
 void RenderEngine::renderWalls(QImage *image, Grid *walls, int width, int height, float xScale, float yScale)
 {
     this->mPainter.begin(image);
-    mPainter.setPen(WALL_COLOR);
     for(int x = 0; x < width; ++x) {
         for(int y = 0; y < height; ++y) {
-            if(walls->get(x, y) > 0) {
-                this->mPainter.fillRect(ceil(x*xScale), ceil(y*yScale), ceil(xScale), ceil(yScale), WALL_COLOR);
+            float wallSolidity = walls->get(x, y);
+            if(wallSolidity > 0) {
+                float greenIntensity = weightedAverage(0, 255, wallSolidity, 0, 60);
+                float blueIntensity = weightedAverage(255, 0, wallSolidity, 0, 60);
+                QColor wallColor(0, greenIntensity, blueIntensity);
+                mPainter.setPen(wallColor);
+                this->mPainter.fillRect(ceil(x*xScale), ceil(y*yScale), ceil(xScale), ceil(yScale), wallColor);
             }
         }
     }
@@ -190,4 +192,16 @@ Grid *RenderEngine::generateTemperatureGrid(Grid *mass, Grid *energy)
         }
     }
     return temperatureGrid;
+}
+
+float RenderEngine::weightedAverage(float value1, float value2, float weight, float minWeight, float maxWeight)
+{
+    if(weight <= minWeight) {
+        return value1;
+    }
+    if(weight >= maxWeight) {
+        return value2;
+    }
+    float percentage = (weight - minWeight) / (maxWeight - minWeight);
+    return value1 * (1-percentage) + value2 * percentage;
 }

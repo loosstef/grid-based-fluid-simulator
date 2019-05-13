@@ -7,8 +7,10 @@ const float SLOWNESS_FORWARD_ADVECTION = 100;
 const float SLOWNESS_REVERSE_ADVECTION = 100;
 const float PRESSURE_SLOWNESS = 50;
 const int DIFFUSE_SLOWNESS = 200;
+const int WALL_DIFFUSE_SLOWNESS = 600;
 const int METHOD_OF_DIVISION = 1;
 const float MAX_MOVEMENT_VECTOR_SIZE = 0.8;
+const float WALL_TEAR_DOWN_TEMP = 323;
 
 /**
  * Constructor. Generates a new simulation-field with a certain
@@ -100,6 +102,8 @@ void SimulationField::simulateNextStep(const int deltaTime)
         delete this->mLastVerticalVelocity;
         delete this->mLastEnergy;
     }
+
+    this->tearDownWalls(deltaTime);
 
     // change velocities based on walls
     this->mLastMass = Grid::deepCopy(mMass);
@@ -456,6 +460,20 @@ void SimulationField::makeVelocityVectorsNotPointToWalls()
         }
     }
 
+}
+
+void SimulationField::tearDownWalls(int deltaTime)
+{
+    for(int x = 0; x < this->getWidth(); ++x) {
+        for(int y = 0; y < this->getHeight(); ++y) {
+            if(this->mWalls->get(x, y) > 0) {
+                float temperature = mEnergy->get(x, y) / mMass->get(x, y);
+                if(temperature >= WALL_TEAR_DOWN_TEMP) {
+                    mWalls->add(x, y, -((float)deltaTime)/1000.0f);
+                }
+            }
+        }
+    }
 }
 
 /**

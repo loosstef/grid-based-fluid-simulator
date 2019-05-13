@@ -19,6 +19,7 @@ public:
 public slots:
     void drawPoint(int x, int y);
     void erasePoint(int x, int y);
+    void setPoint(int x, int y);
     void resetPoint(int x, int y);
 private:
     void drawPoint(int x, int y, float value);

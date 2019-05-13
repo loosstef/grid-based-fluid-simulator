@@ -56,7 +56,7 @@ void PaintHandler::leftClicked(int x, int y)
     if(mPaintType == SMOKE) {
         mSmokePaintTool->drawPoint(x, y);
     } else if(mPaintType == WALL) {
-        mWallPaintTool->drawPoint(x, y);
+        mWallPaintTool->setPoint(x, y);
     } else if(mPaintType == TEMPERATURE) {
         mTemperaturePainttool->drawPoint(x, y);
     }
@@ -67,7 +67,7 @@ void PaintHandler::leftMoved(int x, int y)
     if(mPaintType == SMOKE) {
         mSmokePaintTool->drawPoint(x, y);
     } else if(mPaintType == WALL) {
-        mWallPaintTool->drawPoint(x, y);
+        mWallPaintTool->setPoint(x, y);
     } else if(mPaintType == TEMPERATURE) {
         mTemperaturePainttool->drawPoint(x, y);
     }
