@@ -43,11 +43,12 @@ void PaintHandler::connectToSimulationViewer(SimulationViewer *simViewer)
     connect(simViewer, &SimulationViewer::mouseRightButtonMoved, this, &PaintHandler::rightMouseMove);
 }
 
-void PaintHandler::connectToSettings(QComboBox* brushType, QSpinBox *brushSize, QDoubleSpinBox *hardness)
+void PaintHandler::connectToSettings(QComboBox* brushType, QSpinBox* smokeSize, QDoubleSpinBox* smokeHardness,
+                                     QSpinBox* wallSize, QDoubleSpinBox* wallHardness, QSpinBox* tempSize, QDoubleSpinBox* tempHardness)
 {
-    mSmokePaintToolController->connectToBrushSettings(brushSize, hardness);
-    mWallPaintToolController->connectToBrushSettings(brushSize, hardness);
-    mTemperaturePaintToolController->connectToBrushSettings(brushSize, hardness);
+    mSmokePaintToolController->connectToBrushSettings(smokeSize, smokeHardness);
+    mWallPaintToolController->connectToBrushSettings(wallSize, wallHardness);
+    mTemperaturePaintToolController->connectToBrushSettings(tempSize, tempHardness);
     connect(brushType, qOverload<int>(&QComboBox::currentIndexChanged), this, &PaintHandler::paintTypeChanged);
 }
 

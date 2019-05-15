@@ -7,6 +7,13 @@
 #include <QDateTime>
 #include "painttool.h"
 
+const int INIT_SMOKE_BRUSH_SIZE = 10;
+const float INIT_SMOKE_BRUSH_HARDNESS = 1;
+const int INIT_WALL_BRUSH_SIZE = 2;
+const float INIT_WALL_BRUSH_HARDNESS = 10;
+const int INIT_TEMP_BRUSH_SIZE = 5;
+const int INIT_TEMP_BRUSH_HARDNESS = 5;
+
 namespace Ui {
 class MainWindow;
 }
@@ -34,6 +41,7 @@ public slots:
 private slots:
     void updateTotalMass(float totalMass);
     void updateAvgTemp(float avgTemp);
+    void brushTypeChanged(int index);
 };
 
 #endif // MAINWINDOW_H

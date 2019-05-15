@@ -22,7 +22,7 @@ public:
     PaintHandler(Field* field);
     ~PaintHandler();
     void connectToSimulationViewer(SimulationViewer* simViewer);
-    void connectToSettings(QComboBox* brushType, QSpinBox* brushSize, QDoubleSpinBox* hardness);
+    void connectToSettings(QComboBox* brushType, QSpinBox* smokeSize, QDoubleSpinBox* smokeHardness, QSpinBox* wallSize, QDoubleSpinBox* wallHardness, QSpinBox* tempSize, QDoubleSpinBox* tempHardness);
     void setPaintType(PaintType paintType) {mPaintType = paintType;}
 private:
     PaintTool* mSmokePaintTool;

@@ -16,8 +16,6 @@ const int FIELD_WIDTH = 120;
 const int FIELD_HEIGHT = 120;
 const int VIEWER_WIDTH = 800;
 const int VIEWER_HEIGHT = 800;
-const int INIT_BRUSH_SIZE = 10;
-const int INIT_BRUSH_HARDNESS = 1;
 const double INIT_VELOCITY_SCALE = 10;
 const int INIT_VELOCITY_SPARSENESS = 1;
 const int INIT_SLEEP_PER_LOOP = 0;
@@ -44,15 +42,19 @@ void MainWindow::init()
     // init model-objects
     SimulationField* simField = new SimulationField(FIELD_WIDTH, FIELD_HEIGHT);
     PaintHandler* paintHandler = new PaintHandler(simField);
-    paintHandler->connectToSettings(ui->paintTypeSelector, ui->brushSize, ui->brushHardness);
+    paintHandler->connectToSettings(ui->paintTypeSelector, ui->smokeBrushSize, ui->smokeBrushHardness,
+                                    ui->wallBrushSize, ui->wallBrushHardness, ui->tempBrushSize, ui->tempBrushHardness);
     paintHandler->connectToSimulationViewer(ui->simulationVisualisator);
-    ui->brushSize->setValue(INIT_BRUSH_SIZE);
-    ui->brushHardness->setValue(INIT_BRUSH_HARDNESS);
+    ui->smokeBrushSize->setValue(INIT_SMOKE_BRUSH_SIZE);
+    ui->smokeBrushHardness->setValue(INIT_SMOKE_BRUSH_HARDNESS);
+    ui->wallBrushSize->setValue(INIT_WALL_BRUSH_SIZE);
+    ui->wallBrushHardness->setValue(INIT_WALL_BRUSH_HARDNESS);
+    ui->tempBrushSize->setValue(INIT_TEMP_BRUSH_SIZE);
+    ui->tempBrushHardness->setValue(INIT_TEMP_BRUSH_HARDNESS);
 
     ui->simulationVisualisator->setSize(FIELD_WIDTH, FIELD_HEIGHT, VIEWER_WIDTH, VIEWER_HEIGHT);
 
     SimulationFieldController* simViewConnector = simField->getController();
-    //simViewConnector->connectToViewer(ui->simulationVisualisator);
     simViewConnector->connectToSimSettingsCheckboxes(ui->forwardAdvectionToggle, ui->reverseAdvectionToggle, ui->pressureToggle, ui->diffusionToggle);
     simViewConnector->connectToResetButton(ui->resetButton);
     simViewConnector->connectEdgeCaseSelector(ui->edgeCaseSelector);
@@ -62,6 +64,12 @@ void MainWindow::init()
     connect(ui->simulationVisualisator, &SimulationViewer::mouseLeftButtonMoved, this, &MainWindow::clicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonClicked, this, &MainWindow::rightClicked);
     connect(ui->simulationVisualisator, &SimulationViewer::mouseRightButtonMoved, this, &MainWindow::rightClicked);
+
+    //remove unnecesary brush-settings
+    ui->wallBrushForm->hide();
+    ui->tempBrushForm->hide();
+
+    connect(ui->paintTypeSelector, qOverload<int>(&QComboBox::currentIndexChanged), this, &MainWindow::brushTypeChanged);
 
     // connect debug data
     connect(simField, &SimulationField::totalMassCalculated, this, &MainWindow::updateTotalMass);
@@ -138,4 +146,23 @@ void MainWindow::updateTotalMass(float totalMass)
 void MainWindow::updateAvgTemp(float avgTemp)
 {
     ui->avgTempLabel->setText(QString::number(avgTemp));
+}
+
+void MainWindow::brushTypeChanged(int index)
+{
+    if(index == 0) {
+        ui->wallBrushForm->hide();
+        ui->tempBrushForm->hide();
+        ui->smokeBrushForm->show();
+    }
+    else if(index == 1) {
+        ui->smokeBrushForm->hide();
+        ui->tempBrushForm->hide();
+        ui->wallBrushForm->show();
+    }
+    else if(index == 2) {
+        ui->smokeBrushForm->hide();
+        ui->wallBrushForm->hide();
+        ui->tempBrushForm->show();
+    }
 }
