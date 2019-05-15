@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QMutex>
 
+const int INIT_ENERGY = 288;
+
 class Grid;
 
 class Field : public QObject

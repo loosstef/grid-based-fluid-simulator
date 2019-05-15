@@ -419,11 +419,12 @@ void SimulationField::makeVelocityVectorsNotPointToWalls()
 {
     for(int x = 0; x < this->getWidth(); ++x) {
         for(int y = 0; y < this->getHeight(); ++y) {
-            // reset speed and smoke of walls
+            // reset speed, smoke and temperature of walls
             if(this->mWalls->get(x, y) > 0) {
                 this->mVerticalVelocity->set(x, y, 0);
                 this->mHorizontalVelocity->set(x, y, 0);
                 this->mSmokeDensity->set(x, y, 0);
+                this->mEnergy->set(x, y, mMass->get(x, y) * INIT_ENERGY);
             }
             // upper wall
             int upperY = y - 1;

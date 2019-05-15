@@ -2,8 +2,6 @@
 
 #include "grid.h"
 
-const int INIT_ENERGY = 288;
-
 Field::Field(const int simWidth, const int simHeight, QObject* parent) :
     QObject(parent),
     simWidth(simWidth), simHeight(simHeight)
