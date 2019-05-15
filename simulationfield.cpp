@@ -319,11 +319,11 @@ void SimulationField::simulatePressureResult(int deltaTime)
             float forceX = 0;
             float forceY = 0;
             if(this->mEdgeCaseMethod == block) {
-                if(x + 1 < this->simWidth && this->mWalls->get(x+1, y) == 0) {
+                if(x + 1 < this->simWidth && this->mWalls->get(x+1, y) <= 0) {
                     float remotePressure = this->mEnergy->get(x+1, y) * THERMAL_EXPENSION_FACTOR;
                     forceX = localPressure - remotePressure;
                 }
-                if(y + 1 < this->simHeight && this->mWalls->get(x, y+1) == 0) {
+                if(y + 1 < this->simHeight && this->mWalls->get(x, y+1) <= 0) {
                     float remotePressure = this->mEnergy->get(x, y+1) * THERMAL_EXPENSION_FACTOR;
                     forceY = localPressure - remotePressure;
                 }
@@ -337,11 +337,11 @@ void SimulationField::simulatePressureResult(int deltaTime)
             else if(this->mEdgeCaseMethod == wrap) {
                 int nextX = (x + 1) % this->simWidth;
                 int nextY = (y + 1) % this->simHeight;
-                if(this->mWalls->get(nextX, y) == 0) {
+                if(this->mWalls->get(nextX, y) <= 0) {
                     float remotePressure = this->mEnergy->get(nextX, y) * THERMAL_EXPENSION_FACTOR;
                     forceX = localPressure - remotePressure;
                 }
-                if(this->mWalls->get(x, nextY) == 0) {
+                if(this->mWalls->get(x, nextY) <= 0) {
                     float remotePressure = this->mEnergy->get(x, nextY) * THERMAL_EXPENSION_FACTOR;
                     forceY = localPressure - remotePressure;
                 }
@@ -581,12 +581,12 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
     }
 
     if(percentageAB != 0) {
-        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap && this->mWalls->get(rightMostCoord, upperMostCoord) == 0) {
+        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap && this->mWalls->get(rightMostCoord, upperMostCoord) <= 0) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
             ++index;
-        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap && this->mWalls->get(leftMostCoord, upperMostCoord) == 0) {
+        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap && this->mWalls->get(leftMostCoord, upperMostCoord) <= 0) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = upperMostCoord;
             percentages[index] = percentageAB;
@@ -594,14 +594,14 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
         } else {
             int wrappedLeftMostCoord = (leftMostCoord + this->simWidth)%this->simWidth;
             int wrappedUpperMostCoord = (upperMostCoord + this->simHeight)%this->simHeight;
-            if(this->mWalls->get(wrappedLeftMostCoord, wrappedUpperMostCoord) == 0) {
+            if(this->mWalls->get(wrappedLeftMostCoord, wrappedUpperMostCoord) <= 0) {
                 xCoords[index] = wrappedLeftMostCoord;
                 yCoords[index] = wrappedUpperMostCoord;
                 percentages[index] = percentageAB * (1 - (x - leftMostCoord));
                 ++index;
             }
             int wrappedRightMostCoord = (rightMostCoord + this->simWidth)%this->simWidth;
-            if(this->mWalls->get(wrappedRightMostCoord, wrappedUpperMostCoord) == 0) {
+            if(this->mWalls->get(wrappedRightMostCoord, wrappedUpperMostCoord) <= 0) {
                 xCoords[index] = wrappedRightMostCoord;
                 yCoords[index] = wrappedUpperMostCoord;
                 percentages[index] = percentageAB * (x - leftMostCoord);
@@ -611,12 +611,12 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
     }
 
     if(percentageCD != 0) {
-        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap && this->mWalls->get(rightMostCoord, lowerMostCoord) == 0) {
+        if(leftMostCoord < 0 && this->mEdgeCaseMethod != wrap && this->mWalls->get(rightMostCoord, lowerMostCoord) <= 0) {
             xCoords[index] = rightMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
             ++index;
-        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap && this->mWalls->get(leftMostCoord, lowerMostCoord) == 0) {
+        } else if (rightMostCoord >= this->simWidth && this->mEdgeCaseMethod != wrap && this->mWalls->get(leftMostCoord, lowerMostCoord) <= 0) {
             xCoords[index] = leftMostCoord;
             yCoords[index] = lowerMostCoord;
             percentages[index] = percentageCD;
@@ -624,14 +624,14 @@ int SimulationField::calcGradientPointsHorVerSplit(int xCoords[], int yCoords[],
         } else {
             int wrappedLeftMostCoord = (leftMostCoord + this->simWidth)%this->simWidth;
             int wrappedLowerMostCoord = (lowerMostCoord + this->simHeight)%this->simHeight;
-            if(this->mWalls->get(wrappedLeftMostCoord, wrappedLowerMostCoord) == 0) {
+            if(this->mWalls->get(wrappedLeftMostCoord, wrappedLowerMostCoord) <= 0) {
                 xCoords[index] = wrappedLeftMostCoord;
                 yCoords[index] = wrappedLowerMostCoord;
                 percentages[index] = percentageCD * (1 - (x - leftMostCoord));
                 ++index;
             }
             int wrappedRightMostCoord = (rightMostCoord + this->simWidth)%this->simWidth;
-            if(this->mWalls->get(wrappedRightMostCoord, wrappedLowerMostCoord) == 0) {
+            if(this->mWalls->get(wrappedRightMostCoord, wrappedLowerMostCoord) <= 0) {
                 xCoords[index] = wrappedRightMostCoord;
                 yCoords[index] = (lowerMostCoord + this->simHeight)%this->simHeight;
                 percentages[index] = percentageCD * (x - leftMostCoord);
