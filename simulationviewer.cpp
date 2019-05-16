@@ -83,7 +83,7 @@ void SimulationViewer::mouseReleaseEvent(QMouseEvent *ev)
 Vector2D SimulationViewer::calculatePositionInSimulation(int viewX, int viewY)
 {
     Vector2D simCoordinate;
-    simCoordinate.x = (int)(((float)viewX/this->mViewWidth) * this->mSimulationWidth);
-    simCoordinate.y = (int)((float)viewY/this->mViewHeight * this->mSimulationHeight);
+    simCoordinate.x = (int)(((double)viewX/this->mViewWidth) * this->mSimulationWidth);
+    simCoordinate.y = (int)((double)viewY/this->mViewHeight * this->mSimulationHeight);
     return simCoordinate;
 }

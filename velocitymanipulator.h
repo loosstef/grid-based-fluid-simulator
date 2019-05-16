@@ -8,14 +8,14 @@ class VelocityManipulator
 {
 public:
     VelocityManipulator(Field* field);
-    void setPower(float power);
+    void setPower(double power);
     void setManipulationArea(int size);
-    void move(int posX, int posY, float velX, float velY);
+    void move(int posX, int posY, double velX, double velY);
 private:
     Field* mField;
     PaintTool mHorizontalManipulator;
     PaintTool mVerticalManipulator;
-    float mPower = 1;
+    double mPower = 1;
 };
 
 #endif // VELOCITYMANIPULATOR_H

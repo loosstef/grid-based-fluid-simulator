@@ -1,4 +1,4 @@
-void divider_4_points(const float x, const float y, float percentages[4]) {
+void divider_4_points(const double x, const double y, double percentages[4]) {
     for(int i = 0; i < 4; ++i) {
         percentages[i] = 0;
     }
@@ -6,8 +6,8 @@ void divider_4_points(const float x, const float y, float percentages[4]) {
         return;
     }
 
-    float percentageAB = 1 - y;
-    float percentageCD = y;
+    double percentageAB = 1 - y;
+    double percentageCD = y;
 
     percentages[0] = percentageAB * (1 - x);
     percentages[1] = percentageAB * x;
@@ -15,40 +15,40 @@ void divider_4_points(const float x, const float y, float percentages[4]) {
     percentages[3] = percentageCD * x;
 }
 
-void divider_9_points(const float x, const float y, float percentages[9]) {
+void divider_9_points(const double x, const double y, double percentages[9]) {
     for(int i = 0; i < 9; ++i) {
         percentages[i] = 0.0f;
     }
 
-    float relative_percentages[4];
+    double relative_percentages[4];
     if(x < 0 && y < 0) {
         // upper-left section
-        float relative_x = 1 + x;
-        float relative_y = 1 + y;
+        double relative_x = 1 + x;
+        double relative_y = 1 + y;
         divider_4_points(relative_x, relative_y, relative_percentages);
         percentages[0] = relative_percentages[0];
         percentages[1] = relative_percentages[1];
         percentages[3] = relative_percentages[2];
         percentages[4] = relative_percentages[3];
     } else if (x >= 0 && y < 0) {
-        float relative_x = x;
-        float relative_y = 1 + y;
+        double relative_x = x;
+        double relative_y = 1 + y;
         divider_4_points(relative_x, relative_y, relative_percentages);
         percentages[1] = relative_percentages[0];
         percentages[2] = relative_percentages[1];
         percentages[4] = relative_percentages[2];
         percentages[5] = relative_percentages[3];
     } else if (x < 0 && y >= 0) {
-        float relative_x = 1 + x;
-        float relative_y = y;
+        double relative_x = 1 + x;
+        double relative_y = y;
         divider_4_points(relative_x, relative_y, relative_percentages);
         percentages[3] = relative_percentages[0];
         percentages[4] = relative_percentages[1];
         percentages[6] = relative_percentages[2];
         percentages[7] = relative_percentages[3];
     } else if (x >= 0 && y >= 0) {
-        float relative_x = x;
-        float relative_y = y;
+        double relative_x = x;
+        double relative_y = y;
         divider_4_points(relative_x, relative_y, relative_percentages);
         percentages[4] = relative_percentages[0];
         percentages[5] = relative_percentages[1];
@@ -63,15 +63,15 @@ void divider_9_points(const float x, const float y, float percentages[9]) {
 #define BLOCK_OFFSET 0.0001
 
 void kernel calc_9_grids_for_forward_advection(global const int* width, global const int* height, global const int* edgeCase,
-global const float* horVel, global const float* verVel, global const float* sourceValues,
-global float* grid_1, global float* grid_2, global float* grid_3, global float* grid_4,
-global float* grid_5, global float* grid_6, global float* grid_7, global float* grid_8, global float* grid_9)
+global const double* horVel, global const double* verVel, global const double* sourceValues,
+global double* grid_1, global double* grid_2, global double* grid_3, global double* grid_4,
+global double* grid_5, global double* grid_6, global double* grid_7, global double* grid_8, global double* grid_9)
 {
     int index = get_global_id(0);
     int xCoord = index % *width;
     int yCoord = index / *width;
-    float updatedHorVel = horVel[index];
-    float updatedVerVel = verVel[index];
+    double updatedHorVel = horVel[index];
+    double updatedVerVel = verVel[index];
     if(*edgeCase == 1) {
         if(xCoord == 0 && updatedHorVel <= 0) {
             updatedHorVel = BLOCK_OFFSET;
@@ -85,7 +85,7 @@ global float* grid_5, global float* grid_6, global float* grid_7, global float* 
         }
     }
 
-    float percentages[9];
+    double percentages[9];
     divider_9_points(xCoord, yCoord, percentages);
     // upper-left
     int targetX = xCoord - 1;
@@ -179,9 +179,9 @@ global float* grid_5, global float* grid_6, global float* grid_7, global float* 
     }
 }
 
-void kernel sum_9_arrays(global float* target, global const float* grid_1, global const float* grid_2,
-global const float* grid_3, global const float* grid_4, global const float* grid_5, global const float* grid_6,
-global const float* grid_7, global const float* grid_8, global const float* grid_9) {
+void kernel sum_9_arrays(global double* target, global const double* grid_1, global const double* grid_2,
+global const double* grid_3, global const double* grid_4, global const double* grid_5, global const double* grid_6,
+global const double* grid_7, global const double* grid_8, global const double* grid_9) {
     int i = get_global_id(0);
     target[i] = grid_1[i] + grid_2[i] + grid_3[i] + grid_4[i] + grid_5[i] + grid_6[i] + grid_7[i] + grid_8[i] + grid_9[i];
 }

@@ -19,22 +19,22 @@ public:
     QImage* render(const Field* field);
     void showVelocity(const bool showVelocity) {this->mShowVelocity = showVelocity;}
     RenderEngineController *getController();
-    void setVelocityScale(const float velScale);
+    void setVelocityScale(const double velScale);
     void setVelocitySparseness(const int velSparseness) {this->mVelocitySparseness = velSparseness;}
 private:
-    void renderGrid(QImage* image, const Grid* grid, float (*f)(float)) const;
-    void renderWalls(QImage* image, Grid* walls, int width, int height, float xScale, float yScale);
+    void renderGrid(QImage* image, const Grid* grid, double (*f)(double)) const;
+    void renderWalls(QImage* image, Grid* walls, int width, int height, double xScale, double yScale);
     void renderVelocity(QImage* image, const Field* field);
-    float valueToColorIntensity(float value, float (*f)(float)) const;
-    static float smokeToColorIntensity(float value);
-    static float densityToColorIntensity(float value);
-    static float temperatureToColorIntensity(float value);
+    double valueToColorIntensity(double value, double (*f)(double)) const;
+    static double smokeToColorIntensity(double value);
+    static double densityToColorIntensity(double value);
+    static double temperatureToColorIntensity(double value);
     static Grid *generateTemperatureGrid(Grid* mass, Grid* energy);
-    static float weightedAverage(float value1, float value2, float weight, float minWeight, float maxWeight);
+    static double weightedAverage(double value1, double value2, double weight, double minWeight, double maxWeight);
     int mWidth;
     int mHeight;
     bool mShowVelocity;
-    float mVelocityScale = 1;
+    double mVelocityScale = 1;
     int mVelocitySparseness = 1;
     QPainter mPainter;
     RenderType mRenderType = smoke;

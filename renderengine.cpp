@@ -39,8 +39,8 @@ QImage* RenderEngine::render(const Field *field)
     delete image;
 
     // draw walls
-    const float widthScale = (float)this->mWidth/(float)field->getWidth();
-    const float heightScale = (float)this->mHeight/(float)field->getHeight();
+    const double widthScale = (double)this->mWidth/(double)field->getWidth();
+    const double heightScale = (double)this->mHeight/(double)field->getHeight();
     renderWalls(scaledImageHeap, field->getWallsGrid(), field->getWidth(), field->getHeight(), widthScale, heightScale);
 
     if(this->mShowVelocity) {
@@ -55,7 +55,7 @@ RenderEngineController *RenderEngine::getController()
     return new RenderEngineController(this);
 }
 
-void RenderEngine::setVelocityScale(const float velScale)
+void RenderEngine::setVelocityScale(const double velScale)
 {
     this->mVelocityScale = velScale;
 }
@@ -67,11 +67,11 @@ void RenderEngine::setVelocityScale(const float velScale)
  * @param grid the grid with the nescesary info
  * @param f the translation function from value to color-intensity
  */
-void RenderEngine::renderGrid(QImage *image, const Grid *grid, float (*f)(float)) const
+void RenderEngine::renderGrid(QImage *image, const Grid *grid, double (*f)(double)) const
 {
     for(int x = 0; x < grid->getWidth(); ++x) {
         for(int y = 0; y < grid->getHeight(); ++y) {
-            float colorIntensity = this->valueToColorIntensity(grid->get(x, y), f);
+            double colorIntensity = this->valueToColorIntensity(grid->get(x, y), f);
             QColor color = QColor(colorIntensity, colorIntensity, colorIntensity);
             Q_ASSERT(color.isValid());
             image->setPixelColor(x, y, color);
@@ -79,16 +79,16 @@ void RenderEngine::renderGrid(QImage *image, const Grid *grid, float (*f)(float)
     }
 }
 
-void RenderEngine::renderWalls(QImage *image, Grid *walls, int width, int height, float xScale, float yScale)
+void RenderEngine::renderWalls(QImage *image, Grid *walls, int width, int height, double xScale, double yScale)
 {
     this->mPainter.begin(image);
     for(int x = 0; x < width; ++x) {
         for(int y = 0; y < height; ++y) {
-            float wallSolidity = walls->get(x, y);
+            double wallSolidity = walls->get(x, y);
             if(wallSolidity > 0) {
-                float redIntensity = weightedAverage(255, 0, wallSolidity, 0, 5);
-                float greenIntensity = weightedAverage(0, 255, wallSolidity, 0, 60);
-                float blueIntensity = weightedAverage(255, 0, wallSolidity, 0, 60);
+                double redIntensity = weightedAverage(255, 0, wallSolidity, 0, 5);
+                double greenIntensity = weightedAverage(0, 255, wallSolidity, 0, 60);
+                double blueIntensity = weightedAverage(255, 0, wallSolidity, 0, 60);
                 QColor wallColor(redIntensity, greenIntensity, blueIntensity);
                 mPainter.setPen(wallColor);
                 this->mPainter.fillRect(ceil(x*xScale), ceil(y*yScale), ceil(xScale), ceil(yScale), wallColor);
@@ -122,8 +122,8 @@ void RenderEngine::renderVelocity(QImage *image, const Field *field)
     int pointsPairsIndex = 0;
     QPoint* pointsPairs = new QPoint[field->getMassGrid()->getSize()*2];
 
-    float pixWidth = (float)image->width() / (float)field->getWidth();
-    float pixHeight = (float)image->height() / (float)field->getHeight();
+    double pixWidth = (double)image->width() / (double)field->getWidth();
+    double pixHeight = (double)image->height() / (double)field->getHeight();
     int offSetX = (int)(pixWidth/2);
     int offSetY = (int)(pixHeight/2);
 
@@ -155,12 +155,12 @@ void RenderEngine::renderVelocity(QImage *image, const Field *field)
  * @param value the value of the fluid in a certain point
  * @return the color-intensity of the given value, always between 0 and 255
  */
-float RenderEngine::valueToColorIntensity(float value, float (*f)(float)) const
+double RenderEngine::valueToColorIntensity(double value, double (*f)(double)) const
 {
     if(value < 0) {
         value = 0;
     }
-    float colorIntensity = f(value);
+    double colorIntensity = f(value);
     if(colorIntensity < 0) {
         colorIntensity = 0;
     } else if(colorIntensity > 255) {
@@ -169,17 +169,17 @@ float RenderEngine::valueToColorIntensity(float value, float (*f)(float)) const
     return colorIntensity;
 }
 
-float RenderEngine::smokeToColorIntensity(float value)
+double RenderEngine::smokeToColorIntensity(double value)
 {
     return qSqrt(value) * 75;
 }
 
-float RenderEngine::densityToColorIntensity(float value)
+double RenderEngine::densityToColorIntensity(double value)
 {
     return value * 65 / 288;
 }
 
-float RenderEngine::temperatureToColorIntensity(float value)
+double RenderEngine::temperatureToColorIntensity(double value)
 {
     return value / 2;
 }
@@ -195,7 +195,7 @@ Grid *RenderEngine::generateTemperatureGrid(Grid *mass, Grid *energy)
     return temperatureGrid;
 }
 
-float RenderEngine::weightedAverage(float value1, float value2, float weight, float minWeight, float maxWeight)
+double RenderEngine::weightedAverage(double value1, double value2, double weight, double minWeight, double maxWeight)
 {
     if(weight <= minWeight) {
         return value1;
@@ -203,6 +203,6 @@ float RenderEngine::weightedAverage(float value1, float value2, float weight, fl
     if(weight >= maxWeight) {
         return value2;
     }
-    float percentage = (weight - minWeight) / (maxWeight - minWeight);
+    double percentage = (weight - minWeight) / (maxWeight - minWeight);
     return value1 * (1-percentage) + value2 * percentage;
 }

@@ -9,7 +9,7 @@
 #include "simulationviewer.h"
 #include "velocitymanipulator.h"
 
-const float INIT_POWER = 0.2;
+const double INIT_POWER = 0.2;
 const int INIT_MANIPULATION_AREA = 5;
 
 PaintHandler::PaintHandler(Field* field)
@@ -93,8 +93,8 @@ void PaintHandler::rightMouseMove(int simX, int simY, int viewX, int viewY)
 {
     if(mPaintType == SMOKE) {
         qint64 deltaTime = QDateTime::currentMSecsSinceEpoch() - this->mTimer;
-        float horizontalSpeed = (float)(viewX - this->mLastViewX) / (float)deltaTime;
-        float verticalSpeed = (float)(viewY - this->mLastViewY) / (float)deltaTime;
+        double horizontalSpeed = (double)(viewX - this->mLastViewX) / (double)deltaTime;
+        double verticalSpeed = (double)(viewY - this->mLastViewY) / (double)deltaTime;
         this->mVelocityManipulator->move(this->mLastSimX, this->mLastSimY, horizontalSpeed, verticalSpeed);
         // Reset all variables for the next iteration
         this->mLastSimX = simX;

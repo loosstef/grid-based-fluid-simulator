@@ -4,24 +4,24 @@
 class Grid
 {
 public:
-    Grid(const int width, const int height, const float initValue = 0);
-    Grid(float* values, const int width, const int height);
+    Grid(const int width, const int height, const double initValue = 0);
+    Grid(double* values, const int width, const int height);
     ~Grid();
     int getWidth() const {return this->width;}
     int getHeight() const {return this->height;}
-    float get(int x, int y) const;
-    float get(int i) const {return this->values[i];}
-    const float *getRaw() const {return this->values;}
+    double get(int x, int y) const;
+    double get(int i) const {return this->values[i];}
+    const double *getRaw() const {return this->values;}
     int getSize() const {return width*height;}
-    bool set(const int x, const int y, const float value);
-    void set(float* values);
-    bool add(const int x, const int y, const float value);
-    void reset(const float val);
+    bool set(const int x, const int y, const double value);
+    void set(double* values);
+    bool add(const int x, const int y, const double value);
+    void reset(const double val);
     static Grid *deepCopy(const Grid* grid);
 private:
     int width;
     int height;
-    float* values;
+    double* values;
 };
 
 #endif // GRID_H

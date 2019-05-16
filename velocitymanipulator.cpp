@@ -15,7 +15,7 @@ VelocityManipulator::VelocityManipulator(Field* field) :
  * @brief VelocityManipulator::setPower
  * @param power higher when the change in speed goes up when stroking
  */
-void VelocityManipulator::setPower(float power)
+void VelocityManipulator::setPower(double power)
 {
     this->mPower = power;
 }
@@ -39,7 +39,7 @@ void VelocityManipulator::setManipulationArea(int size)
  * @param velX x-coordinate of the movement vector
  * @param velY y-coordinate of the movement vector
  */
-void VelocityManipulator::move(int posX, int posY, float velX, float velY)
+void VelocityManipulator::move(int posX, int posY, double velX, double velY)
 {
     this->mHorizontalManipulator.setHardness(velX*this->mPower);
     this->mVerticalManipulator.setHardness(velY*this->mPower);

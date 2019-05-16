@@ -53,7 +53,7 @@ void PaintTool::resetPoint(int x, int y)
     }
 }
 
-void PaintTool::drawPoint(int x, int y, float value)
+void PaintTool::drawPoint(int x, int y, double value)
 {
     int minXBound = x - (int)(this->mSize/2);
     int maxXBound = minXBound + this->mSize;

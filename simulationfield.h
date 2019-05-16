@@ -6,7 +6,7 @@
 
 class SimulationFieldController;
 enum EdgeCaseMethod {wrap, block};
-const float THERMAL_EXPENSION_FACTOR = 0.00347222222;
+const double THERMAL_EXPENSION_FACTOR = 0.00347222222;
 
 class SimulationField : public Field
 {
@@ -22,12 +22,12 @@ private:
     void diffuse(int deltaTime);
     void makeVelocityVectorsNotPointToWalls();
     void tearDownWalls(int deltaTime);
-    float calculateDistance(float x1, float y1, float x2, float y2);
-    int calcGradientPoints(int xCoords[4], int yCoords[4], float percentages[4], float x, float y);
-    int calcGradientPointsHorVerSplit(int xCoords[], int yCoords[], float percentages[], float x, float y);
-    int calcGradientPointsDivideByDistance(int xCoords[], int yCoords[], float percentages[], float x, float y);
-    bool outOfBoundX(float x);
-    bool outOfBoundY(float y);
+    double calculateDistance(double x1, double y1, double x2, double y2);
+    int calcGradientPoints(int xCoords[4], int yCoords[4], double percentages[4], double x, double y);
+    int calcGradientPointsHorVerSplit(int xCoords[], int yCoords[], double percentages[], double x, double y);
+    int calcGradientPointsDivideByDistance(int xCoords[], int yCoords[], double percentages[], double x, double y);
+    bool outOfBoundX(double x);
+    bool outOfBoundY(double y);
     bool testValidity();
     void calculateAndEmitDebugData();
     Grid* mLastMass;
@@ -42,8 +42,8 @@ private:
     EdgeCaseMethod mEdgeCaseMethod = wrap;
 
 signals:
-    void totalMassCalculated(float totalMass);
-    void avgTempCalculated(float avgTemp);
+    void totalMassCalculated(double totalMass);
+    void avgTempCalculated(double avgTemp);
 
 public slots:
     void toggleSimulationOfFowardAdvection(bool val) {this->mForwardAdvection = val;}

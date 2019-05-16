@@ -8,9 +8,9 @@
 #include "painttool.h"
 
 const int INIT_SMOKE_BRUSH_SIZE = 10;
-const float INIT_SMOKE_BRUSH_HARDNESS = 1;
+const double INIT_SMOKE_BRUSH_HARDNESS = 1;
 const int INIT_WALL_BRUSH_SIZE = 2;
-const float INIT_WALL_BRUSH_HARDNESS = 10;
+const double INIT_WALL_BRUSH_HARDNESS = 10;
 const int INIT_TEMP_BRUSH_SIZE = 5;
 const int INIT_TEMP_BRUSH_HARDNESS = 5;
 
@@ -39,8 +39,8 @@ public slots:
     void pauseClicked();
     void saveImageClicked();
 private slots:
-    void updateTotalMass(float totalMass);
-    void updateAvgTemp(float avgTemp);
+    void updateTotalMass(double totalMass);
+    void updateAvgTemp(double avgTemp);
     void brushTypeChanged(int index);
 };
 

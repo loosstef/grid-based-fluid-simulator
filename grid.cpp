@@ -5,14 +5,14 @@
 /**
  * Constructor
  */
-Grid::Grid(const int width, const int height, const float initValue):
+Grid::Grid(const int width, const int height, const double initValue):
     width(width), height(height)
 {
-    this->values = new float[width*height];
+    this->values = new double[width*height];
     this->reset(initValue);
 }
 
-Grid::Grid(float *values, const int width, const int height) :
+Grid::Grid(double *values, const int width, const int height) :
     values(values), width(width), height(height)
 {
 
@@ -30,7 +30,7 @@ Grid::~Grid()
  * @param y y-coordinate
  * @return the value on location (x,y)
  */
-float Grid::get(int x, int y) const
+double Grid::get(int x, int y) const
 {
     return this->values[x + y*this->width];
 }
@@ -43,7 +43,7 @@ float Grid::get(int x, int y) const
  * @param value the value
  * @return true if the coordinate was valid
  */
-bool Grid::set(const int x, const int y, const float value)
+bool Grid::set(const int x, const int y, const double value)
 {
     // real code
     if(x >= 0 && y >= 0 && x < this->width && y < this->height) {
@@ -54,7 +54,7 @@ bool Grid::set(const int x, const int y, const float value)
     }
 }
 
-void Grid::set(float *values)
+void Grid::set(double *values)
 {
     this->values = values;
 }
@@ -67,7 +67,7 @@ void Grid::set(float *values)
  * @param value the value to add to this cell
  * @return true if the given coordinate was valid
  */
-bool Grid::add(const int x, const int y, const float value)
+bool Grid::add(const int x, const int y, const double value)
 {
     if(x >= 0 && y >= 0 && x < this->width && y < this->height) {
         this->values[x + y*this->width] += value;
@@ -77,7 +77,7 @@ bool Grid::add(const int x, const int y, const float value)
     }
 }
 
-void Grid::reset(const float val)
+void Grid::reset(const double val)
 {
     for(int i = 0; i < this->width * this->height; ++i) {
         this->values[i] = val;
@@ -92,7 +92,7 @@ void Grid::reset(const float val)
  */
 Grid *Grid::deepCopy(const Grid *grid)
 {
-    float* copyOfValues = new float[grid->getSize()];
-    memcpy(copyOfValues, grid->getRaw(), sizeof(float) * grid->getSize());
+    double* copyOfValues = new double[grid->getSize()];
+    memcpy(copyOfValues, grid->getRaw(), sizeof(double) * grid->getSize());
     return new Grid(copyOfValues, grid->getWidth(), grid->getHeight());
 }

@@ -12,8 +12,8 @@
 #include "io.h"
 #include "painthandler.h"
 
-const int FIELD_WIDTH = 120;
-const int FIELD_HEIGHT = 120;
+const int FIELD_WIDTH = 20;
+const int FIELD_HEIGHT = 20;
 const int VIEWER_WIDTH = 800;
 const int VIEWER_HEIGHT = 800;
 const double INIT_VELOCITY_SCALE = 10;
@@ -105,7 +105,7 @@ void MainWindow::updateSimulationVisualisation(QImage* image)
     ++this->counter;
     qint64 diffTime = QDateTime::currentMSecsSinceEpoch() - this->timer;
     if(diffTime > 500) {
-        ui->topInfo->setText(QString("fps: ").append(QString::number(((float)counter)/diffTime*1000)));
+        ui->topInfo->setText(QString("fps: ").append(QString::number(((double)counter)/diffTime*1000)));
         this->timer = QDateTime::currentMSecsSinceEpoch();
         counter = 0;
     }
@@ -138,12 +138,12 @@ void MainWindow::saveImageClicked()
     IO::saveImage(fileName, this->currentImage);
 }
 
-void MainWindow::updateTotalMass(float totalMass)
+void MainWindow::updateTotalMass(double totalMass)
 {
     ui->totalMassLabel->setText(QString::number(totalMass));
 }
 
-void MainWindow::updateAvgTemp(float avgTemp)
+void MainWindow::updateAvgTemp(double avgTemp)
 {
     ui->avgTempLabel->setText(QString::number(avgTemp));
 }
